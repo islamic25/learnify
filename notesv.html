@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Model Papers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        :root {
+            --primary: #004225; /* Dark Green */
+            --secondary: #f4f1ea; /* Cream */
+            --accent1: #d4af37; /* Golden */
+            --accent2: #8c6d1f; /* Darker Gold */
+            --accent3: #2a6e3f; /* Medium Green */
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4bb543;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: var(--secondary);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 70px;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 0 16px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent3) 100%);
+            color: white;
+            padding: 20px 16px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--accent1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 14px 50px 14px 16px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .clear-btn {
+            position: absolute;
+            right: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            display: none;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-tab {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 20px;
+            margin-right: 10px;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+        
+        .category-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent3) 100%);
+            color: white;
+        }
+        
+        /* Model Papers List */
+        .papers-list {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .paper-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--accent1);
+        }
+        
+        .paper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .class {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .class i {
+            margin-right: 8px;
+            color: var(--accent1);
+        }
+        
+        .description {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent3) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .action-btn i {
+            margin-right: 8px;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0, 66, 37, 0.3);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+        
+        .empty-state i {
+            font-size: 80px;
+            color: var(--accent1);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .empty-state p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 12px;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item.active i {
+            color: var(--primary);
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            body {
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .container {
+                max-width: 400px;
+                background: white;
+                border-radius: 24px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                padding: 0 20px 20px;
+                min-height: calc(100vh - 40px);
+            }
+            
+            header {
+                border-radius: 0;
+                margin: 0 -20px 20px;
+            }
+            
+            .bottom-nav {
+                max-width: 400px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 20px 20px 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">L</div>
+                <div>
+                    <h1 class="header-title">Model Papers</h1>
+                    <p class="header-subtitle">Official BISE Mardan Model Papers</p>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search model papers...">
+                <button class="clear-btn"><i class="fas fa-times"></i></button>
+                <div class="search-icon"><i class="fas fa-search"></i></div>
+            </div>
+            
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all">All</div>
+                <div class="category-tab" data-category="9th">9th Class</div>
+                <div class="category-tab" data-category="10th">10th Class</div>
+                <div class="category-tab" data-category="11th">11th Class</div>
+                <div class="category-tab" data-category="12th">12th Class</div>
+            </div>
+            
+            <div class="papers-list" id="papersList">
+                <!-- Model Papers will be dynamically generated here -->
+            </div>
+            
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-file-pdf"></i>
+                <h3>No Model Papers Found</h3>
+                <p>Try changing your search or filter criteria</p>
+            </div>
+        </main>
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="fas fa-file-alt"></i>
+            <span>Model Papers</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-book"></i>
+            <span>Notes</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Model Papers data with BISE Mardan links
+        const papersData = [
+            { 
+                id: 1, 
+                class: "9th Class", 
+                description: "Complete set of BISE Mardan model papers for 9th class with all subjects including Mathematics, Science, and English.", 
+                color: "#004225",
+                downloadLink: "https://web.bisemdn.edu.pk/papers/model/9th.pdf",
+                icon: "fas fa-book"
+            },
+            { 
+                id: 2, 
+                class: "10th Class", 
+                description: "Official model papers for 10th class from BISE Mardan. Prepare for your matriculation exams with these practice papers.", 
+                color: "#2a6e3f",
+                downloadLink: "https://web.bisemdn.edu.pk/papers/model/10th.pdf",
+                icon: "fas fa-graduation-cap"
+            },
+            { 
+                id: 3, 
+                class: "11th Class", 
+                description: "First year intermediate model papers covering all major subjects as per BISE Mardan curriculum.", 
+                color: "#004225",
+                downloadLink: "https://web.bisemdn.edu.pk/papers/model/11th.pdf",
+                icon: "fas fa-university"
+            },
+            { 
+                id: 4, 
+                class: "12th Class", 
+                description: "Final year intermediate model papers to help you prepare for your HSSC examinations under BISE Mardan.", 
+                color: "#2a6e3f",
+                downloadLink: "https://web.bisemdn.edu.pk/papers/model/12th.pdf",
+                icon: "fas fa-award"
+            }
+        ];
+
+        // DOM Elements
+        const papersList = document.getElementById('papersList');
+        const emptyState = document.getElementById('emptyState');
+        const searchBar = document.querySelector('.search-bar');
+        const clearBtn = document.querySelector('.clear-btn');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+
+        // Current filter state
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Function to render model papers based on filters
+        function renderPapers() {
+            const filteredPapers = papersData.filter(paper => {
+                const matchesCategory = currentFilter === 'all' || paper.class.toLowerCase().includes(currentFilter);
+                const matchesSearch = paper.class.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                     paper.description.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            // Clear the current list
+            papersList.innerHTML = '';
+
+            // Show empty state if no papers found
+            if (filteredPapers.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            } else {
+                emptyState.style.display = 'none';
+            }
+
+            // Render filtered papers
+            filteredPapers.forEach(paper => {
+                const paperCard = document.createElement('div');
+                paperCard.className = 'paper-card';
+                paperCard.innerHTML = `
+                    <div class="class"><i class="${paper.icon}"></i> ${paper.class}</div>
+                    <div class="description">${paper.description}</div>
+                    <a href="${paper.downloadLink}" target="_blank" class="action-btn">
+                        <i class="fas fa-download"></i> Download Model Paper
+                    </a>
+                `;
+                papersList.appendChild(paperCard);
+            });
+        }
+
+        // Event listeners for category tabs
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.getAttribute('data-category');
+                renderPapers();
+            });
+        });
+
+        // Event listener for search bar
+        searchBar.addEventListener('input', () => {
+            currentSearch = searchBar.value;
+            clearBtn.style.display = currentSearch ? 'block' : 'none';
+            renderPapers();
+        });
+
+        // Event listener for clear button
+        clearBtn.addEventListener('click', () => {
+            searchBar.value = '';
+            currentSearch = '';
+            clearBtn.style.display = 'none';
+            renderPapers();
+            searchBar.focus();
+        });
+
+        // Initialize the app
+        renderPapers();
+
+        // Add hover effects for mobile
+        document.querySelectorAll('.paper-card, .action-btn, .category-tab').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>

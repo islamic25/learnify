@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learnify - Select Subject</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #333;
+      min-height: 100vh;
+      padding-bottom: 80px;
+      position: relative;
+    }
+
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+    }
+    
+    .logo-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    
+    .app-name {
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+
+    .header-content {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .page-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 3px;
+    }
+    
+    .page-subtitle {
+      font-weight: 300;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .welcome-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    
+    .welcome-title {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+    
+    .welcome-text {
+      color: #7f8c8d;
+      font-weight: 400;
+      font-size: 0.9rem;
+    }
+
+    /* Subject Grid */
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    
+    @media (min-width: 768px) {
+      .subjects-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .subjects-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .subject-card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+    
+    .subject-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color1), var(--color2));
+    }
+    
+    .subject-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    
+    .subject-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      transition: transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color1), var(--color2));
+      color: white;
+    }
+    
+    .subject-card:hover .subject-icon {
+      transform: scale(1.1);
+    }
+    
+    .subject-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2c3e50;
+      line-height: 1.2;
+    }
+
+    /* Subject Colors */
+    .chemistry { --color1: #9b59b6; --color2: #8e44ad; }
+    .physics { --color1: #3498db; --color2: #2980b9; }
+    .biology { --color1: #2ecc71; --color2: #27ae60; }
+    .mdcat { --color1: #e74c3c; --color2: #c0392b; }
+    .ecat { --color1: #f39c12; --color2: #e67e22; }
+    .english { --color1: #1abc9c; --color2: #16a085; }
+    .maths { --color1: #34495e; --color2: #2c3e50; }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+    
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #7f8c8d;
+      font-size: 0.75rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .nav-item.active, .nav-item:hover {
+      color: #6a11cb;
+    }
+    
+    .nav-icon {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+    
+    .nav-label {
+      font-weight: 500;
+    }
+
+    /* Animation for page load */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .subject-card {
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+    
+    /* Stagger animation for cards */
+    .subject-card:nth-child(1) { animation-delay: 0.1s; }
+    .subject-card:nth-child(2) { animation-delay: 0.2s; }
+    .subject-card:nth-child(3) { animation-delay: 0.3s; }
+    .subject-card:nth-child(4) { animation-delay: 0.4s; }
+    .subject-card:nth-child(5) { animation-delay: 0.5s; }
+    .subject-card:nth-child(6) { animation-delay: 0.6s; }
+    .subject-card:nth-child(7) { animation-delay: 0.7s; }
+  </style>
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">📚</span>
+      <span class="app-name">Learnify</span>
+    </div>
+    <div class="header-content">
+      <h1 class="page-title">Select a Subject</h1>
+      <p class="page-subtitle">Choose your learning path</p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="welcome-card">
+      <h2 class="welcome-title">Welcome to Learnify!</h2>
+      <p class="welcome-text">Access comprehensive educational resources for your academic success</p>
+    </div>
+    
+    <div class="subjects-grid">
+      <a href="chemistry.html" class="subject-card chemistry">
+        <span class="subject-icon">🧪</span>
+        <div class="subject-name">Chemistry</div>
+      </a>
+      
+      <a href="physics.html" class="subject-card physics">
+        <span class="subject-icon">⚛️</span>
+        <div class="subject-name">Physics</div>
+      </a>
+      
+      <a href="biology.html" class="subject-card biology">
+        <span class="subject-icon">🧬</span>
+        <div class="subject-name">Biology</div>
+      </a>
+      
+      <a href="mdact.html" class="subject-card mdcat">
+        <span class="subject-icon">📚</span>
+        <div class="subject-name">MDCAT</div>
+      </a>
+      
+      <a href="ecat.html" class="subject-card ecat">
+        <span class="subject-icon">✏️</span>
+        <div class="subject-name">ECAT</div>
+      </a>
+      
+      <a href="english.html" class="subject-card english">
+        <span class="subject-icon">🅰️</span>
+        <div class="subject-name">English</div>
+      </a>
+      
+      <a href="maths.html" class="subject-card maths">
+        <span class="subject-icon">∫</span>
+        <div class="subject-name">Maths</div>
+      </a>
+    </div>
+  </div>
+
+  
+
+  <script>
+    // Tap effect for mobile
+    document.querySelectorAll('.subject-card').forEach(card => {
+      card.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => { this.style.transform = ''; }, 200);
+      });
+    });
+    
+    // Add active state to bottom nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(nav => {
+          nav.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

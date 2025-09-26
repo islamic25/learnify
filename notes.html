@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Notes Organizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #8A2BE2;
+            --secondary: #9370DB;
+            --accent: #BA55D3;
+            --light: #F5F5F5;
+            --dark: #333;
+            --gray: #777;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f1 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            box-shadow: var(--shadow);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        /* Add Note Section */
+        .add-note {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .add-note h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .add-note h2 i {
+            margin-right: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
+        }
+
+        textarea.input-field {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Notes List */
+        .notes-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .notes-section h2 i {
+            margin-right: 10px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .note-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .note-preview {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .edit-btn {
+            color: var(--primary);
+        }
+
+        .edit-btn:hover {
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .delete-btn {
+            color: #ff4757;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 12px;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.3s ease;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #f1f1f1;
+            color: var(--dark);
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 700px;
+            }
+            
+            .notes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 900px;
+            }
+            
+            .notes-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Notes Organizer</h1>
+                    <p>Save & Organize Your Notes</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search notes...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <!-- Add Note Section -->
+        <section class="add-note">
+            <h2><i class="fas fa-plus-circle"></i> Add New Note</h2>
+            <div class="input-group">
+                <label for="note-title">Title</label>
+                <input type="text" id="note-title" class="input-field" placeholder="Enter note title">
+            </div>
+            <div class="input-group">
+                <label for="note-content">Content</label>
+                <textarea id="note-content" class="input-field" placeholder="Write your note here..."></textarea>
+            </div>
+            <button id="save-note" class="btn"><i class="fas fa-save"></i> Save Note</button>
+        </section>
+
+        <!-- Notes List Section -->
+        <section class="notes-section">
+            <h2><i class="fas fa-sticky-note"></i> Your Notes</h2>
+            <div class="notes-grid" id="notes-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+   
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Deletion</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>Are you sure you want to delete this note? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-cancel">Cancel</button>
+                <button class="btn delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
+            authDomain: "explore-products-e7afb.firebaseapp.com",
+            projectId: "explore-products-e7afb",
+            storageBucket: "explore-products-e7afb.firebasestorage.app",
+            messagingSenderId: "753462167322",
+            appId: "1:753462167322:web:aab56a193e231277accea3",
+            measurementId: "G-T4KP9YEY4X"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const notesContainer = document.getElementById('notes-container');
+        const noteTitleInput = document.getElementById('note-title');
+        const noteContentInput = document.getElementById('note-content');
+        const saveNoteButton = document.getElementById('save-note');
+        const searchBar = document.querySelector('.search-bar');
+        const deleteModal = document.getElementById('delete-modal');
+        const closeModalButtons = document.querySelectorAll('.close-modal, .btn-cancel');
+        const confirmDeleteButton = document.querySelector('.modal-actions .delete-btn');
+
+        // Variables to track state
+        let currentNoteId = null;
+        let isEditing = false;
+        let notes = [];
+        let unsubscribe = null;
+
+        // Initialize the app
+        function init() {
+            setupEventListeners();
+            setupFirestoreListener();
+        }
+
+        // Set up Firestore real-time listener
+        function setupFirestoreListener() {
+            unsubscribe = db.collection('notes')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    notesContainer.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        notesContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-sticky-note"></i>
+                                <p>No notes found. Create your first note above!</p>
+                            </div>
+                        `;
+                        notes = [];
+                        return;
+                    }
+                    
+                    notes = [];
+                    snapshot.forEach(doc => {
+                        const note = {
+                            id: doc.id,
+                            ...doc.data()
+                        };
+                        notes.push(note);
+                    });
+                    
+                    renderNotes();
+                }, error => {
+                    console.error('Error fetching notes:', error);
+                    showNotification('Error fetching notes. Please try again.', 'error');
+                    notesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading notes. Please refresh the page.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            saveNoteButton.addEventListener('click', saveNote);
+            searchBar.addEventListener('input', filterNotes);
+            
+            // Modal event listeners
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    deleteModal.style.display = 'none';
+                });
+            });
+            
+            confirmDeleteButton.addEventListener('click', confirmDelete);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === deleteModal) {
+                    deleteModal.style.display = 'none';
+                }
+            });
+        }
+
+        // Render notes to the DOM
+        function renderNotes(notesToRender = null) {
+            const notesToDisplay = notesToRender || notes;
+            
+            if (notesToDisplay.length === 0) {
+                notesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <p>No notes found. Create your first note above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            notesContainer.innerHTML = notesToDisplay.map(note => `
+                <div class="note-card" data-id="${note.id}">
+                    <h3 class="note-title">${note.title}</h3>
+                    <p class="note-preview">${note.content}</p>
+                    <div class="note-actions">
+                        <button class="action-btn edit-btn" data-id="${note.id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${note.id}">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    editNote(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    showDeleteModal(id);
+                });
+            });
+        }
+
+        // Save a new note or update an existing one
+        function saveNote() {
+            const title = noteTitleInput.value.trim();
+            const content = noteContentInput.value.trim();
+            
+            if (!title || !content) {
+                showNotification('Please fill in both title and content fields.', 'error');
+                return;
+            }
+            
+            saveNoteButton.disabled = true;
+            saveNoteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            const noteData = {
+                title,
+                content,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            if (isEditing) {
+                // Update existing note
+                db.collection('notes').doc(currentNoteId).update(noteData)
+                    .then(() => {
+                        showNotification('Note updated successfully!', 'success');
+                        resetForm();
+                    })
+                    .catch(error => {
+                        console.error('Error updating note:', error);
+                        showNotification('Error updating note. Please try again.', 'error');
+                    })
+                    .finally(() => {
+                        saveNoteButton.disabled = false;
+                        saveNoteButton.innerHTML = '<i class="fas fa-save"></i> Save Note';
+                    });
+            } else {
+                // Create new note
+                noteData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                
+                db.collection('notes').add(noteData)
+                    .then(() => {
+                        showNotification('Note saved successfully!', 'success');
+                        resetForm();
+                    })
+                    .catch(error => {
+                        console.error('Error adding note:', error);
+                        showNotification('Error saving note. Please try again.', 'error');
+                    })
+                    .finally(() => {
+                        saveNoteButton.disabled = false;
+                        saveNoteButton.innerHTML = '<i class="fas fa-save"></i> Save Note';
+                    });
+            }
+        }
+
+        // Edit an existing note
+        function editNote(id) {
+            const note = notes.find(note => note.id === id);
+            if (note) {
+                noteTitleInput.value = note.title;
+                noteContentInput.value = note.content;
+                currentNoteId = id;
+                isEditing = true;
+                saveNoteButton.innerHTML = '<i class="fas fa-edit"></i> Update Note';
+                
+                // Scroll to the add note section
+                document.querySelector('.add-note').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Reset the form
+        function resetForm() {
+            noteTitleInput.value = '';
+            noteContentInput.value = '';
+            currentNoteId = null;
+            isEditing = false;
+            saveNoteButton.innerHTML = '<i class="fas fa-save"></i> Save Note';
+        }
+
+        // Show delete confirmation modal
+        function showDeleteModal(id) {
+            currentNoteId = id;
+            deleteModal.style.display = 'flex';
+        }
+
+        // Confirm deletion of a note
+        function confirmDelete() {
+            confirmDeleteButton.disabled = true;
+            confirmDeleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            
+            db.collection('notes').doc(currentNoteId).delete()
+                .then(() => {
+                    showNotification('Note deleted successfully!', 'success');
+                    deleteModal.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error deleting note:', error);
+                    showNotification('Error deleting note. Please try again.', 'error');
+                })
+                .finally(() => {
+                    confirmDeleteButton.disabled = false;
+                    confirmDeleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+                });
+        }
+
+        // Filter notes based on search input
+        function filterNotes() {
+            const searchTerm = searchBar.value.toLowerCase();
+            const filteredNotes = notes.filter(note => 
+                note.title.toLowerCase().includes(searchTerm) || 
+                note.content.toLowerCase().includes(searchTerm)
+            );
+            renderNotes(filteredNotes);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `toast ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Animate out and remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

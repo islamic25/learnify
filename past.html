@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - BISE Mardan Old Papers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-green: #004225;
+            --cream: #f4f1ea;
+            --golden: #d4af37;
+            --light-green: #e8f5e9;
+            --medium-green: #2e7d32;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--dark-green), #005a30);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--golden);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--dark-green);
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-titles h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-titles p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--radius);
+            background-color: white;
+            font-size: 16px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--dark-green);
+            box-shadow: 0 0 0 3px rgba(0, 66, 37, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            margin: 30px 0;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: var(--radius);
+            padding: 5px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .tab.active {
+            background: var(--dark-green);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 66, 37, 0.2);
+        }
+
+        .tab:not(.active):hover {
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        /* Papers Grid */
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .paper-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .class-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .class-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--golden), #e6c34e);
+            color: var(--dark-green);
+            border: none;
+            border-radius: var(--radius);
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: auto;
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .download-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .download-btn:hover i {
+            transform: translateY(2px);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-green);
+            color: white;
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--golden);
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                min-width: 100px;
+                flex: 0 0 calc(50% - 10px);
+                margin: 5px;
+            }
+            
+            .papers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab {
+                flex: 0 0 100%;
+            }
+            
+            .header-titles h1 {
+                font-size: 26px;
+            }
+        }
+
+        /* Animation for cards when they appear */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .paper-card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .paper-card:nth-child(1) { animation-delay: 0.1s; }
+        .paper-card:nth-child(2) { animation-delay: 0.2s; }
+        .paper-card:nth-child(3) { animation-delay: 0.3s; }
+        .paper-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .empty-state i {
+            font-size: 80px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="header-titles">
+                        <h1>BISE Mardan - Old Papers</h1>
+                        <p>Access previous examination papers for better preparation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search for papers by class or subject...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-class="all">All Classes</div>
+                <div class="tab" data-class="9th">9th Class</div>
+                <div class="tab" data-class="10th">10th Class</div>
+                <div class="tab" data-class="11th">11th Class</div>
+                <div class="tab" data-class="12th">12th Class</div>
+            </div>
+        </div>
+
+        <!-- Papers Grid -->
+        <div class="papers-grid">
+            <!-- 9th Class Card -->
+            <div class="paper-card" data-class="9th">
+                <div class="card-header">
+                    <div class="class-name">9th Class</div>
+                    <div class="class-subtitle">Secondary School Certificate - Part I</div>
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Access previous years' examination papers for 9th class. These papers cover all major subjects including Mathematics, Science, English, and Social Studies.
+                    </p>
+                    <a href="https://web.bisemdn.edu.pk/papers/old/9th.pdf" class="download-btn" target="_blank">
+                        <i class="fas fa-download"></i> Download Papers
+                    </a>
+                </div>
+            </div>
+
+            <!-- 10th Class Card -->
+            <div class="paper-card" data-class="10th">
+                <div class="card-header">
+                    <div class="class-name">10th Class</div>
+                    <div class="class-subtitle">Secondary School Certificate - Part II</div>
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Comprehensive collection of past papers for 10th class. Perfect for exam preparation with papers from the last 5 years across all subject groups.
+                    </p>
+                    <a href="https://web.bisemdn.edu.pk/papers/old/10th.pdf" class="download-btn" target="_blank">
+                        <i class="fas fa-download"></i> Download Papers
+                    </a>
+                </div>
+            </div>
+
+            <!-- 11th Class Card -->
+            <div class="paper-card" data-class="11th">
+                <div class="card-header">
+                    <div class="class-name">11th Class</div>
+                    <div class="class-subtitle">Higher Secondary School - Part I</div>
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Previous examination papers for 11th class, covering Pre-Medical, Pre-Engineering, Computer Science, and Commerce groups.
+                    </p>
+                    <a href="https://web.bisemdn.edu.pk/papers/old/11th.pdf" class="download-btn" target="_blank">
+                        <i class="fas fa-download"></i> Download Papers
+                    </a>
+                </div>
+            </div>
+
+            <!-- 12th Class Card -->
+            <div class="paper-card" data-class="12th">
+                <div class="card-header">
+                    <div class="class-name">12th Class</div>
+                    <div class="class-subtitle">Higher Secondary School - Part II</div>
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Complete set of past papers for 12th class. Essential resource for students preparing for their final board examinations.
+                    </p>
+                    <a href="https://web.bisemdn.edu.pk/papers/old/12th.pdf" class="download-btn" target="_blank">
+                        <i class="fas fa-download"></i> Download Papers
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div class="empty-state">
+            <i class="fas fa-file-search"></i>
+            <h3>No Papers Found</h3>
+            <p>Try adjusting your search or filter criteria. We might not have papers for the selected class yet.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Learnify</div>
+                <p class="footer-text">Empowering students with quality educational resources since 2023. Access past papers, study materials, and more.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const paperCards = document.querySelectorAll('.paper-card');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                const selectedClass = this.dataset.class;
+                
+                // Show/hide papers based on selection
+                let hasVisibleCards = false;
+                
+                paperCards.forEach(card => {
+                    if (selectedClass === 'all' || card.dataset.class === selectedClass) {
+                        card.style.display = 'flex';
+                        hasVisibleCards = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Show empty state if no cards are visible
+                const emptyState = document.querySelector('.empty-state');
+                if (!hasVisibleCards) {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            });
+        });
+
+        // Search functionality
+        const searchBox = document.querySelector('.search-box');
+        
+        searchBox.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            let hasVisibleCards = false;
+            
+            paperCards.forEach(card => {
+                const className = card.querySelector('.class-name').textContent.toLowerCase();
+                const description = card.querySelector('.card-description').textContent.toLowerCase();
+                
+                if (className.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                    hasVisibleCards = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no results
+            const emptyState = document.querySelector('.empty-state');
+            if (!hasVisibleCards && searchTerm) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+            
+            // Also filter based on active tab
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab && activeTab.dataset.class !== 'all') {
+                const activeClass = activeTab.dataset.class;
+                
+                paperCards.forEach(card => {
+                    if (card.style.display !== 'none' && card.dataset.class !== activeClass) {
+                        card.style.display = 'none';
+                    } else if (card.dataset.class === activeClass) {
+                        card.style.display = 'flex';
+                        hasVisibleCards = true;
+                    }
+                });
+                
+                if (!hasVisibleCards) {
+                    emptyState.style.display = 'block';
+                }
+            }
+        });
+
+        // Download button animation
+        const downloadButtons = document.querySelectorAll('.download-btn');
+        
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Add a small animation effect
+                this.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+                
+                // In a real application, we might track downloads here
+                console.log('Download initiated for: ' + this.closest('.paper-card').querySelector('.class-name').textContent);
+            });
+        });
+    </script>
+</body>
+</html>

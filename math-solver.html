@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Solver Pro - Learnify</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #f8f9fa;
+            --accent: #7209b7;
+            --success: #4cc9f0;
+            --text-dark: #2d3748;
+            --text-light: #f8f9fa;
+            --text-muted: #718096;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Input Card */
+        .input-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .input-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--accent);
+        }
+
+        .math-input-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .math-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 16px;
+            resize: vertical;
+            transition: var(--transition);
+            background: #f8fafc;
+        }
+
+        .math-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .input-hints {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .hint-tag {
+            background: #e2e8f0;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .hint-tag:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .input-hint a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .input-hint a:hover {
+            text-decoration: underline;
+        }
+
+        .solve-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .solve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .solve-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Card */
+        .results-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .results-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-placeholder {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        .result-placeholder i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .result-content {
+            display: none;
+        }
+
+        .problem-display {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .solution-display {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .solution-step {
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 3px solid var(--success);
+            background: #f0f9ff;
+            padding: 12px 15px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .solution-step:last-child {
+            background: #e6f7ff;
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .error-display {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            margin-top: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid var(--accent);
+        }
+
+        .example-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .example-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .example-expression {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        /* Footer Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: var(--radius);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* Help Modal */
+        .help-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .help-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-content {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: var(--radius) var(--radius) 0 0;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .help-modal.active .help-content {
+            transform: translateY(0);
+        }
+
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .help-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .close-help {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-help:hover {
+            background: #f1f5f9;
+            color: var(--text-dark);
+        }
+
+        .help-body {
+            padding: 25px;
+        }
+
+        .help-intro {
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .help-section {
+            margin-bottom: 30px;
+        }
+
+        .help-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .help-section-title i {
+            color: var(--accent);
+        }
+
+        .help-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .help-example {
+            background: #f8fafc;
+            border-radius: var(--radius);
+            padding: 15px;
+            border-left: 4px solid var(--success);
+        }
+
+        .help-example-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .code-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2d3748;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin-top: 8px;
+            position: relative;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-actions {
+                justify-content: center;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .help-examples {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .help-modal {
+                align-items: center;
+            }
+            
+            .help-content {
+                border-radius: var(--radius);
+                max-height: 85vh;
+                max-width: 700px;
+            }
+            
+            .help-header {
+                border-radius: var(--radius) var(--radius) 0 0;
+            }
+        }
+
+        /* Animation for results */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="logo-text">Math <span>Solver Pro</span></div>
+            </div>
+            <div class="user-actions">
+                <button class="icon-btn" id="helpBtn" title="Help">
+                    <i class="fas fa-circle-question"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Card -->
+            <section class="input-card">
+                <h2 class="card-title"><i class="fas fa-edit"></i> Enter Math Expression</h2>
+                <div class="math-input-container">
+                    <textarea class="math-input" id="mathInput" placeholder="Type your math expression here (e.g., 2+3*5, sin(90 deg), sqrt(49), derivative('x^2+3x','x'), det([[1,2],[3,4]]))"></textarea>
+                    <div class="input-hint">
+                        <i class="fas fa-info-circle"></i> Need help? <a href="#" id="helpLink">Click the <i class="fas fa-circle-question"></i> icon above</a>
+                    </div>
+                    <div class="input-hints">
+                        <div class="hint-tag">2+3*5</div>
+                        <div class="hint-tag">sqrt(16)</div>
+                        <div class="hint-tag">sin(pi/2)</div>
+                        <div class="hint-tag">log(100,10)</div>
+                    </div>
+                </div>
+                <button class="solve-btn" id="solveBtn">
+                    <i class="fas fa-bolt"></i> Solve Now
+                </button>
+            </section>
+
+            <!-- Results Card -->
+            <section class="results-card">
+                <h2 class="card-title"><i class="fas fa-clipboard-check"></i> Solution</h2>
+                <div class="result-placeholder" id="placeholder">
+                    <i class="fas fa-calculator"></i>
+                    <p>Your solution will appear here after you click "Solve Now"</p>
+                </div>
+                <div class="result-content" id="results">
+                    <div class="problem-display">
+                        <strong>Problem:</strong> <span id="problem-text"></span>
+                    </div>
+                    <div class="solution-display" id="solution-steps">
+                        <!-- Solution steps will be inserted here -->
+                    </div>
+                </div>
+                <div class="error-display" id="errorDisplay">
+                    <i class="fas fa-exclamation-triangle"></i> <span id="errorText"></span>
+                </div>
+            </section>
+
+            <!-- Examples Section -->
+            <section class="examples-section">
+                <h2 class="card-title"><i class="fas fa-lightbulb"></i> Examples to Try</h2>
+                <div class="examples-grid">
+                    <div class="example-card" data-expr="2+3*5">
+                        <div class="example-title">Basic Arithmetic</div>
+                        <div class="example-expression">2+3*5</div>
+                    </div>
+                    <div class="example-card" data-expr="sqrt(49) + 3^2">
+                        <div class="example-title">Roots and Powers</div>
+                        <div class="example-expression">sqrt(49) + 3^2</div>
+                    </div>
+                    <div class="example-card" data-expr="sin(90 deg) + cos(0)">
+                        <div class="example-title">Trigonometry</div>
+                        <div class="example-expression">sin(90 deg) + cos(0)</div>
+                    </div>
+                    <div class="example-card" data-expr="derivative('x^2+3x', 'x')">
+                        <div class="example-title">Derivative</div>
+                        <div class="example-expression">derivative('x^2+3x', 'x')</div>
+                    </div>
+                    <div class="example-card" data-expr="det([[1,2],[3,4]])">
+                        <div class="example-title">Matrix Determinant</div>
+                        <div class="example-expression">det([[1,2],[3,4]])</div>
+                    </div>
+                    <div class="example-card" data-expr="log(100, 10) + ln(e^3)">
+                        <div class="example-title">Logarithms</div>
+                        <div class="example-expression">log(100, 10) + ln(e^3)</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="help-modal" id="helpModal">
+        <div class="help-content">
+            <div class="help-header">
+                <h2 class="help-title">How to Use Math Solver Pro</h2>
+                <button class="close-help" id="closeHelp">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="help-body">
+                <p class="help-intro">Enter any math expression or command in the box below to get instant solutions.</p>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-calculator"></i> Basic Arithmetic</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Addition, Subtraction, Multiplication, Division</div>
+                            <div class="code-block">
+                                <span>2 + 3 * 5</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                        <div class="help-example">
+                            <div class="help-example-title">Exponentiation</div>
+                            <div class="code-block">
+                                <span>2^3 + 4^2</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-square-root-alt"></i> Roots & Powers</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Square Root</div>
+                            <div class="code-block">
+                                <span>sqrt(49)</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                        <div class="help-example">
+                            <div class="help-example-title">Power</div>
+                            <div class="code-block">
+                                <span>3^2</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-wave-square"></i> Trigonometry</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Sine (degrees)</div>
+                            <div class="code-block">
+                                <span>sin(90 deg)</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                        <div class="help-example">
+                            <div class="help-example-title">Cosine (radians)</div>
+                            <div class="code-block">
+                                <span>cos(pi)</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-chart-line"></i> Logarithms</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Logarithm (base 10)</div>
+                            <div class="code-block">
+                                <span>log(100, 10)</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                        <div class="help-example">
+                            <div class="help-example-title">Natural Logarithm</div>
+                            <div class="code-block">
+                                <span>ln(e^3)</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-function"></i> Derivatives</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Basic Derivative</div>
+                            <div class="code-block">
+                                <span>derivative('x^2+3x', 'x')</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fas fa-th"></i> Matrices</h3>
+                    <div class="help-examples">
+                        <div class="help-example">
+                            <div class="help-example-title">Matrix Determinant</div>
+                            <div class="code-block">
+                                <span>det([[1,2],[3,4]])</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mathInput = document.getElementById('mathInput');
+            const solveBtn = document.getElementById('solveBtn');
+            const placeholder = document.getElementById('placeholder');
+            const results = document.getElementById('results');
+            const problemText = document.getElementById('problem-text');
+            const solutionSteps = document.getElementById('solution-steps');
+            const errorDisplay = document.getElementById('errorDisplay');
+            const errorText = document.getElementById('errorText');
+            const exampleCards = document.querySelectorAll('.example-card');
+            const hintTags = document.querySelectorAll('.hint-tag');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // Help system elements
+            const helpBtn = document.getElementById('helpBtn');
+            const helpLink = document.getElementById('helpLink');
+            const helpModal = document.getElementById('helpModal');
+            const closeHelp = document.getElementById('closeHelp');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            // Initialize Math.js with additional functions
+
+            // Solve button functionality
+            solveBtn.addEventListener('click', solveExpression);
+
+            // Handle Enter key in the input field
+            mathInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    solveExpression();
+                }
+            });
+
+            // Example cards functionality
+            exampleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const expr = this.getAttribute('data-expr');
+                    mathInput.value = expr;
+                    solveExpression();
+                });
+            });
+
+            // Hint tags functionality
+            hintTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    mathInput.value = this.textContent;
+                });
+            });
+
+            // Navigation items
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Help system functionality
+            helpBtn.addEventListener('click', openHelpModal);
+            helpLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openHelpModal();
+            });
+            closeHelp.addEventListener('click', closeHelpModal);
+            
+            // Close modal when clicking outside the content
+            helpModal.addEventListener('click', function(e) {
+                if (e.target === helpModal) {
+                    closeHelpModal();
+                }
+            });
+            
+            // Copy buttons functionality
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const codeBlock = this.parentElement;
+                    const codeText = codeBlock.querySelector('span').textContent;
+                    
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        // Show feedback
+                        this.textContent = 'Copied!';
+                        this.classList.add('copied');
+                        
+                        // Reset after 2 seconds
+                        setTimeout(() => {
+                            this.textContent = 'Copy';
+                            this.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+            });
+
+            // Main solving function
+            function solveExpression() {
+                const expression = mathInput.value.trim();
+                
+                if (expression === '') {
+                    showError('Please enter a math expression to solve.');
+                    return;
+                }
+                
+                // Hide error and show loading state
+                hideError();
+                solveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Solving...';
+                solveBtn.disabled = true;
+                
+                // Simulate a small delay for better UX
+                setTimeout(() => {
+                    try {
+                        // Update problem text
+                        problemText.textContent = expression;
+                        
+                        // Evaluate the expression
+                        const result = math.evaluate(expression);
+                        
+                        // Generate solution steps
+                        generateSolutionSteps(expression, result);
+                        
+                        // Show results and hide placeholder
+                        placeholder.style.display = 'none';
+                        document.getElementById('results').style.display = 'block';
+                        document.getElementById('results').classList.add('fade-in');
+                        
+                    } catch (error) {
+                        showError('Invalid math expression: ' + error.message);
+                    } finally {
+                        // Reset button state
+                        solveBtn.innerHTML = '<i class="fas fa-bolt"></i> Solve Now';
+                        solveBtn.disabled = false;
+                    }
+                }, 500);
+            }
+
+            function generateSolutionSteps(expression, result) {
+                // Clear previous steps
+                solutionSteps.innerHTML = '';
+                
+                // Add parsing step
+                addSolutionStep(`Parsed expression: ${expression}`);
+                
+                // Add evaluation step
+                addSolutionStep(`Evaluated expression: ${math.format(result, { precision: 14 })}`);
+                
+                // Add result step
+                addSolutionStep(`Result: ${math.format(result)}`, true);
+            }
+
+            function addSolutionStep(text, isFinal = false) {
+                const step = document.createElement('div');
+                step.className = 'solution-step';
+                if (isFinal) step.classList.add('final-step');
+                step.textContent = text;
+                solutionSteps.appendChild(step);
+            }
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorDisplay.style.display = 'block';
+                errorDisplay.classList.add('fade-in');
+            }
+
+            function hideError() {
+                errorDisplay.style.display = 'none';
+            }
+
+            function openHelpModal() {
+                helpModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeHelpModal() {
+                helpModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            // User actions
+            document.querySelectorAll('.icon-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.querySelector('.fa-history')) {
+                        alert('Viewing calculation history');
+                    } else if (this.querySelector('.fa-cog')) {
+                        alert('Opening settings');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Firebase Flashcards</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #4A90E2;
+            --secondary: #50C9BA;
+            --dark: #2C3E50;
+            --light: #F5F7FA;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--light), #E8F4F8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo i {
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+        }
+
+        .search-section i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+            color: var(--dark);
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        /* Card Creation Section */
+        .creation-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .creation-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            transition: border 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+        }
+
+        /* Flashcard Viewer */
+        .viewer-section {
+            margin-bottom: 30px;
+        }
+
+        .card-counter {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-front {
+            background: white;
+            color: var(--dark);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            font-size: 20px;
+            text-align: center;
+            line-height: 1.5;
+            word-wrap: break-word;
+            width: 100%;
+        }
+
+        .card-hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .card-back .card-hint {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Navigation Controls */
+        .navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        .nav-btn i {
+            font-size: 20px;
+            color: var(--dark);
+        }
+
+        .nav-btn.shuffle i {
+            color: var(--primary);
+        }
+
+        /* Status Controls */
+        .status-controls {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 0 5px;
+            box-shadow: var(--shadow);
+        }
+
+        .status-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-btn i {
+            margin-right: 8px;
+        }
+
+        .known-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-btn {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 12px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            display: none;
+        }
+
+        .empty-state.active {
+            display: block;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .modal-text {
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="header-text">
+                <h1>Learnify Flashcards</h1>
+                <p>Real-time study with Firebase</p>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="search-input" placeholder="Search flashcards...">
+        </section>
+
+        <!-- Flashcard Creation Section -->
+        <section class="creation-section" id="creation-section">
+            <h2 class="section-title">
+                <span><i class="fas fa-plus-circle"></i> Create New Card</span>
+                <button class="close-btn" id="close-creation"><i class="fas fa-times"></i></button>
+            </h2>
+            <div class="input-group">
+                <label for="front-text">Front (Question)</label>
+                <textarea id="front-text" rows="3" placeholder="Enter question or term..."></textarea>
+            </div>
+            <div class="input-group">
+                <label for="back-text">Back (Answer)</label>
+                <textarea id="back-text" rows="3" placeholder="Enter answer or definition..."></textarea>
+            </div>
+            <div class="input-group" style="display: none;" id="edit-buttons">
+                <button class="btn btn-success" id="update-card">
+                    <i class="fas fa-save"></i> Update Card
+                </button>
+                <button class="btn btn-secondary" id="cancel-edit" style="margin-top: 10px;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+            <button class="btn" id="save-card">
+                <i class="fas fa-save"></i> Save Card
+            </button>
+        </section>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading flashcards...</p>
+        </div>
+
+        <!-- Flashcard Viewer Section -->
+        <section class="viewer-section" id="viewer-section">
+            <div class="card-counter">Card <span id="current-card">1</span> of <span id="total-cards">0</span></div>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front">
+                        <div class="card-content" id="front-content">No cards available. Create your first card!</div>
+                        <div class="card-hint">Tap to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-content" id="back-content">Add cards using the form above.</div>
+                        <div class="card-hint">Tap to flip</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="navigation-controls">
+                <button class="nav-btn" id="prev-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-btn shuffle" id="shuffle-btn">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="nav-btn" id="next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Status Controls -->
+            <div class="status-controls">
+                <button class="status-btn known-btn" id="known-btn">
+                    <i class="fas fa-check-circle"></i> Known
+                </button>
+                <button class="status-btn review-btn" id="review-btn">
+                    <i class="fas fa-clock"></i> Review
+                </button>
+                <button class="status-btn btn-danger" id="delete-btn" style="max-width: 60px;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No flashcards yet. Create your first one!</p>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-section="viewer-section">
+            <i class="fas fa-book-open"></i>
+            <span>Study</span>
+        </div>
+        <div class="nav-item" data-section="creation-section">
+            <i class="fas fa-plus"></i>
+            <span>Create</span>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Operation completed successfully</span>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Delete Flashcard</h3>
+            <p class="modal-text">Are you sure you want to delete this flashcard? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-delete">Cancel</button>
+                <button class="btn btn-danger" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
+            authDomain: "explore-products-e7afb.firebaseapp.com",
+            projectId: "explore-products-e7afb",
+            storageBucket: "explore-products-e7afb.firebasestorage.app",
+            messagingSenderId: "753462167322",
+            appId: "1:753462167322:web:aab56a193e231277accea3",
+            measurementId: "G-T4KP9YEY4X"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Firestore collection reference
+        const flashcardsCollection = db.collection("flashcards");
+
+        // Application state
+        let flashcards = [];
+        let currentCardIndex = 0;
+        let isShuffled = false;
+        let currentCardId = null;
+        let isEditing = false;
+
+        // DOM Elements
+        const flashcardElement = document.getElementById('flashcard');
+        const frontContent = document.getElementById('front-content');
+        const backContent = document.getElementById('back-content');
+        const currentCardSpan = document.getElementById('current-card');
+        const totalCardsSpan = document.getElementById('total-cards');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const knownBtn = document.getElementById('known-btn');
+        const reviewBtn = document.getElementById('review-btn');
+        const deleteBtn = document.getElementById('delete-btn');
+        const saveCardBtn = document.getElementById('save-card');
+        const updateCardBtn = document.getElementById('update-card');
+        const cancelEditBtn = document.getElementById('cancel-edit');
+        const frontText = document.getElementById('front-text');
+        const backText = document.getElementById('back-text');
+        const searchInput = document.getElementById('search-input');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const emptyState = document.getElementById('empty-state');
+        const viewerSection = document.getElementById('viewer-section');
+        const creationSection = document.getElementById('creation-section');
+        const closeCreationBtn = document.getElementById('close-creation');
+        const navItems = document.querySelectorAll('.nav-item');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const deleteModal = document.getElementById('delete-modal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+        const editButtons = document.getElementById('edit-buttons');
+
+        // Initialize the app
+        function init() {
+            setupEventListeners();
+            loadFlashcards();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Flashcard interactions
+            flashcardElement.addEventListener('click', flipCard);
+            prevBtn.addEventListener('click', showPreviousCard);
+            nextBtn.addEventListener('click', showNextCard);
+            shuffleBtn.addEventListener('click', shuffleCards);
+            knownBtn.addEventListener('click', markAsKnown);
+            reviewBtn.addEventListener('click', markForReview);
+            deleteBtn.addEventListener('click', showDeleteConfirmation);
+            
+            // Card creation/editing
+            saveCardBtn.addEventListener('click', saveNewCard);
+            updateCardBtn.addEventListener('click', updateCard);
+            cancelEditBtn.addEventListener('click', cancelEdit);
+            closeCreationBtn.addEventListener('click', closeCreationSection);
+            
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => switchSection(item));
+            });
+            
+            // Search
+            searchInput.addEventListener('input', filterFlashcards);
+            
+            // Modal
+            cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            confirmDeleteBtn.addEventListener('click', deleteCard);
+        }
+
+        // Load flashcards from Firestore with real-time updates
+        function loadFlashcards() {
+            loadingSpinner.classList.add('active');
+            
+            // Set up real-time listener
+            flashcardsCollection.orderBy("createdAt", "desc").onSnapshot(snapshot => {
+                flashcards = [];
+                snapshot.forEach(doc => {
+                    flashcards.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                loadingSpinner.classList.remove('active');
+                updateCardDisplay();
+                updateEmptyState();
+            }, error => {
+                console.error("Error loading flashcards: ", error);
+                loadingSpinner.classList.remove('active');
+                showToast("Error loading flashcards", "error");
+            });
+        }
+
+        // Filter flashcards based on search input
+        function filterFlashcards() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === "") {
+                loadFlashcards(); // Reload all flashcards if search is empty
+                return;
+            }
+            
+            // Filter flashcards locally
+            const filteredFlashcards = flashcards.filter(card => 
+                card.front.toLowerCase().includes(searchTerm) || 
+                card.back.toLowerCase().includes(searchTerm)
+            );
+            
+            // Update display with filtered results
+            const originalFlashcards = [...flashcards];
+            flashcards = filteredFlashcards;
+            currentCardIndex = 0;
+            updateCardDisplay();
+            flashcards = originalFlashcards; // Restore original array for future filtering
+        }
+
+        // Update card display
+        function updateCardDisplay() {
+            if (flashcards.length > 0 && currentCardIndex < flashcards.length) {
+                const card = flashcards[currentCardIndex];
+                frontContent.textContent = card.front;
+                backContent.textContent = card.back;
+                currentCardId = card.id;
+                
+                // Reset card to front view
+                flashcardElement.classList.remove('flipped');
+                
+                // Update known button state
+                updateKnownButton(card.known);
+            } else {
+                frontContent.textContent = "No cards available. Create your first card!";
+                backContent.textContent = "Add cards using the form above.";
+                currentCardId = null;
+            }
+            
+            updateNavigation();
+        }
+
+        // Update navigation elements
+        function updateNavigation() {
+            currentCardSpan.textContent = flashcards.length > 0 ? currentCardIndex + 1 : 0;
+            totalCardsSpan.textContent = flashcards.length;
+            
+            // Update button states
+            prevBtn.disabled = currentCardIndex === 0;
+            nextBtn.disabled = currentCardIndex === flashcards.length - 1 || flashcards.length === 0;
+            
+            // Visual feedback for disabled buttons
+            prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+            nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+            
+            // Show/hide delete button
+            deleteBtn.style.display = flashcards.length > 0 ? 'flex' : 'none';
+        }
+
+        // Update known button based on card status
+        function updateKnownButton(known) {
+            if (known) {
+                knownBtn.innerHTML = '<i class="fas fa-check-double"></i> Known';
+                knownBtn.style.background = 'linear-gradient(135deg, #27ae60, var(--success))';
+            } else {
+                knownBtn.innerHTML = '<i class="fas fa-check-circle"></i> Known';
+                knownBtn.style.background = 'linear-gradient(135deg, var(--success), #27ae60)';
+            }
+        }
+
+        // Update empty state visibility
+        function updateEmptyState() {
+            if (flashcards.length === 0) {
+                emptyState.classList.add('active');
+                viewerSection.style.display = 'none';
+            } else {
+                emptyState.classList.remove('active');
+                viewerSection.style.display = 'block';
+            }
+        }
+
+        // Flip card animation
+        function flipCard() {
+            flashcardElement.classList.toggle('flipped');
+        }
+
+        // Show previous card
+        function showPreviousCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                updateCardDisplay();
+            }
+        }
+
+        // Show next card
+        function showNextCard() {
+            if (currentCardIndex < flashcards.length - 1) {
+                currentCardIndex++;
+                updateCardDisplay();
+            }
+        }
+
+        // Shuffle cards
+        function shuffleCards() {
+            if (flashcards.length > 1) {
+                // Fisher-Yates shuffle algorithm
+                for (let i = flashcards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+                }
+                
+                isShuffled = !isShuffled;
+                currentCardIndex = 0;
+                updateCardDisplay();
+                
+                // Visual feedback for shuffle
+                shuffleBtn.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    shuffleBtn.style.transform = 'scale(1)';
+                }, 150);
+                
+                showToast("Cards shuffled", "success");
+            }
+        }
+
+        // Mark card as known
+        function markAsKnown() {
+            if (currentCardId) {
+                flashcardsCollection.doc(currentCardId).update({
+                    known: true,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    knownBtn.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        knownBtn.style.transform = 'scale(1)';
+                    }, 150);
+                    
+                    showToast("Card marked as known", "success");
+                    
+                    // Move to next card after a short delay
+                    setTimeout(() => {
+                        if (currentCardIndex < flashcards.length - 1) {
+                            currentCardIndex++;
+                            updateCardDisplay();
+                        }
+                    }, 500);
+                }).catch(error => {
+                    console.error("Error updating card: ", error);
+                    showToast("Error updating card", "error");
+                });
+            }
+        }
+
+        // Mark card for review
+        function markForReview() {
+            if (currentCardId) {
+                flashcardsCollection.doc(currentCardId).update({
+                    known: false,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    reviewBtn.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        reviewBtn.style.transform = 'scale(1)';
+                    }, 150);
+                    
+                    showToast("Card marked for review", "success");
+                }).catch(error => {
+                    console.error("Error updating card: ", error);
+                    showToast("Error updating card", "error");
+                });
+            }
+        }
+
+        // Save new card to Firestore
+        function saveNewCard() {
+            const front = frontText.value.trim();
+            const back = backText.value.trim();
+            
+            if (front && back) {
+                flashcardsCollection.add({
+                    front: front,
+                    back: back,
+                    known: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    frontText.value = '';
+                    backText.value = '';
+                    
+                    // Visual feedback
+                    saveCardBtn.innerHTML = '<i class="fas fa-check"></i> Card Saved!';
+                    saveCardBtn.style.background = 'linear-gradient(135deg, var(--success), #27ae60)';
+                    
+                    setTimeout(() => {
+                        saveCardBtn.innerHTML = '<i class="fas fa-save"></i> Save Card';
+                        saveCardBtn.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                    }, 1500);
+                    
+                    showToast("Card saved successfully", "success");
+                    switchToViewerSection();
+                }).catch(error => {
+                    console.error("Error saving card: ", error);
+                    showToast("Error saving card", "error");
+                });
+            } else {
+                showToast("Please fill in both fields", "error");
+            }
+        }
+
+        // Start editing current card
+        function startEditCard() {
+            if (currentCardId) {
+                const card = flashcards[currentCardIndex];
+                frontText.value = card.front;
+                backText.value = card.back;
+                
+                // Switch to edit mode
+                isEditing = true;
+                saveCardBtn.style.display = 'none';
+                editButtons.style.display = 'block';
+                
+                // Switch to creation section
+                switchToCreationSection();
+            }
+        }
+
+        // Update card in Firestore
+        function updateCard() {
+            const front = frontText.value.trim();
+            const back = backText.value.trim();
+            
+            if (front && back && currentCardId) {
+                flashcardsCollection.doc(currentCardId).update({
+                    front: front,
+                    back: back,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    cancelEdit();
+                    showToast("Card updated successfully", "success");
+                    switchToViewerSection();
+                }).catch(error => {
+                    console.error("Error updating card: ", error);
+                    showToast("Error updating card", "error");
+                });
+            } else {
+                showToast("Please fill in both fields", "error");
+            }
+        }
+
+        // Cancel edit mode
+        function cancelEdit() {
+            frontText.value = '';
+            backText.value = '';
+            isEditing = false;
+            saveCardBtn.style.display = 'block';
+            editButtons.style.display = 'none';
+        }
+
+        // Show delete confirmation modal
+        function showDeleteConfirmation() {
+            if (currentCardId) {
+                deleteModal.classList.add('active');
+            }
+        }
+
+        // Close delete confirmation modal
+        function closeDeleteModal() {
+            deleteModal.classList.remove('active');
+        }
+
+        // Delete card from Firestore
+        function deleteCard() {
+            if (currentCardId) {
+                flashcardsCollection.doc(currentCardId).delete().then(() => {
+                    closeDeleteModal();
+                    showToast("Card deleted successfully", "success");
+                    
+                    // Adjust current card index if needed
+                    if (currentCardIndex >= flashcards.length - 1) {
+                        currentCardIndex = Math.max(0, flashcards.length - 2);
+                    }
+                }).catch(error => {
+                    console.error("Error deleting card: ", error);
+                    showToast("Error deleting card", "error");
+                });
+            }
+        }
+
+        // Switch between sections
+        function switchSection(navItem) {
+            const sectionId = navItem.getAttribute('data-section');
+            
+            // Update active nav item
+            navItems.forEach(item => item.classList.remove('active'));
+            navItem.classList.add('active');
+            
+            // Show/hide sections
+            if (sectionId === 'viewer-section') {
+                switchToViewerSection();
+            } else if (sectionId === 'creation-section') {
+                switchToCreationSection();
+            }
+        }
+
+        // Switch to viewer section
+        function switchToViewerSection() {
+            viewerSection.style.display = 'block';
+            creationSection.classList.remove('active');
+            
+            // Update navigation
+            navItems.forEach(item => {
+                if (item.getAttribute('data-section') === 'viewer-section') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Switch to creation section
+        function switchToCreationSection() {
+            viewerSection.style.display = 'none';
+            creationSection.classList.add('active');
+            
+            // Update navigation
+            navItems.forEach(item => {
+                if (item.getAttribute('data-section') === 'creation-section') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Close creation section
+        function closeCreationSection() {
+            cancelEdit();
+            switchToViewerSection();
+        }
+
+        // Show toast notification
+        function showToast(message, type = "success") {
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the app when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

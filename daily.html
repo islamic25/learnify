@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Daily Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4ade80;
+            --danger: #f43f5e;
+            --warning: #f59e0b;
+            --gray: #6c757d;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .date-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer-display {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .question-count {
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            display: none;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            background: rgba(67, 97, 238, 0.1);
+            border-color: var(--primary);
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #22c55e;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            display: block;
+        }
+
+        .welcome-message {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .motivational-quote {
+            font-style: italic;
+            color: var(--gray);
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .streak-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .streak-value {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            text-align: center;
+        }
+
+        .results-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .result-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .correct .result-value {
+            color: var(--success);
+        }
+
+        .wrong .result-value {
+            color: var(--danger);
+        }
+
+        .percentage .result-value {
+            color: var(--primary);
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo h1 {
+                font-size: 20px;
+            }
+            
+            .date-badge {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .question-text {
+                font-size: 18px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .results-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Learnify</h1>
+            </div>
+            <div class="date-badge" id="currentDate">Loading...</div>
+        </header>
+
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section class="dashboard-section card fade-in" id="dashboardSection">
+                <h2 class="welcome-message">Welcome to Today's Quiz!</h2>
+                <p class="motivational-quote" id="motivationalQuote">"Education is the most powerful weapon which you can use to change the world." - Nelson Mandela</p>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalQuizzes">0</div>
+                        <div class="stat-label">Total Quizzes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgScore">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                </div>
+                
+                <div class="streak-container">
+                    <i class="fas fa-fire" style="color: #f59e0b; font-size: 24px;"></i>
+                    <div class="streak-value" id="streakDisplay">🔥 Streak: 0 days</div>
+                </div>
+                
+                <button class="btn btn-primary" id="startQuizBtn">
+                    <i class="fas fa-play"></i> Start Today's Quiz
+                </button>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="quiz-section card fade-in" id="quizSection">
+                <div class="timer-section">
+                    <div class="timer-display" id="timer">05:00</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar" style="width: 100%"></div>
+                    </div>
+                    <div class="question-count" id="questionCount">1/10</div>
+                </div>
+                
+                <div class="category-badge" id="questionCategory">General Knowledge</div>
+                <h3 class="question-text" id="questionText">Loading question...</h3>
+                
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="quiz-controls">
+                    <button class="btn btn-secondary" id="prevQuestionBtn" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextQuestionBtn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section card fade-in" id="resultsSection">
+                <div class="results-icon">
+                    <i class="fas fa-trophy" style="color: #f59e0b;"></i>
+                </div>
+                <h2>Quiz Completed!</h2>
+                <div class="score-display" id="finalScore">0/10</div>
+                <p>You've completed today's quiz. Well done!</p>
+                
+                <div class="results-stats">
+                    <div class="result-stat correct">
+                        <div class="result-value" id="correctCount">0</div>
+                        <div class="result-label">Correct</div>
+                    </div>
+                    <div class="result-stat wrong">
+                        <div class="result-value" id="wrongCount">0</div>
+                        <div class="result-label">Wrong</div>
+                    </div>
+                    <div class="result-stat percentage">
+                        <div class="result-value" id="percentageScore">0%</div>
+                        <div class="result-label">Percentage</div>
+                    </div>
+                </div>
+                
+                <div class="results-actions">
+                    <button class="btn btn-secondary" id="retryQuizBtn">
+                        <i class="fas fa-redo"></i> Retry Quiz
+                    </button>
+                    <button class="btn btn-primary" id="shareResultsBtn">
+                        <i class="fas fa-share"></i> Share Results
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section class="card loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px;">Loading questions from database...</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
+            authDomain: "explore-products-e7afb.firebaseapp.com",
+            projectId: "explore-products-e7afb",
+            storageBucket: "explore-products-e7afb.firebasestorage.app",
+            messagingSenderId: "753462167322",
+            appId: "1:753462167322:web:aab56a193e231277accea3",
+            measurementId: "G-T4KP9YEY4X"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // DOM Elements
+        const currentDateEl = document.getElementById('currentDate');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const quizSection = document.getElementById('quizSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const loadingSection = document.getElementById('loadingSection');
+        
+        const startQuizBtn = document.getElementById('startQuizBtn');
+        const prevQuestionBtn = document.getElementById('prevQuestionBtn');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const retryQuizBtn = document.getElementById('retryQuizBtn');
+        const shareResultsBtn = document.getElementById('shareResultsBtn');
+        
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const questionCountEl = document.getElementById('questionCount');
+        const questionCategoryEl = document.getElementById('questionCategory');
+        const questionTextEl = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        
+        const motivationalQuoteEl = document.getElementById('motivationalQuote');
+        const totalQuizzesEl = document.getElementById('totalQuizzes');
+        const avgScoreEl = document.getElementById('avgScore');
+        const streakDisplayEl = document.getElementById('streakDisplay');
+        
+        const finalScoreEl = document.getElementById('finalScore');
+        const correctCountEl = document.getElementById('correctCount');
+        const wrongCountEl = document.getElementById('wrongCount');
+        const percentageScoreEl = document.getElementById('percentageScore');
+
+        // Quiz State
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let timerInterval;
+        let timeLeft = 300; // 5 minutes in seconds
+        let streakCount = 0;
+
+        // Motivational Quotes
+        const motivationalQuotes = [
+            "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
+            "Education is the passport to the future, for tomorrow belongs to those who prepare for it today. - Malcolm X",
+            "The more that you read, the more things you will know. The more that you learn, the more places you'll go. - Dr. Seuss",
+            "Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi",
+            "Learning is not attained by chance, it must be sought for with ardor and diligence. - Abigail Adams"
+        ];
+
+        // Set current date
+        function setCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateEl.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Set random motivational quote
+        function setRandomMotivationalQuote() {
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            motivationalQuoteEl.textContent = motivationalQuotes[randomIndex];
+        }
+
+        // Initialize the app
+        function initApp() {
+            setCurrentDate();
+            setRandomMotivationalQuote();
+            loadUserData();
+            
+            // Show loading section initially
+            dashboardSection.style.display = 'none';
+            quizSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+            
+            // Initialize questions from Firestore
+            initializeQuestions();
+        }
+
+        // Load user data from Firestore (mock for demo)
+        function loadUserData() {
+            // In a real app, this would fetch from Firestore
+            streakCount = 3; // Example streak
+            streakDisplayEl.textContent = `🔥 Streak: ${streakCount} days`;
+            totalQuizzesEl.textContent = '15';
+            avgScoreEl.textContent = '72%';
+        }
+
+        // Initialize questions in Firestore if they don't exist
+        async function initializeQuestions() {
+            try {
+                // Check if questions collection exists and has documents
+                const questionsSnapshot = await db.collection('questions').get();
+                
+                if (questionsSnapshot.empty) {
+                    console.log('No questions found. Creating initial questions...');
+                    await createInitialQuestions();
+                } else {
+                    console.log(`Found ${questionsSnapshot.size} questions in database.`);
+                }
+                
+                // Load questions from Firestore
+                await loadQuestionsFromFirestore();
+                
+                // Hide loading and show dashboard
+                loadingSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+            } catch (error) {
+                console.error('Error initializing questions:', error);
+                // Fallback to mock questions if Firestore fails
+                loadMockQuestions();
+                loadingSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+            }
+        }
+
+        // Create initial questions in Firestore
+        async function createInitialQuestions() {
+            const questions = [
+                {
+                    questionText: "What is the capital of France?",
+                    options: ["London", "Berlin", "Paris", "Madrid"],
+                    correctAnswer: "Paris",
+                    category: "General Knowledge"
+                },
+                {
+                    questionText: "Which planet is known as the Red Planet?",
+                    options: ["Earth", "Mars", "Jupiter", "Venus"],
+                    correctAnswer: "Mars",
+                    category: "Science"
+                },
+                {
+                    questionText: "What is the largest mammal in the world?",
+                    options: ["Elephant", "Blue Whale", "Giraffe", "Polar Bear"],
+                    correctAnswer: "Blue Whale",
+                    category: "Biology"
+                },
+                {
+                    questionText: "Who wrote 'Romeo and Juliet'?",
+                    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                    correctAnswer: "William Shakespeare",
+                    category: "Literature"
+                },
+                {
+                    questionText: "What is the chemical symbol for gold?",
+                    options: ["Go", "Gd", "Au", "Ag"],
+                    correctAnswer: "Au",
+                    category: "Chemistry"
+                },
+                {
+                    questionText: "In which year did World War II end?",
+                    options: ["1943", "1945", "1950", "1939"],
+                    correctAnswer: "1945",
+                    category: "History"
+                },
+                {
+                    questionText: "What is the hardest natural substance on Earth?",
+                    options: ["Gold", "Iron", "Diamond", "Platinum"],
+                    correctAnswer: "Diamond",
+                    category: "Science"
+                },
+                {
+                    questionText: "Which country is known as the Land of the Rising Sun?",
+                    options: ["China", "Thailand", "Japan", "South Korea"],
+                    correctAnswer: "Japan",
+                    category: "Geography"
+                },
+                {
+                    questionText: "What is the largest ocean on Earth?",
+                    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                    correctAnswer: "Pacific Ocean",
+                    category: "Geography"
+                },
+                {
+                    questionText: "Who painted the Mona Lisa?",
+                    options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+                    correctAnswer: "Leonardo da Vinci",
+                    category: "Art"
+                },
+                {
+                    questionText: "What is the smallest country in the world?",
+                    options: ["Monaco", "Maldives", "Vatican City", "San Marino"],
+                    correctAnswer: "Vatican City",
+                    category: "Geography"
+                },
+                {
+                    questionText: "Which element has the chemical symbol 'O'?",
+                    options: ["Gold", "Oxygen", "Osmium", "Oganesson"],
+                    correctAnswer: "Oxygen",
+                    category: "Science"
+                },
+                {
+                    questionText: "What is the currency of Japan?",
+                    options: ["Yuan", "Won", "Yen", "Ringgit"],
+                    correctAnswer: "Yen",
+                    category: "Economics"
+                },
+                {
+                    questionText: "How many continents are there?",
+                    options: ["5", "6", "7", "8"],
+                    correctAnswer: "7",
+                    category: "Geography"
+                },
+                {
+                    questionText: "Which planet is closest to the Sun?",
+                    options: ["Venus", "Earth", "Mercury", "Mars"],
+                    correctAnswer: "Mercury",
+                    category: "Astronomy"
+                },
+                {
+                    questionText: "What is the main ingredient in guacamole?",
+                    options: ["Tomato", "Avocado", "Pepper", "Onion"],
+                    correctAnswer: "Avocado",
+                    category: "Food"
+                },
+                {
+                    questionText: "Which language is the most widely spoken in the world?",
+                    options: ["English", "Mandarin Chinese", "Spanish", "Hindi"],
+                    correctAnswer: "Mandarin Chinese",
+                    category: "Language"
+                },
+                {
+                    questionText: "What is the name of the world's longest river?",
+                    options: ["Amazon", "Nile", "Yangtze", "Mississippi"],
+                    correctAnswer: "Nile",
+                    category: "Geography"
+                },
+                {
+                    questionText: "In which country would you find the Great Barrier Reef?",
+                    options: ["Brazil", "Australia", "Indonesia", "Philippines"],
+                    correctAnswer: "Australia",
+                    category: "Geography"
+                },
+                {
+                    questionText: "What is the largest desert in the world?",
+                    options: ["Sahara", "Arabian", "Gobi", "Antarctic"],
+                    correctAnswer: "Antarctic",
+                    category: "Geography"
+                }
+            ];
+
+            // Add questions to Firestore in a batch to ensure all or none are added
+            const batch = db.batch();
+            
+            questions.forEach((question, index) => {
+                const docRef = db.collection('questions').doc(`question${index + 1}`);
+                batch.set(docRef, question);
+            });
+            
+            await batch.commit();
+            console.log('Initial questions added to Firestore.');
+        }
+
+        // Load questions from Firestore
+        async function loadQuestionsFromFirestore() {
+            try {
+                const questionsSnapshot = await db.collection('questions').get();
+                currentQuestions = [];
+                
+                questionsSnapshot.forEach(doc => {
+                    currentQuestions.push(doc.data());
+                });
+                
+                // Shuffle questions to randomize order
+                currentQuestions = shuffleArray(currentQuestions).slice(0, 10); // Use 10 questions for the quiz
+                
+                // Initialize user answers array
+                userAnswers = new Array(currentQuestions.length).fill(null);
+                
+                console.log(`Loaded ${currentQuestions.length} questions from Firestore.`);
+            } catch (error) {
+                console.error('Error loading questions from Firestore:', error);
+                // Fallback to mock questions
+                loadMockQuestions();
+            }
+        }
+
+        // Fallback to mock questions if Firestore fails
+        function loadMockQuestions() {
+            console.log('Using mock questions as fallback.');
+            currentQuestions = [
+                {
+                    questionText: "What is the capital of France?",
+                    options: ["London", "Berlin", "Paris", "Madrid"],
+                    correctAnswer: "Paris",
+                    category: "General Knowledge"
+                },
+                {
+                    questionText: "Which planet is known as the Red Planet?",
+                    options: ["Earth", "Mars", "Jupiter", "Venus"],
+                    correctAnswer: "Mars",
+                    category: "Science"
+                },
+                {
+                    questionText: "What is the largest mammal in the world?",
+                    options: ["Elephant", "Blue Whale", "Giraffe", "Polar Bear"],
+                    correctAnswer: "Blue Whale",
+                    category: "Biology"
+                },
+                {
+                    questionText: "Who wrote 'Romeo and Juliet'?",
+                    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                    correctAnswer: "William Shakespeare",
+                    category: "Literature"
+                },
+                {
+                    questionText: "What is the chemical symbol for gold?",
+                    options: ["Go", "Gd", "Au", "Ag"],
+                    correctAnswer: "Au",
+                    category: "Chemistry"
+                },
+                {
+                    questionText: "In which year did World War II end?",
+                    options: ["1943", "1945", "1950", "1939"],
+                    correctAnswer: "1945",
+                    category: "History"
+                },
+                {
+                    questionText: "What is the hardest natural substance on Earth?",
+                    options: ["Gold", "Iron", "Diamond", "Platinum"],
+                    correctAnswer: "Diamond",
+                    category: "Science"
+                },
+                {
+                    questionText: "Which country is known as the Land of the Rising Sun?",
+                    options: ["China", "Thailand", "Japan", "South Korea"],
+                    correctAnswer: "Japan",
+                    category: "Geography"
+                },
+                {
+                    questionText: "What is the largest ocean on Earth?",
+                    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                    correctAnswer: "Pacific Ocean",
+                    category: "Geography"
+                },
+                {
+                    questionText: "Who painted the Mona Lisa?",
+                    options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+                    correctAnswer: "Leonardo da Vinci",
+                    category: "Art"
+                }
+            ];
+            
+            // Initialize user answers array
+            userAnswers = new Array(currentQuestions.length).fill(null);
+        }
+
+        // Utility function to shuffle array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            dashboardSection.style.display = 'none';
+            quizSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            timeLeft = 300;
+            
+            startTimer();
+            displayQuestion();
+        }
+
+        // Start the countdown timer
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                // Update timer display
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update progress bar
+                const progressPercentage = (timeLeft / 300) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                
+                // Change color when time is running out
+                if (timeLeft < 60) {
+                    timerEl.style.background = 'linear-gradient(135deg, #f43f5e, #dc2626)';
+                }
+                
+                // End quiz when time is up
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Display the current question
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            questionCategoryEl.textContent = question.category;
+            questionTextEl.textContent = question.questionText;
+            questionCountEl.textContent = `${currentQuestionIndex + 1}/${currentQuestions.length}`;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Create option elements
+            question.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                if (userAnswers[currentQuestionIndex] === option) {
+                    optionEl.classList.add('selected');
+                }
+                optionEl.textContent = option;
+                optionEl.addEventListener('click', () => selectOption(option));
+                optionsContainer.appendChild(optionEl);
+            });
+            
+            // Update button states
+            prevQuestionBtn.disabled = currentQuestionIndex === 0;
+            nextQuestionBtn.textContent = currentQuestionIndex === currentQuestions.length - 1 ? 
+                'Submit <i class="fas fa-paper-plane"></i>' : 
+                'Next <i class="fas fa-arrow-right"></i>';
+        }
+
+        // Select an option for the current question
+        function selectOption(option) {
+            userAnswers[currentQuestionIndex] = option;
+            
+            // Update UI to show selected option
+            const options = optionsContainer.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.textContent === option) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        // Navigate to the next question
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        // Navigate to the previous question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        // Submit the quiz and show results
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correctCount = 0;
+            currentQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    correctCount++;
+                }
+            });
+            
+            const wrongCount = currentQuestions.length - correctCount;
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+            
+            // Update results display
+            finalScoreEl.textContent = `${correctCount}/${currentQuestions.length}`;
+            correctCountEl.textContent = correctCount;
+            wrongCountEl.textContent = wrongCount;
+            percentageScoreEl.textContent = `${percentage}%`;
+            
+            // Show results section
+            dashboardSection.style.display = 'none';
+            quizSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            
+            // Update streak (in a real app, this would save to Firestore)
+            streakCount++;
+            streakDisplayEl.textContent = `🔥 Streak: ${streakCount} days`;
+        }
+
+        // Retry the quiz
+        function retryQuiz() {
+            startQuiz();
+        }
+
+        // Share results (mock function)
+        function shareResults() {
+            alert('Results shared! In a real app, this would share your score on social media.');
+        }
+
+        // Event Listeners
+        startQuizBtn.addEventListener('click', startQuiz);
+        prevQuestionBtn.addEventListener('click', previousQuestion);
+        nextQuestionBtn.addEventListener('click', nextQuestion);
+        retryQuizBtn.addEventListener('click', retryQuiz);
+        shareResultsBtn.addEventListener('click', shareResults);
+
+        // Initialize the app when the page loads
+        window.addEventListener('load', initApp);
+    </script>
+</body>
+</html>

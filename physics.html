@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Community - Modern Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #111b21;
+            color: #e9edef;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header with gradient and status */
+        .header {
+            background: #202c33;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-button {
+            color: #aebac1;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-title {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .chat-status {
+            font-size: 0.8rem;
+            color: #8696a0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #00a884;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            color: #aebac1;
+        }
+
+        .header-right i {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Chat container */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background-color: #0b141a;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23121d24' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        /* Message bubbles */
+        .message {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-sender {
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: #00a884;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            text-align: right;
+            margin-top: 4px;
+            opacity: 0.6;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #005c4b;
+            border-top-right-radius: 0;
+        }
+
+        .other-message {
+            align-self: flex-start;
+            background-color: #202c33;
+            border-top-left-radius: 0;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .message-group .message {
+            margin-bottom: 2px;
+        }
+
+        /* Input area */
+        .input-container {
+            padding: 10px 16px;
+            background-color: #202c33;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .input-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #8696a0;
+        }
+
+        .input-left i {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 12px 16px;
+            border-radius: 20px;
+            background-color: #2a3942;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.95rem;
+            color: #e9edef;
+            transition: background-color 0.3s;
+        }
+
+        .message-input::placeholder {
+            color: #8696a0;
+        }
+
+        .message-input:focus {
+            background-color: #2a3942;
+        }
+
+        .input-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #8696a0;
+        }
+
+        .input-right i {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .send-button {
+            background-color: #00a884;
+            color: #111b21;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #06cf9c;
+        }
+
+        .send-button:active {
+            background-color: #008f6b;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            color: #8696a0;
+            margin-left: 10px;
+            margin-bottom: 5px;
+            align-self: flex-start;
+        }
+
+        .typing-dots {
+            display: flex;
+            margin-left: 8px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #8696a0;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-5px);
+                opacity: 1;
+            }
+        }
+
+        /* Welcome screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            height: 100%;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            color: #8696a0;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #e9edef;
+        }
+
+        .welcome-text {
+            color: #8696a0;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        /* Connection status */
+        .connection-status {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #00a884;
+            box-shadow: 0 0 5px #00a884;
+            z-index: 101;
+        }
+
+        .offline {
+            background-color: #8696a0;
+            box-shadow: 0 0 5px #8696a0;
+        }
+
+        /* Scrollbar styling */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .message {
+                max-width: 85%;
+            }
+            
+            .header {
+                padding: 14px;
+            }
+            
+            .input-container {
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="chat-info">
+                <div class="chat-title">Physics Community</div>
+                <div class="chat-status">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span id="statusText">Online</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-video"></i>
+            <i class="fas fa-phone"></i>
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-icon">
+                <i class="fas fa-atom"></i>
+            </div>
+            <div class="welcome-title">Physics Community</div>
+            <div class="welcome-text">Welcome to the Physics Community! Discuss physics concepts, share problems, and collaborate with learners.</div>
+        </div>
+        <!-- Messages will be added here by JavaScript -->
+    </div>
+    
+    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+        <span id="typingUser"></span> is typing
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <div class="input-left">
+            <i class="far fa-smile"></i>
+            <i class="fas fa-paperclip"></i>
+        </div>
+        <input type="text" class="message-input" id="messageInput" placeholder="Type a message...">
+        <div class="input-right">
+            <i class="fas fa-microphone"></i>
+            <button class="send-button" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="connection-status" id="connectionStatus"></div>
+
+  
+<!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Firebase configuration (replace with your own config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
+            authDomain: "explore-products-e7afb.firebaseapp.com",
+            projectId: "explore-products-e7afb",
+            storageBucket: "explore-products-e7afb.firebasestorage.app",
+            messagingSenderId: "753462167322",
+            appId: "1:753462167322:web:aab56a193e231277accea3",
+            measurementId: "G-T4KP9YEY4X"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ===========================================
+        // CUSTOMIZABLE COLLECTION NAME - CHANGE THIS
+        // ===========================================
+        const COLLECTION_NAME = "physics_messages"; // Change to "math_messages", "biology_messages", etc.
+
+        // DOM elements
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const typingUser = document.getElementById('typingUser');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+
+        // Current user (for demo purposes - in a real app, this would come from Firebase Auth)
+        const currentUser = {
+            name: "You",
+            id: "user_" + Math.random().toString(36).substr(2, 9)
+        };
+
+        // Typing detection variables
+        let typing = false;
+        let lastTypingTime = 0;
+        const TYPING_TIMER_LENGTH = 1000; // 1 second
+
+        // Track displayed messages to prevent duplicates
+        const displayedMessages = new Set();
+
+        // Enable offline persistence
+        db.enablePersistence()
+          .catch((err) => {
+            if (err.code === 'failed-precondition') {
+                console.log("Multiple tabs open, persistence failed");
+            } else if (err.code === 'unimplemented') {
+                console.log("Persistence not available");
+            }
+          });
+
+        // Listen for connection status changes
+        firebase.firestore().enableNetwork()
+            .then(() => {
+                connectionStatus.classList.remove('offline');
+                statusIndicator.style.backgroundColor = '#00a884';
+                statusText.textContent = 'Online';
+            });
+
+        // Monitor connection status
+        firebase.firestore().onSnapshotsInSync(() => {
+            connectionStatus.classList.remove('offline');
+            statusIndicator.style.backgroundColor = '#00a884';
+            statusText.textContent = 'Online';
+        });
+
+        // Function to add a message to the chat
+        function addMessage(sender, text, timestamp, isUser, messageId) {
+            // Skip if message already displayed
+            if (displayedMessages.has(messageId)) return;
+            displayedMessages.add(messageId);
+            
+            // Remove welcome screen if it exists
+            if (welcomeScreen) {
+                welcomeScreen.style.display = 'none';
+            }
+
+            // Create message group if needed
+            let messageGroup = document.querySelector('.message-group:last-child');
+            const lastMessage = messageGroup ? messageGroup.lastElementChild : null;
+            
+            // Create new group if:
+            // - No existing group
+            // - Last message was from a different sender
+            // - Time gap is more than 5 minutes
+            const timeDiff = lastMessage ? 
+                (timestamp - new Date(lastMessage.getAttribute('data-timestamp'))) / (1000 * 60) : 
+                Infinity;
+                
+            if (!messageGroup || 
+                lastMessage.classList.contains(isUser ? 'user-message' : 'other-message') === false ||
+                timeDiff > 5) {
+                
+                messageGroup = document.createElement('div');
+                messageGroup.className = 'message-group';
+                chatContainer.appendChild(messageGroup);
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'other-message'}`;
+            messageDiv.setAttribute('data-timestamp', timestamp.getTime());
+            messageDiv.setAttribute('data-id', messageId);
+            
+            // Format the time
+            const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Show sender name only for other users and only if it's a new group
+            const showSender = !isUser && (!lastMessage || 
+                lastMessage.classList.contains('user-message') || 
+                timeDiff > 5);
+            
+            messageDiv.innerHTML = `
+                ${showSender ? `<div class="message-sender">${sender}</div>` : ''}
+                <div class="message-text">${text}</div>
+                <div class="message-time">${formattedTime} ${isUser ? '<i class="fas fa-check-double" style="font-size: 0.6rem;"></i>' : ''}</div>
+            `;
+            
+            messageGroup.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Function to scroll to the bottom of the chat
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Function to get current timestamp
+        function getCurrentTimestamp() {
+            return firebase.firestore.FieldValue.serverTimestamp();
+        }
+
+        // Send message function
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text) {
+                // Add message to Firestore using the customizable collection name
+                db.collection(COLLECTION_NAME).add({
+                    sender: currentUser.name,
+                    senderId: currentUser.id,
+                    text: text,
+                    time: getCurrentTimestamp()
+                }).catch((error) => {
+                    console.error("Error sending message: ", error);
+                    // Fallback: add message locally if Firebase fails
+                    addMessage(currentUser.name, text, new Date(), true, 'local_' + Date.now());
+                });
+                
+                messageInput.value = '';
+                updateTyping(false);
+            }
+        }
+
+        // Typing functions
+        function updateTyping(typingStatus) {
+            typing = typingStatus;
+            
+            if (typing) {
+                // Update last typing time
+                lastTypingTime = Date.now();
+                
+                // Show typing indicator for current user
+                typingUser.textContent = currentUser.name;
+                typingIndicator.style.display = 'flex';
+            } else {
+                // Hide typing indicator
+                setTimeout(() => {
+                    if (Date.now() - lastTypingTime >= TYPING_TIMER_LENGTH) {
+                        typingIndicator.style.display = 'none';
+                    }
+                }, TYPING_TIMER_LENGTH);
+            }
+        }
+
+        // Listen for typing events (this would typically be implemented with a separate collection)
+        // For this demo, we'll simulate typing from other users randomly
+        setInterval(() => {
+            if (Math.random() < 0.02) { // 2% chance every second
+                const fakeUsers = ["Physics Bot", "Prof. Einstein", "Dr. Newton", "Marie Curie"];
+                const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                
+                if (randomUser !== currentUser.name) {
+                    typingUser.textContent = randomUser;
+                    typingIndicator.style.display = 'flex';
+                    
+                    setTimeout(() => {
+                        typingIndicator.style.display = 'none';
+                    }, 2000);
+                }
+            }
+        }, 1000);
+
+        // Listen for new messages from Firestore using the customizable collection name
+        db.collection(COLLECTION_NAME)
+            .orderBy('time', 'asc')
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const data = change.doc.data();
+                        const isUser = data.senderId === currentUser.id;
+                        
+                        // Use server timestamp if available, otherwise use client timestamp
+                        const timestamp = data.time ? data.time.toDate() : new Date();
+                        
+                        addMessage(data.sender, data.text, timestamp, isUser, change.doc.id);
+                    }
+                });
+            }, (error) => {
+                console.error("Error listening to messages: ", error);
+            });
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Typing detection
+        messageInput.addEventListener('input', () => {
+            updateTyping(true);
+        });
+
+        messageInput.addEventListener('blur', () => {
+            updateTyping(false);
+        });
+
+        // Auto-focus the input field
+        messageInput.focus();
+
+        // Add some sample messages if the chat is empty (for demo purposes)
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.message');
+            if (messages.length === 0) {
+                // Add sample messages only if no messages exist
+                addMessage("Physics Bot", "Welcome to Physics Community! Feel free to ask any physics-related questions.", new Date(), false, 'sample1');
+                addMessage("Prof. Einstein", "Remember to follow community guidelines and keep discussions respectful.", new Date(), false, 'sample2');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

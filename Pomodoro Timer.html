@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnify - Pomodoro Timer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Timer Section */
+        .timer-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .timer-circle {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 2rem;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .timer-inner {
+            width: 220px;
+            height: 220px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-status {
+            font-size: 1.2rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: var(--dark);
+        }
+
+        /* Preset Options */
+        .preset-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .preset-btn {
+            flex: 1;
+            margin: 0 0.5rem;
+            padding: 0.8rem 0.5rem;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:active {
+            transform: scale(0.95);
+        }
+
+        .preset-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        /* Session Counter */
+        .session-counter {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .session-title {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .session-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 400px) {
+            .timer-circle {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .timer-inner {
+                width: 190px;
+                height: 190px;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .preset-options {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .preset-btn {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i> Learnify
+            </div>
+        </div>
+        <h1 class="header-title">Pomodoro Timer</h1>
+        <p class="header-subtitle">Stay Focused, Stay Productive</p>
+    </header>
+
+    <main>
+        <div class="timer-container">
+            <div class="timer-circle">
+                <div class="timer-progress" id="progress">
+                    <div class="timer-inner">
+                        <div class="timer-display" id="timer">25:00</div>
+                        <div class="timer-status" id="status">Ready to Study</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startBtn">
+                    <i class="fas fa-play"></i> Start
+                </button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled>
+                    <i class="fas fa-pause"></i> Pause
+                </button>
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="preset-options">
+            <button class="preset-btn active" data-time="25">25 min<br><small>Study</small></button>
+            <button class="preset-btn" data-time="5">5 min<br><small>Short Break</small></button>
+            <button class="preset-btn" data-time="15">15 min<br><small>Long Break</small></button>
+        </div>
+
+        <div class="session-counter">
+            <div class="session-title">Completed Sessions</div>
+            <div class="session-count" id="sessionCount">0</div>
+        </div>
+    </main>
+
+   
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const timerDisplay = document.getElementById('timer');
+            const statusDisplay = document.getElementById('status');
+            const progressCircle = document.getElementById('progress');
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            const sessionCountDisplay = document.getElementById('sessionCount');
+            
+            // Timer variables
+            let timer;
+            let isRunning = false;
+            let isPaused = false;
+            let timeLeft;
+            let totalTime;
+            let sessionsCompleted = 0;
+            let currentMode = 'study'; // 'study', 'shortBreak', 'longBreak'
+            
+            // Initialize with study time
+            setTimer(25);
+            
+            // Event Listeners
+            startBtn.addEventListener('click', startTimer);
+            pauseBtn.addEventListener('click', pauseTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            presetButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    presetButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const time = parseInt(this.getAttribute('data-time'));
+                    setTimer(time);
+                    
+                    // Determine mode based on time
+                    if (time === 25) {
+                        currentMode = 'study';
+                        statusDisplay.textContent = 'Ready to Study';
+                    } else if (time === 5) {
+                        currentMode = 'shortBreak';
+                        statusDisplay.textContent = 'Short Break';
+                    } else {
+                        currentMode = 'longBreak';
+                        statusDisplay.textContent = 'Long Break';
+                    }
+                    
+                    resetTimer();
+                });
+            });
+            
+            // Timer Functions
+            function setTimer(minutes) {
+                totalTime = minutes * 60;
+                timeLeft = totalTime;
+                updateDisplay();
+                updateProgress(100);
+            }
+            
+            function startTimer() {
+                if (isRunning) return;
+                
+                isRunning = true;
+                isPaused = false;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                
+                if (timeLeft === totalTime) {
+                    statusDisplay.textContent = currentMode === 'study' ? 'Studying...' : 'On Break...';
+                } else {
+                    statusDisplay.textContent = isPaused ? 'Resuming...' : (currentMode === 'study' ? 'Studying...' : 'On Break...');
+                }
+                
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateDisplay();
+                    updateProgress((timeLeft / totalTime) * 100);
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        startBtn.disabled = false;
+                        pauseBtn.disabled = true;
+                        
+                        // Play completion sound (in a real app)
+                        // Handle session completion
+                        if (currentMode === 'study') {
+                            sessionsCompleted++;
+                            sessionCountDisplay.textContent = sessionsCompleted;
+                            
+                            // Auto-start break after study session
+                            if (sessionsCompleted % 4 === 0) {
+                                // Every 4 sessions, long break
+                                setTimer(15);
+                                currentMode = 'longBreak';
+                                statusDisplay.textContent = 'Time for a Long Break!';
+                                presetButtons[2].click();
+                            } else {
+                                // Otherwise, short break
+                                setTimer(5);
+                                currentMode = 'shortBreak';
+                                statusDisplay.textContent = 'Time for a Short Break!';
+                                presetButtons[1].click();
+                            }
+                        } else {
+                            // After break, go back to study
+                            setTimer(25);
+                            currentMode = 'study';
+                            statusDisplay.textContent = 'Break Over! Back to Study';
+                            presetButtons[0].click();
+                        }
+                        
+                        // Visual feedback for timer completion
+                        progressCircle.style.background = `conic-gradient(var(--primary) 100%, #e0e0e0 0%)`;
+                    }
+                }, 1000);
+            }
+            
+            function pauseTimer() {
+                if (!isRunning) return;
+                
+                clearInterval(timer);
+                isRunning = false;
+                isPaused = true;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                statusDisplay.textContent = 'Paused';
+            }
+            
+            function resetTimer() {
+                clearInterval(timer);
+                isRunning = false;
+                isPaused = false;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                
+                // Reset to current mode's time
+                if (currentMode === 'study') {
+                    setTimer(25);
+                    statusDisplay.textContent = 'Ready to Study';
+                } else if (currentMode === 'shortBreak') {
+                    setTimer(5);
+                    statusDisplay.textContent = 'Short Break';
+                } else {
+                    setTimer(15);
+                    statusDisplay.textContent = 'Long Break';
+                }
+            }
+            
+            function updateDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function updateProgress(percent) {
+                progressCircle.style.background = `conic-gradient(var(--primary) ${percent}%, #e0e0e0 0%)`;
+            }
+            
+            // Add tap effects for mobile
+            const buttons = document.querySelectorAll('button, .nav-item');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
