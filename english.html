@@ -88,6 +88,29 @@
             font-size: 1.2rem;
         }
 
+        /* Search bar */
+        .search-container {
+            background: #202c33;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: none;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 20px;
+            background-color: #2a3942;
+            border: none;
+            outline: none;
+            color: #e9edef;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .search-bar::placeholder {
+            color: #8696a0;
+        }
+
         /* Chat container */
         .chat-container {
             flex: 1;
@@ -156,6 +179,242 @@
 
         .message-group .message {
             margin-bottom: 2px;
+        }
+
+        /* Message status icons */
+        .message-status {
+            margin-left: 5px;
+        }
+
+        .message-status.sent {
+            color: #8696a0;
+        }
+
+        .message-status.delivered {
+            color: #8696a0;
+        }
+
+        .message-status.seen {
+            color: #53bdeb;
+        }
+
+        /* Message reactions */
+        .message-reactions {
+            display: flex;
+            margin-top: 5px;
+            gap: 5px;
+        }
+
+        .reaction {
+            background: #202c33;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .reaction-count {
+            font-size: 0.6rem;
+        }
+
+        /* Reply preview */
+        .reply-preview {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #00a884;
+            padding: 5px 10px;
+            margin-bottom: 8px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.85rem;
+        }
+
+        .reply-sender {
+            font-weight: 500;
+            color: #00a884;
+        }
+
+        .reply-text {
+            color: #8696a0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .message-with-avatar {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        /* Pinned message */
+        .pinned-message {
+            background: rgba(0, 168, 132, 0.1);
+            border-left: 3px solid #00a884;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .pinned-label {
+            font-size: 0.7rem;
+            color: #00a884;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Deleted message */
+        .deleted-message {
+            font-style: italic;
+            color: #8696a0;
+        }
+
+        /* Message actions menu */
+        .message-actions {
+            position: absolute;
+            background: #233138;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            padding: 5px 0;
+        }
+
+        .message-action {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-action:hover {
+            background: #2a3942;
+        }
+
+        /* Group info drawer */
+        .group-info-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #202c33;
+            transition: right 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .group-info-drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            background: #005c4b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .group-info-content {
+            padding: 20px;
+        }
+
+        .group-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .group-name {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .group-about {
+            text-align: center;
+            color: #8696a0;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: #00a884;
+            margin-bottom: 15px;
+        }
+
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .member {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .member-name {
+            font-size: 1rem;
         }
 
         /* Input area */
@@ -236,6 +495,25 @@
             background-color: #008f6b;
         }
 
+        /* Reply input */
+        .reply-input-container {
+            background: #202c33;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .reply-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .reply-cancel {
+            color: #00a884;
+            cursor: pointer;
+        }
+
         /* Typing indicator */
         .typing-indicator {
             display: flex;
@@ -310,40 +588,11 @@
             line-height: 1.5;
         }
 
-        /* Connection status */
-        .connection-status {
-            position: absolute;
-            top: 70px;
-            right: 10px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #00a884;
-            box-shadow: 0 0 5px #00a884;
-            z-index: 101;
-        }
-
-        .offline {
-            background-color: #8696a0;
-            box-shadow: 0 0 5px #8696a0;
-        }
-
-        /* Scrollbar styling */
-        .chat-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        /* Search highlight */
+        .search-highlight {
+            background-color: rgba(0, 168, 132, 0.3);
+            padding: 2px;
+            border-radius: 3px;
         }
 
         /* Responsive adjustments */
@@ -359,13 +608,18 @@
             .input-container {
                 padding: 8px 14px;
             }
+            
+            .group-info-drawer {
+                width: 100%;
+                right: -100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-left">
-            <div class="back-button">
+            <div class="back-button" id="backButton">
                 <i class="fas fa-arrow-left"></i>
             </div>
             <div class="chat-info">
@@ -377,10 +631,13 @@
             </div>
         </div>
         <div class="header-right">
-            <i class="fas fa-video"></i>
-            <i class="fas fa-phone"></i>
-            <i class="fas fa-ellipsis-v"></i>
+            <i class="fas fa-search" id="searchToggle"></i>
+            <i class="fas fa-info-circle" id="groupInfoToggle"></i>
         </div>
+    </div>
+    
+    <div class="search-container" id="searchContainer">
+        <input type="text" class="search-bar" id="searchInput" placeholder="Search messages...">
     </div>
     
     <div class="chat-container" id="chatContainer">
@@ -391,7 +648,19 @@
             <div class="welcome-title">English Community</div>
             <div class="welcome-text">Welcome to the English Community! Discuss grammar, share essays, and improve your skills together.</div>
         </div>
+        <!-- Pinned message will appear here -->
         <!-- Messages will be added here by JavaScript -->
+    </div>
+    
+    <div class="reply-input-container" id="replyInputContainer">
+        <div class="reply-info">
+            <div>Replying to <span id="replyToUser"></span></div>
+            <div class="reply-cancel" id="cancelReply">Cancel</div>
+        </div>
+        <div class="reply-preview">
+            <div class="reply-sender" id="replyPreviewSender"></div>
+            <div class="reply-text" id="replyPreviewText"></div>
+        </div>
     </div>
     
     <div class="typing-indicator" id="typingIndicator" style="display: none;">
@@ -417,131 +686,555 @@
         </div>
     </div>
 
-    <div class="connection-status" id="connectionStatus"></div>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Group Info Drawer -->
+    <div class="group-info-drawer" id="groupInfoDrawer">
+        <div class="drawer-header">
+            <div class="drawer-title">Group Info</div>
+            <div class="close-drawer" id="closeDrawer">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="group-info-content">
+            <div class="group-avatar">E</div>
+            <div class="group-name">English Community</div>
+            <div class="group-about">A place to discuss English grammar, writing, and literature</div>
+            
+            <div class="info-section">
+                <div class="section-title">MEMBERS (15)</div>
+                <div class="member-list" id="memberList">
+                    <!-- Members will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">GROUP SETTINGS</div>
+                <div class="member-list">
+                    <div class="member">
+                        <div class="member-avatar"><i class="fas fa-bell"></i></div>
+                        <div class="member-name">Notifications</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-avatar"><i class="fas fa-lock"></i></div>
+                        <div class="member-name">Privacy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Firebase configuration (replace with your own config)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
-            authDomain: "explore-products-e7afb.firebaseapp.com",
-            projectId: "explore-products-e7afb",
-            storageBucket: "explore-products-e7afb.firebasestorage.app",
-            messagingSenderId: "753462167322",
-            appId: "1:753462167322:web:aab56a193e231277accea3",
-            measurementId: "G-T4KP9YEY4X"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
+        // Get username from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('name') || 'You';
+        
         // DOM elements
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const typingIndicator = document.getElementById('typingIndicator');
         const typingUser = document.getElementById('typingUser');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const statusText = document.getElementById('statusText');
         const welcomeScreen = document.getElementById('welcomeScreen');
+        const searchContainer = document.getElementById('searchContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchToggle = document.getElementById('searchToggle');
+        const groupInfoDrawer = document.getElementById('groupInfoDrawer');
+        const groupInfoToggle = document.getElementById('groupInfoToggle');
+        const closeDrawer = document.getElementById('closeDrawer');
+        const memberList = document.getElementById('memberList');
+        const backButton = document.getElementById('backButton');
+        const replyInputContainer = document.getElementById('replyInputContainer');
+        const replyToUser = document.getElementById('replyToUser');
+        const replyPreviewSender = document.getElementById('replyPreviewSender');
+        const replyPreviewText = document.getElementById('replyPreviewText');
+        const cancelReply = document.getElementById('cancelReply');
 
-        // Current user (for demo purposes - in a real app, this would come from Firebase Auth)
+        // Current user
         const currentUser = {
-            name: "You",
+            name: userName,
             id: "user_" + Math.random().toString(36).substr(2, 9)
         };
 
-        // Typing detection variables
-        let typing = false;
-        let lastTypingTime = 0;
-        const TYPING_TIMER_LENGTH = 1000; // 1 second
+        // In-memory data storage
+        let messages = [];
+        let pinnedMessage = null;
+        let replyingTo = null;
+        let messageCounter = 0;
 
-        // Track displayed messages to prevent duplicates
-        const displayedMessages = new Set();
+        // Dummy users for the chat
+        const dummyUsers = [
+            { name: "Grammar Expert", id: "user_grammar" },
+            { name: "Prof. Shakespeare", id: "user_shakespeare" },
+            { name: "Dr. Austen", id: "user_austen" },
+            { name: "Word Wizard", id: "user_wizard" },
+            { name: "Language Lover", id: "user_lover" }
+        ];
 
-        // Enable offline persistence
-        db.enablePersistence()
-          .catch((err) => {
-            if (err.code === 'failed-precondition') {
-                console.log("Multiple tabs open, persistence failed");
-            } else if (err.code === 'unimplemented') {
-                console.log("Persistence not available");
-            }
-          });
-
-        // Listen for connection status changes
-        firebase.firestore().enableNetwork()
-            .then(() => {
-                connectionStatus.classList.remove('offline');
-                statusIndicator.style.backgroundColor = '#00a884';
-                statusText.textContent = 'Online';
-            });
-
-        // Monitor connection status
-        firebase.firestore().onSnapshotsInSync(() => {
-            connectionStatus.classList.remove('offline');
-            statusIndicator.style.backgroundColor = '#00a884';
-            statusText.textContent = 'Online';
-        });
-
-        // Function to add a message to the chat
-        function addMessage(sender, text, timestamp, isUser, messageId) {
-            // Skip if message already displayed
-            if (displayedMessages.has(messageId)) return;
-            displayedMessages.add(messageId);
+        // Populate member list
+        function populateMemberList() {
+            // Add current user
+            const currentMember = document.createElement('div');
+            currentMember.className = 'member';
+            currentMember.innerHTML = `
+                <div class="member-avatar">${currentUser.name.charAt(0)}</div>
+                <div class="member-name">${currentUser.name} (You)</div>
+            `;
+            memberList.appendChild(currentMember);
             
+            // Add dummy users
+            dummyUsers.forEach(user => {
+                const member = document.createElement('div');
+                member.className = 'member';
+                member.innerHTML = `
+                    <div class="member-avatar">${user.name.charAt(0)}</div>
+                    <div class="member-name">${user.name}</div>
+                `;
+                memberList.appendChild(member);
+            });
+        }
+
+        // Generate a unique message ID
+        function generateMessageId() {
+            return 'msg_' + Date.now() + '_' + (messageCounter++);
+        }
+
+        // Add a message to the chat
+        function addMessage(sender, text, timestamp, isUser, messageId, replyTo = null, status = 'sent') {
             // Remove welcome screen if it exists
             if (welcomeScreen) {
                 welcomeScreen.style.display = 'none';
             }
 
-            // Create message group if needed
-            let messageGroup = document.querySelector('.message-group:last-child');
-            const lastMessage = messageGroup ? messageGroup.lastElementChild : null;
+            // Create message object
+            const message = {
+                id: messageId,
+                sender: sender,
+                senderId: isUser ? currentUser.id : sender.replace(/\s+/g, '_').toLowerCase(),
+                text: text,
+                time: timestamp,
+                isUser: isUser,
+                status: status,
+                replyTo: replyTo,
+                reactions: {},
+                deleted: false,
+                pinned: false
+            };
             
-            // Create new group if:
-            // - No existing group
-            // - Last message was from a different sender
-            // - Time gap is more than 5 minutes
-            const timeDiff = lastMessage ? 
-                (timestamp - new Date(lastMessage.getAttribute('data-timestamp'))) / (1000 * 60) : 
-                Infinity;
-                
-            if (!messageGroup || 
-                lastMessage.classList.contains(isUser ? 'user-message' : 'other-message') === false ||
-                timeDiff > 5) {
-                
-                messageGroup = document.createElement('div');
-                messageGroup.className = 'message-group';
-                chatContainer.appendChild(messageGroup);
-            }
-
+            // Add to messages array
+            messages.push(message);
+            
+            // Create message element
+            const messageGroup = document.createElement('div');
+            messageGroup.className = 'message-group';
+            
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'other-message'}`;
-            messageDiv.setAttribute('data-timestamp', timestamp.getTime());
-            messageDiv.setAttribute('data-id', messageId);
+            messageDiv.className = `message-with-avatar`;
+            
+            // Avatar for other users
+            if (!isUser) {
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = sender.charAt(0);
+                messageDiv.appendChild(avatar);
+            }
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `message ${isUser ? 'user-message' : 'other-message'}`;
+            messageBubble.setAttribute('data-id', messageId);
             
             // Format the time
             const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            // Show sender name only for other users and only if it's a new group
-            const showSender = !isUser && (!lastMessage || 
-                lastMessage.classList.contains('user-message') || 
-                timeDiff > 5);
+            // Show sender name only for other users
+            if (!isUser) {
+                const senderDiv = document.createElement('div');
+                senderDiv.className = 'message-sender';
+                senderDiv.textContent = sender;
+                messageBubble.appendChild(senderDiv);
+            }
             
-            messageDiv.innerHTML = `
-                ${showSender ? `<div class="message-sender">${sender}</div>` : ''}
-                <div class="message-text">${text}</div>
-                <div class="message-time">${formattedTime} ${isUser ? '<i class="fas fa-check-double" style="font-size: 0.6rem;"></i>' : ''}</div>
+            // Add reply preview if applicable
+            if (replyTo) {
+                const replyPreview = document.createElement('div');
+                replyPreview.className = 'reply-preview';
+                replyPreview.innerHTML = `
+                    <div class="reply-sender">${replyTo.sender}</div>
+                    <div class="reply-text">${replyTo.text}</div>
+                `;
+                messageBubble.appendChild(replyPreview);
+            }
+            
+            // Message text
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.textContent = text;
+            messageBubble.appendChild(textDiv);
+            
+            // Message time and status
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            
+            timeDiv.innerHTML = formattedTime;
+            
+            if (isUser) {
+                const statusIcon = document.createElement('i');
+                statusIcon.className = `message-status ${status}`;
+                
+                if (status === 'sent') {
+                    statusIcon.className = 'fas fa-check message-status sent';
+                } else if (status === 'delivered') {
+                    statusIcon.className = 'fas fa-check-double message-status delivered';
+                } else if (status === 'seen') {
+                    statusIcon.className = 'fas fa-check-double message-status seen';
+                }
+                
+                timeDiv.appendChild(statusIcon);
+            }
+            
+            messageBubble.appendChild(timeDiv);
+            
+            // Add context menu for messages
+            messageBubble.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showMessageActions(e, messageId, isUser);
+            });
+            
+            messageContent.appendChild(messageBubble);
+            
+            // Add reactions container
+            const reactionsDiv = document.createElement('div');
+            reactionsDiv.className = 'message-reactions';
+            reactionsDiv.setAttribute('data-message-id', messageId);
+            messageContent.appendChild(reactionsDiv);
+            
+            messageDiv.appendChild(messageContent);
+            messageGroup.appendChild(messageDiv);
+            
+            // Add to chat container
+            chatContainer.appendChild(messageGroup);
+            
+            // Scroll to bottom
+            scrollToBottom();
+            
+            // Update message status with timeouts (for user messages)
+            if (isUser) {
+                setTimeout(() => {
+                    updateMessageStatus(messageId, 'delivered');
+                }, 1000);
+                
+                setTimeout(() => {
+                    updateMessageStatus(messageId, 'seen');
+                }, 3000);
+            }
+            
+            return message;
+        }
+
+        // Update message status
+        function updateMessageStatus(messageId, status) {
+            const message = messages.find(m => m.id === messageId);
+            if (message) {
+                message.status = status;
+                
+                const messageElement = document.querySelector(`[data-id="${messageId}"]`);
+                if (messageElement) {
+                    const timeDiv = messageElement.querySelector('.message-time');
+                    const existingIcon = timeDiv.querySelector('.message-status');
+                    if (existingIcon) {
+                        timeDiv.removeChild(existingIcon);
+                    }
+                    
+                    const statusIcon = document.createElement('i');
+                    statusIcon.className = `message-status ${status}`;
+                    
+                    if (status === 'sent') {
+                        statusIcon.className = 'fas fa-check message-status sent';
+                    } else if (status === 'delivered') {
+                        statusIcon.className = 'fas fa-check-double message-status delivered';
+                    } else if (status === 'seen') {
+                        statusIcon.className = 'fas fa-check-double message-status seen';
+                    }
+                    
+                    timeDiv.appendChild(statusIcon);
+                }
+            }
+        }
+
+        // Show message actions menu
+        function showMessageActions(e, messageId, isUser) {
+            // Remove any existing actions menu
+            const existingMenu = document.querySelector('.message-actions');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            const message = messages.find(m => m.id === messageId);
+            if (!message || message.deleted) return;
+            
+            const menu = document.createElement('div');
+            menu.className = 'message-actions';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            
+            // Add reaction options
+            const reactions = ['👍', '❤️', '😂', '🔥'];
+            reactions.forEach(reaction => {
+                const action = document.createElement('div');
+                action.className = 'message-action';
+                action.innerHTML = `${reaction} React ${reaction}`;
+                action.addEventListener('click', () => {
+                    addReaction(messageId, reaction);
+                    menu.remove();
+                });
+                menu.appendChild(action);
+            });
+            
+            // Add reply option
+            const replyAction = document.createElement('div');
+            replyAction.className = 'message-action';
+            replyAction.innerHTML = '<i class="fas fa-reply"></i> Reply';
+            replyAction.addEventListener('click', () => {
+                setReplyMessage(messageId);
+                menu.remove();
+            });
+            menu.appendChild(replyAction);
+            
+            // Add pin option if not already pinned
+            if (!message.pinned) {
+                const pinAction = document.createElement('div');
+                pinAction.className = 'message-action';
+                pinAction.innerHTML = '<i class="fas fa-thumbtack"></i> Pin';
+                pinAction.addEventListener('click', () => {
+                    pinMessage(messageId);
+                    menu.remove();
+                });
+                menu.appendChild(pinAction);
+            }
+            
+            // Add delete option for user's own messages
+            if (isUser) {
+                const deleteAction = document.createElement('div');
+                deleteAction.className = 'message-action';
+                deleteAction.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                deleteAction.addEventListener('click', () => {
+                    deleteMessage(messageId);
+                    menu.remove();
+                });
+                menu.appendChild(deleteAction);
+            }
+            
+            document.body.appendChild(menu);
+            
+            // Close menu when clicking elsewhere
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu() {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                });
+            }, 100);
+        }
+
+        // Add reaction to a message
+        function addReaction(messageId, reaction) {
+            const message = messages.find(m => m.id === messageId);
+            if (!message) return;
+            
+            if (!message.reactions[reaction]) {
+                message.reactions[reaction] = [];
+            }
+            
+            // Check if user already reacted with this emoji
+            if (!message.reactions[reaction].includes(currentUser.name)) {
+                message.reactions[reaction].push(currentUser.name);
+                updateReactionsDisplay(messageId);
+            }
+        }
+
+        // Update reactions display for a message
+        function updateReactionsDisplay(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (!message) return;
+            
+            const reactionsDiv = document.querySelector(`.message-reactions[data-message-id="${messageId}"]`);
+            if (!reactionsDiv) return;
+            
+            // Clear existing reactions
+            reactionsDiv.innerHTML = '';
+            
+            // Add each reaction
+            Object.keys(message.reactions).forEach(reaction => {
+                if (message.reactions[reaction].length > 0) {
+                    const reactionDiv = document.createElement('div');
+                    reactionDiv.className = 'reaction';
+                    reactionDiv.innerHTML = `
+                        ${reaction} <span class="reaction-count">${message.reactions[reaction].length}</span>
+                    `;
+                    reactionsDiv.appendChild(reactionDiv);
+                }
+            });
+        }
+
+        // Set reply message
+        function setReplyMessage(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (!message) return;
+            
+            replyingTo = {
+                id: messageId,
+                sender: message.sender,
+                text: message.text
+            };
+            
+            replyToUser.textContent = message.sender;
+            replyPreviewSender.textContent = message.sender;
+            replyPreviewText.textContent = message.text;
+            replyInputContainer.style.display = 'block';
+            
+            // Scroll to input
+            messageInput.focus();
+        }
+
+        // Cancel reply
+        function cancelReplyMessage() {
+            replyingTo = null;
+            replyInputContainer.style.display = 'none';
+        }
+
+        // Pin a message
+        function pinMessage(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (!message) return;
+            
+            // Unpin previous pinned message
+            if (pinnedMessage) {
+                pinnedMessage.pinned = false;
+                const previousPinnedElement = document.querySelector('.pinned-message');
+                if (previousPinnedElement) {
+                    previousPinnedElement.remove();
+                }
+            }
+            
+            // Pin new message
+            message.pinned = true;
+            pinnedMessage = message;
+            
+            // Create pinned message element
+            const pinnedDiv = document.createElement('div');
+            pinnedDiv.className = 'pinned-message';
+            pinnedDiv.innerHTML = `
+                <div class="pinned-label">
+                    <i class="fas fa-thumbtack"></i> Pinned Message
+                </div>
+                <div class="message-sender">${message.sender}</div>
+                <div class="message-text">${message.text}</div>
             `;
             
-            messageGroup.appendChild(messageDiv);
-            scrollToBottom();
+            // Insert after welcome screen or at the top
+            const firstMessage = chatContainer.querySelector('.message-group') || chatContainer.querySelector('.pinned-message');
+            if (firstMessage) {
+                chatContainer.insertBefore(pinnedDiv, firstMessage);
+            } else {
+                chatContainer.appendChild(pinnedDiv);
+            }
+        }
+
+        // Delete a message
+        function deleteMessage(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (!message) return;
+            
+            message.deleted = true;
+            message.text = 'This message was deleted';
+            
+            const messageElement = document.querySelector(`[data-id="${messageId}"]`);
+            if (messageElement) {
+                const textDiv = messageElement.querySelector('.message-text');
+                textDiv.textContent = 'This message was deleted';
+                textDiv.className = 'message-text deleted-message';
+                
+                // Remove reactions
+                const reactionsDiv = messageElement.querySelector('.message-reactions');
+                if (reactionsDiv) {
+                    reactionsDiv.innerHTML = '';
+                }
+                
+                // Remove reply preview if exists
+                const replyPreview = messageElement.querySelector('.reply-preview');
+                if (replyPreview) {
+                    replyPreview.remove();
+                }
+            }
+        }
+
+        // Search messages
+        function searchMessages(query) {
+            if (!query) {
+                // Remove highlights if search is cleared
+                const highlights = document.querySelectorAll('.search-highlight');
+                highlights.forEach(highlight => {
+                    const parent = highlight.parentNode;
+                    parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                    parent.normalize();
+                });
+                return;
+            }
+            
+            // Highlight matching messages
+            messages.forEach(message => {
+                if (message.text.toLowerCase().includes(query.toLowerCase()) && !message.deleted) {
+                    const messageElement = document.querySelector(`[data-id="${message.id}"]`);
+                    if (messageElement) {
+                        const textDiv = messageElement.querySelector('.message-text');
+                        const text = textDiv.textContent;
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        const highlightedText = text.replace(regex, '<span class="search-highlight">$1</span>');
+                        textDiv.innerHTML = highlightedText;
+                    }
+                }
+            });
+        }
+
+        // Send message function
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text) {
+                const messageId = generateMessageId();
+                const timestamp = new Date();
+                
+                let replyTo = null;
+                if (replyingTo) {
+                    replyTo = {
+                        id: replyingTo.id,
+                        sender: replyingTo.sender,
+                        text: replyingTo.text
+                    };
+                }
+                
+                addMessage(currentUser.name, text, timestamp, true, messageId, replyTo);
+                
+                // Clear input and reply
+                messageInput.value = '';
+                cancelReplyMessage();
+                
+                // Simulate response from other users
+                if (Math.random() < 0.3) { // 30% chance of response
+                    setTimeout(() => {
+                        const randomUser = dummyUsers[Math.floor(Math.random() * dummyUsers.length)];
+                        const responses = [
+                            "That's an interesting point!",
+                            "I agree with you.",
+                            "Could you explain that further?",
+                            "I have a different perspective on that.",
+                            "Thanks for sharing!"
+                        ];
+                        const response = responses[Math.floor(Math.random() * responses.length)];
+                        
+                        addMessage(randomUser.name, response, new Date(), false, generateMessageId());
+                    }, 2000);
+                }
+            }
         }
 
         // Function to scroll to the bottom of the chat
@@ -549,31 +1242,19 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Function to get current timestamp
-        function getCurrentTimestamp() {
-            return firebase.firestore.FieldValue.serverTimestamp();
-        }
-
-        // Send message function
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (text) {
-                // Add message to Firestore
-                db.collection('english-messages').add({
-                    sender: currentUser.name,
-                    senderId: currentUser.id,
-                    text: text,
-                    time: getCurrentTimestamp()
-                }).catch((error) => {
-                    console.error("Error sending message: ", error);
-                    // Fallback: add message locally if Firebase fails
-                    addMessage(currentUser.name, text, new Date(), true, 'local_' + Date.now());
-                });
-                
-                messageInput.value = '';
-                updateTyping(false);
-            }
-        }
+        // Typing detection variables
+        let typing = false;
+        let lastTypingTime = 0;
+        const TYPING_TIMER_LENGTH = 1000; // 1 second
+function initializeUser() {
+  const storedUser = localStorage.getItem('chatUser');
+  if (storedUser) {
+    currentUser = JSON.parse(storedUser);
+  } else {
+    // Agar naam nahi mila to subject page pe bhej do
+    window.location.href = "subject.html";
+  }
+}
 
         // Typing functions
         function updateTyping(typingStatus) {
@@ -596,15 +1277,13 @@
             }
         }
 
-        // Listen for typing events (this would typically be implemented with a separate collection)
-        // For this demo, we'll simulate typing from other users randomly
+        // Simulate typing from other users
         setInterval(() => {
             if (Math.random() < 0.02) { // 2% chance every second
-                const fakeUsers = ["Grammar Expert", "Prof. Shakespeare", "Dr. Austen", "Word Wizard"];
-                const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                const randomUser = dummyUsers[Math.floor(Math.random() * dummyUsers.length)];
                 
-                if (randomUser !== currentUser.name) {
-                    typingUser.textContent = randomUser;
+                if (randomUser.name !== currentUser.name) {
+                    typingUser.textContent = randomUser.name;
                     typingIndicator.style.display = 'flex';
                     
                     setTimeout(() => {
@@ -613,25 +1292,6 @@
                 }
             }
         }, 1000);
-
-        // Listen for new messages from Firestore
-        db.collection('english-messages')
-            .orderBy('time', 'asc')
-            .onSnapshot((snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                        const data = change.doc.data();
-                        const isUser = data.senderId === currentUser.id;
-                        
-                        // Use server timestamp if available, otherwise use client timestamp
-                        const timestamp = data.time ? data.time.toDate() : new Date();
-                        
-                        addMessage(data.sender, data.text, timestamp, isUser, change.doc.id);
-                    }
-                });
-            }, (error) => {
-                console.error("Error listening to messages: ", error);
-            });
 
         // Event listeners
         sendButton.addEventListener('click', sendMessage);
@@ -651,18 +1311,56 @@
             updateTyping(false);
         });
 
+        // Search toggle
+        searchToggle.addEventListener('click', () => {
+            if (searchContainer.style.display === 'block') {
+                searchContainer.style.display = 'none';
+                searchInput.value = '';
+                searchMessages('');
+            } else {
+                searchContainer.style.display = 'block';
+                searchInput.focus();
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', () => {
+            searchMessages(searchInput.value);
+        });
+
+        // Group info toggle
+        groupInfoToggle.addEventListener('click', () => {
+            groupInfoDrawer.classList.add('open');
+        });
+
+        closeDrawer.addEventListener('click', () => {
+            groupInfoDrawer.classList.remove('open');
+        });
+
+        // Back button
+        backButton.addEventListener('click', () => {
+            window.history.back();
+        });
+
+        // Cancel reply
+        cancelReply.addEventListener('click', cancelReplyMessage);
+
         // Auto-focus the input field
         messageInput.focus();
 
-        // Add some sample messages if the chat is empty (for demo purposes)
-        setTimeout(() => {
-            const messages = document.querySelectorAll('.message');
-            if (messages.length === 0) {
-                // Add sample messages only if no messages exist
-                addMessage("Grammar Expert", "Welcome to English Community! Feel free to ask any grammar or writing-related questions.", new Date(), false, 'sample1');
-                addMessage("Prof. Shakespeare", "Remember to proofread your messages and use proper punctuation for clarity.", new Date(), false, 'sample2');
-            }
-        }, 1000);
+        // Initialize the chat with sample messages
+        function initializeChat() {
+            populateMemberList();
+            
+            // Add sample messages
+            setTimeout(() => {
+                addMessage("Grammar Expert", "Welcome to English Community! Feel free to ask any grammar or writing-related questions.", new Date(), false, generateMessageId());
+                addMessage("Prof. Shakespeare", "Remember to proofread your messages and use proper punctuation for clarity.", new Date(), false, generateMessageId());
+            }, 1000);
+        }
+
+        // Initialize the chat when the page loads
+        window.addEventListener('DOMContentLoaded', initializeChat);
     </script>
 </body>
 </html>

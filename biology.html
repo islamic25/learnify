@@ -25,72 +25,6 @@
             overflow: hidden;
         }
 
-        /* Username Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background-color: #202c33;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #e9edef;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2a3942;
-            color: #e9edef;
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-
-        .modal-input:focus {
-            outline: none;
-            background-color: #2a3942;
-        }
-
-        .modal-button {
-            background-color: #00a884;
-            color: #111b21;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-
-        .modal-button:hover {
-            background-color: #06cf9c;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
         /* Header with gradient and status */
         .header {
             background: #202c33;
@@ -438,16 +372,6 @@
     </style>
 </head>
 <body>
-    <!-- Username Modal -->
-    <div class="modal-overlay" id="usernameModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Welcome to Biology Community</h2>
-            <p style="margin-bottom: 15px; color: #8696a0;">Please enter your name to join the chat:</p>
-            <input type="text" class="modal-input" id="usernameInput" placeholder="Your name" maxlength="30">
-            <button class="modal-button" id="usernameSubmit">Join Chat</button>
-        </div>
-    </div>
-
     <!-- Chat Interface -->
     <div class="header">
         <div class="header-left">
@@ -510,7 +434,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase configuration (replace with your own config)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
             authDomain: "explore-products-e7afb.firebaseapp.com",
@@ -524,18 +448,20 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+// Enable offline persistence
+db.enablePersistence()
+  .catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.log("Multiple tabs open, persistence failed");
+    } else if (err.code === 'unimplemented') {
+      console.log("Persistence not available");
+    }
+  });
 
-        // ==============================
-        // CUSTOMIZABLE COLLECTION NAME
-        // ==============================
-        // Change this variable to use different collections for each subject
+        // Collection name for biology messages
         const COLLECTION_NAME = "biology_messages";
-        // ==============================
 
         // DOM elements
-        const usernameModal = document.getElementById('usernameModal');
-        const usernameInput = document.getElementById('usernameInput');
-        const usernameSubmit = document.getElementById('usernameSubmit');
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
@@ -546,7 +472,7 @@
         const statusText = document.getElementById('statusText');
         const welcomeScreen = document.getElementById('welcomeScreen');
 
-        // Current user (will be set from localStorage or modal)
+        // Current user
         let currentUser = null;
 
         // Typing detection variables
@@ -557,7 +483,7 @@
         // Track displayed messages to prevent duplicates
         const displayedMessages = new Set();
 
-        // Function to generate random guest name
+        // Generate random guest name
         function generateGuestName() {
             const adjectives = ["Curious", "Happy", "Brave", "Gentle", "Wise", "Clever", "Friendly", "Calm"];
             const animals = ["Penguin", "Fox", "Owl", "Dolphin", "Tiger", "Lion", "Eagle", "Wolf"];
@@ -567,33 +493,34 @@
             return `${adjective}${animal}${randomNum}`;
         }
 
-        // Function to initialize user
-function initializeUser() {
-    // Check if user data exists in localStorage
-    const savedUser = localStorage.getItem('chatUser');
-    
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        usernameModal.classList.add('hidden');
-    } else {
-        // Show the modal to get username
-        usernameModal.classList.remove('hidden');
-        usernameInput.focus();
-    }
-}
-
-        // Function to save user to localStorage
-        function saveUser() {
-            localStorage.setItem('chatUser', JSON.stringify(currentUser));
+        // Initialize user from localStorage or create guest user
+        function initializeUser() {
+            const savedUser = localStorage.getItem('chatUser');
+            
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                console.log("User loaded from localStorage:", currentUser);
+            } else {
+                const guestName = generateGuestName();
+                currentUser = {
+                    name: guestName,
+                    id: "user_" + Date.now()
+                };
+                
+                localStorage.setItem('chatUser', JSON.stringify(currentUser));
+                console.log("Guest user created:", currentUser);
+            }
+            
+            messageInput.focus();
         }
 
-        // Function to add a message to the chat
+        // Add message to the chat
         function addMessage(sender, text, timestamp, isUser, messageId) {
             // Skip if message already displayed
             if (displayedMessages.has(messageId)) return;
             displayedMessages.add(messageId);
             
-            // Remove welcome screen if it exists
+            // Remove welcome screen
             if (welcomeScreen && welcomeScreen.style.display !== 'none') {
                 welcomeScreen.style.display = 'none';
             }
@@ -603,10 +530,7 @@ function initializeUser() {
             const lastMessageGroup = messageGroup;
             const lastMessage = lastMessageGroup ? lastMessageGroup.lastElementChild : null;
             
-            // Create new group if:
-            // - No existing group
-            // - Last message was from a different sender
-            // - Time gap is more than 5 minutes
+            // Create new group if needed
             const timeDiff = lastMessage ? 
                 (timestamp - new Date(parseInt(lastMessage.getAttribute('data-timestamp')))) / (1000 * 60) : 
                 Infinity;
@@ -646,12 +570,12 @@ function initializeUser() {
             scrollToBottom();
         }
 
-        // Function to scroll to the bottom of the chat
+        // Scroll to the bottom of the chat
         function scrollToBottom() {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Function to get current timestamp
+        // Get current timestamp
         function getCurrentTimestamp() {
             return firebase.firestore.FieldValue.serverTimestamp();
         }
@@ -660,7 +584,7 @@ function initializeUser() {
         function sendMessage() {
             const text = messageInput.value.trim();
             if (text && currentUser) {
-                // Add message to Firestore using the customizable collection name
+                // Add message to Firestore
                 db.collection(COLLECTION_NAME).add({
                     sender: currentUser.name,
                     senderId: currentUser.id,
@@ -682,14 +606,10 @@ function initializeUser() {
             typing = typingStatus;
             
             if (typing) {
-                // Update last typing time
                 lastTypingTime = Date.now();
-                
-                // Show typing indicator for current user
                 typingUser.textContent = currentUser.name;
                 typingIndicator.style.display = 'flex';
             } else {
-                // Hide typing indicator
                 setTimeout(() => {
                     if (Date.now() - lastTypingTime >= TYPING_TIMER_LENGTH) {
                         typingIndicator.style.display = 'none';
@@ -698,25 +618,7 @@ function initializeUser() {
             }
         }
 
-        // Listen for typing events (this would typically be implemented with a separate collection)
-        // For this demo, we'll simulate typing from other users randomly
-        setInterval(() => {
-            if (Math.random() < 0.02 && currentUser) { // 2% chance every second
-                const fakeUsers = ["Biology Bot", "Dr. Wilson", "Alex Johnson", "Maria Garcia"];
-                const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                
-                if (randomUser !== currentUser.name) {
-                    typingUser.textContent = randomUser;
-                    typingIndicator.style.display = 'flex';
-                    
-                    setTimeout(() => {
-                        typingIndicator.style.display = 'none';
-                    }, 2000);
-                }
-            }
-        }, 1000);
-
-        // Listen for new messages from Firestore using the customizable collection name
+        // Listen for new messages from Firestore
         db.collection(COLLECTION_NAME)
             .orderBy('time', 'asc')
             .onSnapshot((snapshot) => {
@@ -736,37 +638,6 @@ function initializeUser() {
             });
 
         // Event listeners
-        // When user submits name
-usernameSubmit.addEventListener('click', () => {
-    let username = usernameInput.value.trim();
-    
-    if (!username) {
-        username = generateGuestName();
-    }
-    
-    // 👉 Only create ID once, and save it for later
-    currentUser = {
-        name: username,
-        id: "user_" + Date.now()   // stable ID
-    };
-    
-    // Save to localStorage so it doesn't ask again
-    saveUser();
-    
-    // Hide modal
-    usernameModal.classList.add('hidden');
-    
-    // Focus message input
-    messageInput.focus();
-});
-
-
-        usernameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                usernameSubmit.click();
-            }
-        });
-
         sendButton.addEventListener('click', sendMessage);
         
         messageInput.addEventListener('keypress', (e) => {
@@ -788,23 +659,6 @@ usernameSubmit.addEventListener('click', () => {
             }
         });
 
-        // Enable offline persistence
-        db.enablePersistence()
-          .catch((err) => {
-            if (err.code === 'failed-precondition') {
-                console.log("Multiple tabs open, persistence failed");
-            } else if (err.code === 'unimplemented') {
-                console.log("Persistence not available");
-            }
-          });
-
-        // Listen for connection status changes
-        firebase.firestore().enableNetwork()
-            .then(() => {
-                connectionStatus.classList.remove('offline');
-                statusIndicator.style.backgroundColor = '#00a884';
-                statusText.textContent = 'Online';
-            });
 
         // Monitor connection status
         firebase.firestore().onSnapshotsInSync(() => {
@@ -815,20 +669,6 @@ usernameSubmit.addEventListener('click', () => {
 
         // Initialize the app
         initializeUser();
-
-        // Add some sample messages if the chat is empty (for demo purposes)
-        setTimeout(() => {
-            if (currentUser) {
-                const messages = document.querySelectorAll('.message');
-                if (messages.length === 0) {
-                    // Add sample messages only if no messages exist
-                    addMessage("Biology Bot", "Welcome to Biology Community! Feel free to ask any biology-related questions.", new Date(Date.now() - 300000), false, 'sample1');
-                    addMessage("Dr. Wilson", "Remember to follow community guidelines and keep discussions respectful.", new Date(Date.now() - 240000), false, 'sample2');
-                    addMessage("Alex Johnson", "Has anyone studied the Krebs cycle recently? I need help understanding the energy production part.", new Date(Date.now() - 180000), false, 'sample3');
-                    addMessage("Maria Garcia", "I found this great resource about cell division: https://example.com/cell-division", new Date(Date.now() - 120000), false, 'sample4');
-                }
-            }
-        }, 2000);
     </script>
 </body>
 </html>

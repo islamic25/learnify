@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Resources | Learnify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #8b5cf6;
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+      --text-dark: #1e293b;
+      --shadow: rgba(0,0,0,0.05);
+      --shadow-hover: rgba(37,99,235,0.15);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #f0f4f9;
+      color: var(--text-dark);
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 16px;
+      box-shadow: 0 4px 16px var(--shadow);
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+    }
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px var(--shadow-hover);
+    }
+    .icon-container {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      background: var(--gradient);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    .card-icon {
+      font-size: 24px;
+      color: white;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Study Resources</h1>
+  </header>
+
+  <div class="grid">
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=fee','_blank')">
+      <div class="icon-container"><i class="fas fa-file-invoice-dollar card-icon"></i></div>
+      <div class="card-title">Fee Structure</div>
+    </div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=sch','_blank')">
+      <div class="icon-container"><i class="fas fa-award card-icon"></i></div>
+      <div class="card-title">Scholarships</div>
+    </div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=mp','_blank')">
+      <div class="icon-container"><i class="fas fa-copy card-icon"></i></div>
+      <div class="card-title">Model Papers</div>
+    </div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=ss','_blank')">
+      <div class="icon-container"><i class="fas fa-book-open card-icon"></i></div>
+      <div class="card-title">Scheme of Studies</div>
+    </div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=rn','_blank')">
+      <div class="icon-container"><i class="fas fa-id-card card-icon"></i></div>
+      <div class="card-title">Roll No</div>
+    </div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=res','_blank')">
+      <div class="icon-container"><i class="fas fa-chart-line card-icon"></i></div>
+      <div class="card-title">Result</div>
+    </div>
+
+   <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/student?cat=ph','_blank')">
+  <div class="icon-container">
+    <i class="fas fa-trophy card-icon"></i>
+  </div>
+  <div class="card-title">Position Holders</div>
+</div>
+
+    <div class="card" onclick="window.open('https://web.bisemdn.edu.pk/faqs','_blank')">
+      <div class="icon-container"><i class="fas fa-question-circle card-icon"></i></div>
+      <div class="card-title">Help / FAQs</div>
+    </div>
+  </div>
+</body>
+</html>
