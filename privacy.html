@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Learnfy</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --accent-color: #ff7e5f;
+            --background-color: #f9f9f9;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --light-text: #666666;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--light-text);
+        }
+
+        .card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin: 20px 0 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            background-color: rgba(255, 126, 95, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .date-info {
+            text-align: center;
+            font-style: italic;
+            color: var(--light-text);
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Learnfy</div>
+            <div class="tagline">Your learning companion</div>
+        </header>
+        
+        <div class="card">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: <span id="current-date"></span></p>
+            <p>Welcome to Learnfy! This Privacy Policy explains how we handle information in our Android application.</p>
+            
+            <div class="highlight">
+                <p><strong>Important Note:</strong> Learnfy does not require user registration or login. We do not create personal user accounts or collect personally identifiable information.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>1. General Summary</h2>
+            <p>Learnfy is committed to protecting your privacy. Our app is designed with privacy in mind:</p>
+            <ul>
+                <li>No registration or login required</li>
+                <li>No collection of personal information</li>
+                <li>Transparent about data practices</li>
+                <li>Compliance with Google Play Store requirements</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>2. Firebase Services Usage</h2>
+            <p>Learnfy uses Google Firebase services to improve app functionality and user experience. These services collect non-personal, anonymized data:</p>
+            
+            <h3>Firebase Analytics</h3>
+            <p>We use Firebase Analytics to understand how users interact with our app. This helps us improve features and fix issues. The data is aggregated and anonymous.</p>
+            
+            <h3>Firebase Crashlytics</h3>
+            <p>Crashlytics helps us identify and fix app crashes. It collects technical information about device specifications and crash logs, but no personal data.</p>
+            
+            <h3>Cloud Firestore & Storage</h3>
+            <p>We use Firestore and Storage for app content and user-generated data (like saved preferences). This data is not linked to personal identities.</p>
+            
+            <p>All Firebase services comply with Google's privacy policies and data processing terms.</p>
+        </div>
+        
+        <div class="card">
+            <h2>3. Data We Do Not Collect</h2>
+            <p>To be perfectly clear, Learnfy does NOT collect:</p>
+            <ul>
+                <li>Personal identification information (name, email, address)</li>
+                <li>Account credentials (since no accounts exist)</li>
+                <li>Payment information (app is free)</li>
+                <li>Contact lists or social connections</li>
+                <li>Precise location data</li>
+                <li>Sensitive personal information</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>4. Data Submitted by Users</h2>
+            <p>Learnfy may store anonymous usage data and preferences locally on your device. This includes:</p>
+            <ul>
+                <li>App settings and preferences</li>
+                <li>Progress in learning activities</li>
+                <li>Content preferences</li>
+            </ul>
+            <p>This data remains on your device unless you use backup features (which would be handled by your device's backup system, not Learnfy).</p>
+        </div>
+        
+        <div class="card">
+            <h2>5. App Permissions</h2>
+            <p>Learnfy requests only the permissions necessary for core functionality:</p>
+            <ul>
+                <li><strong>Internet Access:</strong> Required to load content and use Firebase services</li>
+                <li><strong>Storage (Optional):</strong> For saving content offline if this feature is available</li>
+            </ul>
+            <p>We do not require access to contacts, location, or other sensitive permissions.</p>
+        </div>
+        
+        <div class="card">
+            <h2>6. Data Security</h2>
+            <p>We take reasonable measures to protect any information processed by our app:</p>
+            <ul>
+                <li>Firebase services use encryption for data in transit</li>
+                <li>Anonymous data is aggregated and cannot be traced to individuals</li>
+                <li>We follow security best practices in our development process</li>
+            </ul>
+            <p>Since we don't collect personal data, the risk of personal information exposure is minimal.</p>
+        </div>
+        
+        <div class="card">
+            <h2>7. Children's Privacy</h2>
+            <p>Learnfy is suitable for users of all ages. Our privacy practices are designed to protect everyone:</p>
+            <ul>
+                <li>We do not knowingly collect personal information from children</li>
+                <li>Our content is appropriate for general audiences</li>
+                <li>No special parental controls are needed as no personal data is collected</li>
+            </ul>
+            <p>If you believe a child has provided any information to us, please contact us immediately.</p>
+        </div>
+        
+        <div class="card">
+            <h2>8. Updates and Effective Date</h2>
+            <p>We may update this Privacy Policy as our app evolves. Changes will be reflected here with an updated effective date.</p>
+            <p>We encourage you to review this policy periodically. Continued use of Learnfy after changes constitutes acceptance of the updated policy.</p>
+            
+            <div class="date-info">
+                <p>This policy is effective as of <span id="effective-date"></span>.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Contact Information</h2>
+            <p>If you have questions about this Privacy Policy or Learnfy's data practices, please contact us at:</p>
+            <p><strong>Email:</strong> learnify@gmail.com</p>
+            <p>We typically respond within 2-3 business days.</p>
+        </div>
+        
+        <footer>
+            <p>&copy; <span id="current-year"></span> Learnfy. All rights reserved.</p>
+            <p>This Privacy Policy is designed to comply with Google Play Store requirements.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set current date for the policy
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Set effective date (30 days ago for realism)
+        const effectiveDate = new Date();
+        effectiveDate.setDate(effectiveDate.getDate() - 30);
+        document.getElementById('effective-date').textContent = effectiveDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
