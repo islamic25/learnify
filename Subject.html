@@ -18,7 +18,7 @@
       background: #f8fafc;
       color: #333;
       min-height: 100vh;
-      padding-bottom: 80px;
+      padding-bottom: 20px; /* Reduced for subject.html without nav */
       position: relative;
     }
 
@@ -187,43 +187,9 @@
     .english { --color1: #1abc9c; --color2: #16a085; }
     .maths { --color1: #34495e; --color2: #2c3e50; }
 
-    /* Bottom Navigation */
+    /* Bottom Navigation - Hidden on subject.html */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-      z-index: 100;
-    }
-    
-    .nav-item {
-      flex: 1;
-      text-align: center;
-      color: #7f8c8d;
-      font-size: 0.75rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .nav-item.active, .nav-item:hover {
-      color: #6a11cb;
-    }
-    
-    .nav-icon {
-      font-size: 1.2rem;
-      margin-bottom: 4px;
-    }
-    
-    .nav-label {
-      font-weight: 500;
+      display: none; /* Hidden on subject.html */
     }
 
     /* Animation for page load */
@@ -251,9 +217,112 @@
     .subject-card:nth-child(5) { animation-delay: 0.5s; }
     .subject-card:nth-child(6) { animation-delay: 0.6s; }
     .subject-card:nth-child(7) { animation-delay: 0.7s; }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    .modal-subtitle {
+      color: #7f8c8d;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+    }
+    
+    .name-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e6ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+    
+    .name-input:focus {
+      outline: none;
+      border-color: #6a11cb;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <!-- Modal for user name -->
+  <div id="userNameModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2 class="modal-title">Welcome to Learnify!</h2>
+      <p class="modal-subtitle">Please enter your name to get started</p>
+      <form id="nameForm">
+        <input type="text" id="userNameInput" class="name-input" placeholder="Enter your name" required autofocus>
+        <button type="submit" class="submit-btn">Get Started</button>
+      </form>
+    </div>
+  </div>
+
   <!-- App Header -->
   <header class="app-header">
     <div class="logo">
@@ -269,7 +338,7 @@
   <!-- Main Content -->
   <div class="container">
     <div class="welcome-card">
-      <h2 class="welcome-title">Welcome to Learnify!</h2>
+      <h2 class="welcome-title" id="welcomeTitle">Welcome to Learnify!</h2>
       <p class="welcome-text">Access comprehensive educational resources for your academic success</p>
     </div>
     
@@ -311,25 +380,49 @@
     </div>
   </div>
 
-  
+  <!-- Bottom Navigation - Removed from subject.html -->
+  <!-- This element is kept in the HTML but hidden via CSS -->
 
   <script>
+    // Check if user name exists in localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      const userName = localStorage.getItem('chatUser');
+      const modal = document.getElementById('userNameModal');
+      const welcomeTitle = document.getElementById('welcomeTitle');
+      
+      // Update welcome message if user name exists
+      if (userName) {
+        welcomeTitle.textContent = `Welcome to Learnify, ${userName}!`;
+      }
+      
+      // Only show modal if user name doesn't exist (on subject.html)
+      if (!userName) {
+        modal.classList.remove('hidden');
+      }
+      
+      // Handle form submission
+      document.getElementById('nameForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userNameInput = document.getElementById('userNameInput').value.trim();
+        
+        if (userNameInput) {
+          // Save to localStorage
+          localStorage.setItem('chatUser', userNameInput);
+          
+          // Close the modal
+          modal.classList.add('hidden');
+          
+          // Update welcome message
+          welcomeTitle.textContent = `Welcome to Learnify, ${userNameInput}!`;
+        }
+      });
+    });
+
     // Tap effect for mobile
     document.querySelectorAll('.subject-card').forEach(card => {
       card.addEventListener('click', function() {
         this.style.transform = 'scale(0.95)';
         setTimeout(() => { this.style.transform = ''; }, 200);
-      });
-    });
-    
-    // Add active state to bottom nav items
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.nav-item').forEach(nav => {
-          nav.classList.remove('active');
-        });
-        this.classList.add('active');
       });
     });
   </script>
