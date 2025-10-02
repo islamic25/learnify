@@ -520,22 +520,34 @@
 ```
 
         
-        <!-- Modern Motivational Banner -->
-        <div class="modern-banner">
-            <div class="banner-content">
-                <div class="banner-text">Ace Your Exams – Practice Daily with Learnify!</div>
-                <div class="banner-buttons">
-                    <button class="banner-btn">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Start Quiz</span>
-                    </button>
-                    <button class="banner-btn outline">
-                        <i class="fas fa-share-alt"></i>
-                        <span>Share</span>
-                    </button>
-                </div>
-            </div>
+   <!-- Modern AI Image Generator Banner -->
+<div class="modern-banner">
+    <div class="banner-content">
+        <div class="banner-text">Unleash Creativity – Generate Stunning AI Images!</div>
+        <div class="banner-buttons">
+            <!-- Generate Button -->
+            <button class="banner-btn" onclick="window.location.href='ai.html'">
+                <i class="fas fa-magic"></i>
+                <span>Generate Image</span>
+            </button>
+
+            <!-- Share Button (WhatsApp) -->
+            <button class="banner-btn outline" onclick="shareOnWhatsApp()">
+                <i class="fas fa-share-alt"></i>
+                <span>Share</span>
+            </button>
         </div>
+    </div>
+</div>
+
+<script>
+function shareOnWhatsApp() {
+    const message = "🎨 Try this amazing AI Image Generator! Create stunning AI art here: https://yourwebsite.com/ai.html";
+    const url = "https://wa.me/?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+}
+</script>
+
     </main>
     
     
