@@ -3,136 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scholarships & Admissions | Learnify</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Global Scholarships - Find Your Opportunity</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --dark-green: #004225;
-            --cream: #f4f1ea;
-            --golden: #d4af37;
-            --light-green: #2a6d45;
-            --dark-cream: #e8e4d9;
-            --urgent-red: #e74c3c;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --primary-light: #e8f0fe;
+            --accent: #ff6d00;
+            --accent-light: #ffab40;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray: #dadce0;
+            --gray-dark: #5f6368;
+            --black: #202124;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--cream);
-            color: #333;
-            line-height: 1.6;
+            background-color: var(--gray-light);
+            color: var(--black);
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            background-color: var(--white);
+            min-height: 100vh;
+            position: relative;
             overflow-x: hidden;
         }
 
         /* Header Styles */
-        header {
-            background: linear-gradient(135deg, var(--dark-green) 0%, var(--light-green) 100%);
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 1.5rem 1rem 1rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .floating-icons {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.1;
-        }
-
-        .floating-icon {
-            position: absolute;
-            font-size: 2.5rem;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-icon:nth-child(1) {
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-icon:nth-child(2) {
-            top: 60%;
-            left: 80%;
-            animation-delay: 2s;
-        }
-
-        .floating-icon:nth-child(3) {
-            top: 40%;
-            left: 15%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        /* Filters & Search */
-        .filters-section {
-            margin: 1.5rem 0;
+        .profile-icon:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         .search-container {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-top: 0.5rem;
         }
 
         .search-input {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid var(--dark-cream);
-            border-radius: 50px;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border-radius: 24px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
             font-size: 1rem;
-            background-color: white;
-            transition: all 0.3s ease;
+            color: var(--black);
+            transition: var(--transition);
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--golden);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            background-color: var(--white);
+            box-shadow: 0 0 0 2px var(--accent-light);
         }
 
         .search-icon {
@@ -140,832 +115,1278 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--dark-green);
-            font-size: 1.2rem;
+            color: var(--gray-dark);
         }
 
-        .filter-tabs {
+        /* Filter Section */
+        .filter-section {
+            padding: 1rem;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--gray);
+            position: sticky;
+            top: 140px;
+            z-index: 90;
+        }
+
+        .filter-title {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
         }
 
-        .filter-tab {
-            padding: 0.6rem 1.2rem;
-            background-color: white;
-            border: 2px solid var(--dark-cream);
-            border-radius: 30px;
+        .filter-title h2 {
+            font-size: 1.1rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--dark-green);
         }
 
-        .filter-tab:hover, .filter-tab.active {
-            background-color: var(--dark-green);
-            color: white;
-            border-color: var(--dark-green);
+        .filter-reset {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+        }
+
+        .filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background-color: var(--gray-light);
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 1rem;
+            padding-bottom: 80px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .results-count {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         /* Scholarship Cards */
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--dark-green);
-            margin: 2rem 0 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 50%;
-            height: 3px;
-            background-color: var(--golden);
-        }
-
         .scholarships-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
         .scholarship-card {
-            background-color: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            height: 300px;
-            perspective: 1000px;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-
-        .scholarship-card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+            background-color: var(--white);
+            border-radius: 16px;
             padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
         }
 
-        .card-back {
-            transform: rotateY(180deg);
-            background-color: var(--dark-cream);
-            overflow-y: auto;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .scholarship-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .country-flag {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .flag {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bookmark-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .bookmark-btn.active {
+            color: var(--accent);
         }
 
         .scholarship-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--dark-green);
-            margin-bottom: 0.5rem;
-        }
-
-        .scholarship-badge {
-            background-color: var(--golden);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 1.2rem;
             font-weight: 600;
-        }
-
-        .urgent-badge {
-            background-color: var(--urgent-red);
+            margin-bottom: 0.5rem;
+            color: var(--black);
+            line-height: 1.4;
         }
 
         .scholarship-description {
-            margin-bottom: 1rem;
-            flex-grow: 1;
-            color: #555;
-        }
-
-        .scholarship-deadline {
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #666;
-        }
-
-        .deadline-urgent {
-            color: var(--urgent-red);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        .apply-btn {
-            background: linear-gradient(to right, var(--dark-green), var(--light-green));
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            align-self: flex-start;
-            margin-top: auto;
-        }
-
-        .apply-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 66, 37, 0.3);
-        }
-
-        .card-hover-text {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 66, 37, 0.9);
-            color: white;
-            padding: 0.8rem;
-            text-align: center;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
             font-size: 0.9rem;
-        }
-
-        .scholarship-card:hover .card-hover-text {
-            transform: translateY(0);
-        }
-
-        /* Success Stories */
-        .success-stories {
-            margin: 3rem 0;
-        }
-
-        .stories-carousel {
-            position: relative;
+            color: var(--gray-dark);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            border-radius: 15px;
-            background-color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .stories-container {
+        .scholarship-details {
             display: flex;
-            transition: transform 0.5s ease;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
         }
 
-        .story-card {
-            min-width: 100%;
-            padding: 2rem;
+        .detail-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            text-align: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            color: var(--gray-dark);
+            background-color: var(--gray-light);
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
         }
 
-        .student-photo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--golden);
-            margin-bottom: 1rem;
-        }
-
-        .student-quote {
-            font-style: italic;
-            margin-bottom: 1rem;
-            color: #555;
-        }
-
-        .student-name {
-            font-weight: 700;
-            color: var(--dark-green);
-            margin-bottom: 0.5rem;
-        }
-
-        .student-achievement {
-            font-size: 0.9rem;
-            color: var(--golden);
-        }
-
-        .carousel-controls {
-            display: flex;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .carousel-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin: 0 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background-color: var(--dark-green);
-        }
-
-        /* Tips Section */
-        .tips-section {
-            margin: 3rem 0;
-        }
-
-        .accordion {
-            background-color: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .accordion-item {
-            border-bottom: 1px solid var(--dark-cream);
-        }
-
-        .accordion-item:last-child {
-            border-bottom: none;
-        }
-
-        .accordion-header {
-            padding: 1.5rem;
-            background-color: white;
-            cursor: pointer;
+        .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 600;
-            color: var(--dark-green);
-            transition: background-color 0.3s ease;
+            margin-top: 1rem;
         }
 
-        .accordion-header:hover {
-            background-color: var(--dark-cream);
+        .deadline {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-dark);
         }
 
-        .accordion-header i {
-            transition: transform 0.3s ease;
+        .deadline i {
+            color: var(--accent);
         }
 
-        .accordion-item.active .accordion-header i {
-            transform: rotate(180deg);
+        .apply-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .accordion-content {
-            padding: 0 1.5rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+        .apply-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        .accordion-item.active .accordion-content {
-            padding: 0 1.5rem 1.5rem;
-            max-height: 500px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--dark-green);
-            color: white;
-            text-align: center;
-            padding: 3rem 1rem;
-            margin-top: 3rem;
-        }
-
-        .footer-content {
-            max-width: 600px;
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
             margin: 0 auto;
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+            border-top: 1px solid var(--gray);
+            z-index: 100;
         }
 
-        .footer-text {
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--gray-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
             font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 300;
         }
 
-        .footer-icons {
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Filter Modal */
+        .filter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            align-items: flex-end;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .filter-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .filter-content {
+            background-color: var(--white);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .filter-modal.active .filter-content {
+            transform: translateY(0);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
         }
 
-        .footer-icon {
+        .filter-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .close-filter {
+            background: none;
+            border: none;
             font-size: 1.5rem;
-            animation: float 3s ease-in-out infinite;
+            color: var(--gray-dark);
+            cursor: pointer;
         }
 
-        .footer-icon:nth-child(2) {
-            animation-delay: 1s;
+        .filter-group {
+            margin-bottom: 1.5rem;
         }
 
-        .footer-icon:nth-child(3) {
-            animation-delay: 2s;
+        .filter-group-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
         }
 
-        .copyright {
-            font-size: 0.9rem;
-            opacity: 0.7;
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
         }
 
-        /* Confetti effect */
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: var(--golden);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 1000;
+        .filter-option {
+            padding: 0.8rem;
+            border-radius: 10px;
+            background-color: var(--gray-light);
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            .scholarships-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .filter-tabs {
-                justify-content: center;
-            }
+        .filter-option.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .scholarships-grid {
-                grid-template-columns: repeat(2, 1fr);
+        .apply-filters {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .apply-filters:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Load More Button */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .load-more {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .load-more:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-dark);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 500px) {
+            body {
+                border-left: 1px solid var(--gray);
+                border-right: 1px solid var(--gray);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
-        <div class="floating-icons">
-            <div class="floating-icon">🎓</div>
-            <div class="floating-icon">💰</div>
-            <div class="floating-icon">📘</div>
-        </div>
-        <div class="header-content">
-            <h1>Scholarships & Admissions</h1>
-            <p class="subtitle">"Unlock opportunities for your future."</p>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Filters & Search -->
-        <section class="filters-section">
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Global Scholarships</h1>
+                <div class="profile-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search scholarships by name or field...">
+                <input type="text" class="search-input" placeholder="Search scholarships..." id="searchInput">
             </div>
-            <div class="filter-tabs">
-                <div class="filter-tab active">All</div>
-                <div class="filter-tab">Local</div>
-                <div class="filter-tab">International</div>
-                <div class="filter-tab">University</div>
-                <div class="filter-tab">School</div>
-                <div class="filter-tab">Government</div>
+        </header>
+
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <div class="filter-title">
+                <h2>Filters</h2>
+                <div class="filter-reset" id="resetFilters">Reset</div>
+            </div>
+            <div class="filter-chips" id="filterChips">
+                <div class="filter-chip active" data-filter="all">All</div>
+                <div class="filter-chip" data-filter="country:USA">USA</div>
+                <div class="filter-chip" data-filter="country:UK">UK</div>
+                <div class="filter-chip" data-filter="country:Germany">Germany</div>
+                <div class="filter-chip" data-filter="country:Canada">Canada</div>
+                <div class="filter-chip" data-filter="country:Australia">Australia</div>
+                <div class="filter-chip" data-filter="funding:Fully Funded">Fully Funded</div>
+                <div class="filter-chip" data-filter="funding:Partially Funded">Partially Funded</div>
             </div>
         </section>
 
-        <!-- Urgent Highlights -->
-        <h2 class="section-title">Closing Soon ⏳</h2>
-        <div class="scholarships-grid" id="urgent-scholarships">
-            <!-- Urgent scholarships will be populated by JavaScript -->
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="section-title">
+                <h2 id="pageTitle">Recommended Scholarships</h2>
+                <div class="view-all" id="viewAll">View All</div>
+            </div>
 
-        <!-- All Scholarships -->
-        <h2 class="section-title">All Scholarships</h2>
-        <div class="scholarships-grid" id="all-scholarships">
-            <!-- All scholarships will be populated by JavaScript -->
-        </div>
+            <div class="results-count" id="resultsCount"></div>
 
-        <!-- Success Stories -->
-        <section class="success-stories">
-            <h2 class="section-title">Success Stories</h2>
-            <div class="stories-carousel">
-                <div class="stories-container" id="stories-container">
-                    <!-- Stories will be populated by JavaScript -->
+            <div class="scholarships-grid" id="scholarshipsGrid">
+                <!-- Scholarships will be loaded here dynamically -->
+            </div>
+
+            <div class="load-more-container" id="loadMoreContainer">
+                <button class="load-more" id="loadMore">Load More Scholarships</button>
+            </div>
+        </main>
+
+        <!-- Filter Modal -->
+        <div class="filter-modal" id="filterModal">
+            <div class="filter-content">
+                <div class="filter-header">
+                    <h2>Filter Scholarships</h2>
+                    <button class="close-filter" id="closeFilter"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="carousel-controls" id="carousel-dots">
-                    <!-- Dots will be populated by JavaScript -->
+
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Country</h3>
+                    <div class="filter-options" id="countryFilters">
+                        <!-- Country options will be loaded dynamically -->
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Tips Section -->
-        <section class="tips-section">
-            <h2 class="section-title">Application Tips</h2>
-            <div class="accordion" id="tips-accordion">
-                <!-- Tips will be populated by JavaScript -->
-            </div>
-        </section>
-    </main>
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Funding Type</h3>
+                    <div class="filter-options" id="fundingFilters">
+                        <!-- Funding type options will be loaded dynamically -->
+                    </div>
+                </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p class="footer-text">"Every application brings you closer to success – Apply Today!"</p>
-            <div class="footer-icons">
-                <div class="footer-icon">🎓</div>
-                <div class="footer-icon">💼</div>
-                <div class="footer-icon">✨</div>
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Sort By</h3>
+                    <div class="filter-options" id="sortOptions">
+                        <div class="filter-option" data-sort="newest">Newest</div>
+                        <div class="filter-option" data-sort="deadline">Deadline Soon</div>
+                        <div class="filter-option" data-sort="country">Country A-Z</div>
+                    </div>
+                </div>
+
+                <button class="apply-filters" id="applyFilters">Apply Filters</button>
             </div>
-            <p class="copyright">© 2023 Learnify. All rights reserved.</p>
         </div>
-    </footer>
 
-    <!-- Confetti container -->
-    <div id="confetti-container"></div>
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" data-page="home">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item" data-page="search">
+                <i class="fas fa-search nav-icon"></i>
+                <span class="nav-label">Search</span>
+            </div>
+            <div class="nav-item" data-page="bookmarks">
+                <i class="far fa-bookmark nav-icon"></i>
+                <span class="nav-label">Saved</span>
+            </div>
+            <div class="nav-item" data-page="profile">
+                <i class="fas fa-user nav-icon"></i>
+                <span class="nav-label">Profile</span>
+            </div>
+        </nav>
+    </div>
 
     <script>
-        // Scholarship data
+        // Scholarship data - 20+ sample scholarships
         const scholarships = [
             {
                 id: 1,
-                title: "Global Excellence Scholarship",
-                description: "Awarded to outstanding international students demonstrating academic excellence and leadership potential.",
-                fullDescription: "The Global Excellence Scholarship is designed to attract top-tier international students to our university. Recipients will receive full tuition coverage, accommodation, and a living stipend. Applicants must have a minimum GPA of 3.7 and demonstrate leadership through extracurricular activities.",
-                deadline: "2023-12-15",
-                type: "International",
-                urgent: true,
-                amount: "Full tuition + stipend"
+                title: "Türkiye Bursları Scholarships",
+                description: "Full scholarships for international students to study in Turkey at all levels of higher education.",
+                country: "Turkey",
+                fundingType: "Fully Funded",
+                deadline: "2023-05-15",
+                flagStyle: "background: linear-gradient(to bottom, #e30a17 33%, white 33%, white 66%, #e30a17 66%);",
+                applyUrl: "https://www.turkiyeburslari.gov.tr/"
             },
             {
                 id: 2,
-                title: "STEM Innovation Grant",
-                description: "For students pursuing degrees in Science, Technology, Engineering, or Mathematics.",
-                fullDescription: "The STEM Innovation Grant supports students who are passionate about pushing the boundaries in STEM fields. This grant provides $10,000 per year for up to 4 years. Applicants must submit a project proposal showcasing their innovative ideas.",
-                deadline: "2024-02-28",
-                type: "University",
-                urgent: false,
-                amount: "$10,000/year"
+                title: "Chevening Scholarships",
+                description: "UK government's global scholarship programme for future leaders to study in the UK.",
+                country: "UK",
+                fundingType: "Fully Funded",
+                deadline: "2023-11-02",
+                flagStyle: "background: linear-gradient(to bottom, #012169 50%, #C8102E 50%);",
+                applyUrl: "https://www.chevening.org/"
             },
             {
                 id: 3,
-                title: "Community Leadership Award",
-                description: "Recognizing students who have made significant contributions to their communities.",
-                fullDescription: "This award is for students who have demonstrated exceptional leadership and service in their communities. The award includes a $5,000 scholarship and mentorship opportunities with community leaders. Applicants must provide evidence of their community involvement.",
-                deadline: "2023-11-30",
-                type: "Local",
-                urgent: true,
-                amount: "$5,000"
+                title: "DAAD Scholarships",
+                description: "German Academic Exchange Service offers scholarships for international students in Germany.",
+                country: "Germany",
+                fundingType: "Fully Funded",
+                deadline: "2023-08-20",
+                flagStyle: "background: linear-gradient(to bottom, black 33%, red 33%, red 66%, gold 66%);",
+                applyUrl: "https://www.daad.de/en/"
             },
             {
                 id: 4,
-                title: "First-Generation Scholar Program",
-                description: "Supporting students who are the first in their families to attend college.",
-                fullDescription: "This program provides comprehensive support for first-generation college students, including financial assistance, academic mentoring, and career guidance. The scholarship covers 75% of tuition costs and includes a summer internship opportunity.",
-                deadline: "2024-01-15",
-                type: "University",
-                urgent: false,
-                amount: "75% tuition"
+                title: "Fulbright Program",
+                description: "Flagship international educational exchange program sponsored by the U.S. government.",
+                country: "USA",
+                fundingType: "Fully Funded",
+                deadline: "2023-10-12",
+                flagStyle: "background: linear-gradient(to right, #0052B4 30%, white 30%, white 70%, #D80027 70%);",
+                applyUrl: "https://foreign.fulbrightonline.org/"
             },
             {
                 id: 5,
-                title: "Arts & Culture Fellowship",
-                description: "For students excelling in visual arts, music, theater, or creative writing.",
-                fullDescription: "The Arts & Culture Fellowship supports talented artists with a $8,000 award and exhibition opportunities. Applicants must submit a portfolio of their work and a statement of artistic purpose. Fellows will participate in monthly workshops with established artists.",
-                deadline: "2024-03-10",
-                type: "School",
-                urgent: false,
-                amount: "$8,000"
+                title: "Canada Graduate Scholarships",
+                description: "Awarded to high-caliber scholars engaged in master's or doctoral programs in Canada.",
+                country: "Canada",
+                fundingType: "Partially Funded",
+                deadline: "2023-12-01",
+                flagStyle: "background: linear-gradient(to right, #FF0000 33%, white 33%, white 66%, #FF0000 66%);",
+                applyUrl: "https://www.nserc-crsng.gc.ca/Students-Etudiants/PG-CS/CGSH-BESCD_eng.asp"
             },
             {
                 id: 6,
-                title: "Government Merit Scholarship",
-                description: "National scholarship program for high-achieving students across all disciplines.",
-                fullDescription: "This prestigious government scholarship is awarded to students with outstanding academic records. The scholarship covers full tuition, books, and provides a living allowance. Recipients are expected to maintain a GPA of 3.5 or higher throughout their studies.",
-                deadline: "2023-12-05",
-                type: "Government",
-                urgent: true,
-                amount: "Full ride"
+                title: "Saudi Arabian Government Scholarships",
+                description: "Fully funded scholarships for international students to study in Saudi Arabia.",
+                country: "Saudi Arabia",
+                fundingType: "Fully Funded",
+                deadline: "2023-06-30",
+                flagStyle: "background: #006847;",
+                applyUrl: "https://www.moe.gov.sa/en/education/highereducation/Government-education/Pages/Scholarships.aspx"
+            },
+            {
+                id: 7,
+                title: "Australia Awards Scholarships",
+                description: "Long-term awards administered by the Department of Foreign Affairs and Trade.",
+                country: "Australia",
+                fundingType: "Fully Funded",
+                deadline: "2023-04-30",
+                flagStyle: "background: linear-gradient(to right, #012169 30%, white 30%, white 70%, #E4002B 70%);",
+                applyUrl: "https://www.dfat.gov.au/people-to-people/australia-awards"
+            },
+            {
+                id: 8,
+                title: "Erasmus Mundus Joint Masters",
+                description: "EU-funded programme to support high-quality integrated masters courses.",
+                country: "Multiple",
+                fundingType: "Fully Funded",
+                deadline: "2023-01-15",
+                flagStyle: "background: linear-gradient(to right, #003399 33%, #FFCC00 33%, #FFCC00 66%, #FF0000 66%);",
+                applyUrl: "https://ec.europa.eu/programmes/erasmus-plus/opportunities/individuals/students/erasmus-mundus-joint-masters_en"
+            },
+            {
+                id: 9,
+                title: "Chinese Government Scholarships",
+                description: "Scholarships for international students to study in Chinese universities.",
+                country: "China",
+                fundingType: "Fully Funded",
+                deadline: "2023-03-31",
+                flagStyle: "background: #DE2910;",
+                applyUrl: "http://www.csc.edu.cn/studyinchina"
+            },
+            {
+                id: 10,
+                title: "Japanese Government MEXT Scholarships",
+                description: "Scholarships for international students to study in Japan at various academic levels.",
+                country: "Japan",
+                fundingType: "Fully Funded",
+                deadline: "2023-05-20",
+                flagStyle: "background: #BC002D;",
+                applyUrl: "https://www.studyinjapan.go.jp/en/"
+            },
+            {
+                id: 11,
+                title: "Swiss Government Excellence Scholarships",
+                description: "Research scholarships for foreign scholars and artists for postgraduate or PhD studies.",
+                country: "Switzerland",
+                fundingType: "Fully Funded",
+                deadline: "2023-09-30",
+                flagStyle: "background: #FF0000;",
+                applyUrl: "https://www.sbfi.admin.ch/sbfi/en/home/education/scholarships-and-grants/swiss-government-excellence-scholarships.html"
+            },
+            {
+                id: 12,
+                title: "French Government Eiffel Scholarships",
+                description: "Designed to attract top foreign students to enroll in master's and PhD programs.",
+                country: "France",
+                fundingType: "Fully Funded",
+                deadline: "2023-01-10",
+                flagStyle: "background: linear-gradient(to right, #002395 33%, white 33%, white 66%, #ED2939 66%);",
+                applyUrl: "https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence"
+            },
+            {
+                id: 13,
+                title: "Netherlands Orange Knowledge Programme",
+                description: "Scholarships for professionals from developing countries to study in the Netherlands.",
+                country: "Netherlands",
+                fundingType: "Partially Funded",
+                deadline: "2023-03-24",
+                flagStyle: "background: linear-gradient(to bottom, #AE1C28 33%, white 33%, white 66%, #21468B 66%);",
+                applyUrl: "https://www.studyinnl.org/finances/orange-knowledge-programme"
+            },
+            {
+                id: 14,
+                title: "Swedish Institute Scholarships",
+                description: "Fully funded scholarships for global professionals to study in Sweden.",
+                country: "Sweden",
+                fundingType: "Fully Funded",
+                deadline: "2023-02-15",
+                flagStyle: "background: #006AA7;",
+                applyUrl: "https://si.se/en/apply/scholarships/swedish-institute-scholarships-for-global-professionals/"
+            },
+            {
+                id: 15,
+                title: "Korean Government Scholarship Program",
+                description: "Scholarships for international students to pursue higher education in South Korea.",
+                country: "South Korea",
+                fundingType: "Fully Funded",
+                deadline: "2023-09-15",
+                flagStyle: "background: linear-gradient(to right, #CD2E3A 33%, white 33%, white 66%, #0047A0 66%);",
+                applyUrl: "https://www.studyinkorea.go.kr/en/sub/gks/allnew_invite.do"
+            },
+            {
+                id: 16,
+                title: "New Zealand Development Scholarships",
+                description: "Scholarships for students from developing countries to study in New Zealand.",
+                country: "New Zealand",
+                fundingType: "Fully Funded",
+                deadline: "2023-04-30",
+                flagStyle: "background: #00247D;",
+                applyUrl: "https://www.mfat.govt.nz/en/aid-and-development/scholarships/"
+            },
+            {
+                id: 17,
+                title: "Italian Government Scholarships",
+                description: "Scholarships offered to foreign citizens and Italian citizens living abroad.",
+                country: "Italy",
+                fundingType: "Partially Funded",
+                deadline: "2023-05-31",
+                flagStyle: "background: linear-gradient(to right, #009246 33%, white 33%, white 66%, #CE2B37 66%);",
+                applyUrl: "https://www.esteri.it/mae/en/politica_estera/cultura/borse_studio_stranieri/"
+            },
+            {
+                id: 18,
+                title: "Belgian Government Scholarships",
+                description: "Scholarships for international students from developing countries to study in Belgium.",
+                country: "Belgium",
+                fundingType: "Fully Funded",
+                deadline: "2023-02-01",
+                flagStyle: "background: linear-gradient(to bottom, black 33%, yellow 33%, yellow 66%, red 66%);",
+                applyUrl: "https://www.vliruos.be/en/scholarships"
+            },
+            {
+                id: 19,
+                title: "Austrian Government Scholarships",
+                description: "Scholarships for international students to study at Austrian universities.",
+                country: "Austria",
+                fundingType: "Partially Funded",
+                deadline: "2023-03-01",
+                flagStyle: "background: linear-gradient(to bottom, #ED2939 33%, white 33%, white 66%, #ED2939 66%);",
+                applyUrl: "https://grants.at/studyinaustria/"
+            },
+            {
+                id: 20,
+                title: "Denmark Government Scholarships",
+                description: "Scholarships for highly qualified non-EU/EEA students to study in Denmark.",
+                country: "Denmark",
+                fundingType: "Partially Funded",
+                deadline: "2023-01-15",
+                flagStyle: "background: #C60C30;",
+                applyUrl: "https://studyindenmark.dk/study-options/tuition-fees-scholarships"
+            },
+            {
+                id: 21,
+                title: "Finland Government Scholarships",
+                description: "Scholarships for international students from outside the EU/EEA area.",
+                country: "Finland",
+                fundingType: "Partially Funded",
+                deadline: "2023-01-25",
+                flagStyle: "background: #002F6C;",
+                applyUrl: "https://www.studyinfinland.fi/scholarships"
+            },
+            {
+                id: 22,
+                title: "Norway Quota Scheme",
+                description: "Scholarship programme for students from developing countries to study in Norway.",
+                country: "Norway",
+                fundingType: "Fully Funded",
+                deadline: "2023-12-01",
+                flagStyle: "background: linear-gradient(to right, #EF2B2D 33%, white 33%, white 66%, #002868 66%);",
+                applyUrl: "https://www.studyinnorway.no/norway-education/norway-quota-scheme"
+            },
+            {
+                id: 23,
+                title: "Ireland Government Scholarships",
+                description: "Scholarships for international students to study in Irish higher education institutions.",
+                country: "Ireland",
+                fundingType: "Fully Funded",
+                deadline: "2023-03-24",
+                flagStyle: "background: linear-gradient(to right, #009A49 33%, white 33%, white 66%, #FF7900 66%);",
+                applyUrl: "https://www.educationinireland.com/en/study-in-ireland/scholarships/"
+            },
+            {
+                id: 24,
+                title: "Portuguese Government Scholarships",
+                description: "Scholarships for international students to study in Portugal.",
+                country: "Portugal",
+                fundingType: "Partially Funded",
+                deadline: "2023-05-31",
+                flagStyle: "background: linear-gradient(to right, #006600 33%, #FF0000 33%, #FF0000 66%, #FF0000 66%);",
+                applyUrl: "https://www.studyinportugal.edu.pt/en"
             }
         ];
 
-        // Success stories data
-        const successStories = [
-            {
-                name: "Maria Rodriguez",
-                achievement: "Received Full Scholarship to Stanford",
-                quote: "Learnify helped me discover scholarships I never knew existed. The application tips were invaluable!",
-                photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                name: "James Chen",
-                achievement: "Awarded NASA Internship & Scholarship",
-                quote: "The deadline alerts helped me stay on track. I wouldn't have applied without the reminders!",
-                photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                name: "Aisha Johnson",
-                achievement: "Full Ride to MIT Engineering Program",
-                quote: "The success stories kept me motivated during the application process. Seeing others succeed made me believe I could too!",
-                photo: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+        // App state
+        const state = {
+            currentPage: 'home',
+            displayedScholarships: 6,
+            bookmarkedScholarships: JSON.parse(localStorage.getItem('bookmarkedScholarships')) || [],
+            filters: {
+                search: '',
+                country: '',
+                fundingType: '',
+                sort: 'newest'
             }
-        ];
+        };
 
-        // Tips data
-        const tips = [
-            {
-                title: "How to write a strong application?",
-                content: "Start by carefully reading the scholarship requirements. Tailor your application to highlight how you meet each criterion. Use specific examples to demonstrate your achievements and qualities. Proofread multiple times and ask someone else to review your application before submitting."
-            },
-            {
-                title: "What makes a compelling personal statement?",
-                content: "A compelling personal story connects your past experiences with your future goals. Be authentic and reflective. Show, don't just tell, your qualities through specific anecdotes. Explain why you're passionate about your field of study and how the scholarship will help you achieve your aspirations."
-            },
-            {
-                title: "How to secure strong recommendation letters?",
-                content: "Ask recommenders who know you well and can speak specifically about your abilities. Provide them with your resume, the scholarship requirements, and details about what you'd like them to highlight. Give them plenty of time (at least 3-4 weeks) to write the letter."
-            },
-            {
-                title: "What to do if you don't meet all the criteria?",
-                content: "Apply anyway if you meet most of the criteria. Scholarship committees sometimes make exceptions for exceptional candidates. Use your application to address any gaps and emphasize your strengths. Highlight transferable skills and experiences that demonstrate your potential."
-            }
-        ];
+        // DOM Elements
+        const scholarshipsGrid = document.getElementById('scholarshipsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterChips = document.getElementById('filterChips');
+        const filterModal = document.getElementById('filterModal');
+        const closeFilter = document.getElementById('closeFilter');
+        const applyFilters = document.getElementById('applyFilters');
+        const resetFilters = document.getElementById('resetFilters');
+        const loadMore = document.getElementById('loadMore');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+        const resultsCount = document.getElementById('resultsCount');
+        const pageTitle = document.getElementById('pageTitle');
+        const viewAll = document.getElementById('viewAll');
+        const countryFilters = document.getElementById('countryFilters');
+        const fundingFilters = document.getElementById('fundingFilters');
+        const navItems = document.querySelectorAll('.nav-item');
 
-        // Utility functions
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
+        // Initialize the app
+        function init() {
+            renderScholarships();
+            setupEventListeners();
+            populateFilterOptions();
+            updateBookmarkIcons();
+            updateResultsCount();
         }
 
-        function daysUntilDeadline(deadline) {
-            const today = new Date();
-            const deadlineDate = new Date(deadline);
-            const diffTime = deadlineDate - today;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        }
-
-        function createConfetti() {
-            const container = document.getElementById('confetti-container');
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = ['#004225', '#d4af37', '#e74c3c', '#2a6d45'][Math.floor(Math.random() * 4)];
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
-                confetti.style.opacity = '1';
-                
-                container.appendChild(confetti);
-                
-                // Animate confetti
-                const animation = confetti.animate([
-                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-                ], {
-                    duration: 1000 + Math.random() * 2000,
-                    easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
-                });
-                
-                animation.onfinish = () => confetti.remove();
-            }
-        }
-
-        // Render scholarships
-        function renderScholarships(scholarshipList, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            scholarshipList.forEach(scholarship => {
-                const daysLeft = daysUntilDeadline(scholarship.deadline);
-                const isUrgent = daysLeft <= 30;
-                
-                const scholarshipCard = document.createElement('div');
-                scholarshipCard.className = 'scholarship-card';
-                scholarshipCard.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-header">
-                                <h3 class="scholarship-title">${scholarship.title}</h3>
-                                <span class="scholarship-badge ${isUrgent ? 'urgent-badge' : ''}">${scholarship.type}</span>
-                            </div>
-                            <p class="scholarship-description">${scholarship.description}</p>
-                            <p class="scholarship-deadline ${isUrgent ? 'deadline-urgent' : ''}">
-                                Deadline: ${formatDate(scholarship.deadline)} (${daysLeft} days left)
-                            </p>
-                            <button class="apply-btn" data-id="${scholarship.id}">Apply Now</button>
-                            <div class="card-hover-text">This could be YOUR chance!</div>
-                        </div>
-                        <div class="card-back">
-                            <h3 class="scholarship-title">${scholarship.title}</h3>
-                            <p>${scholarship.fullDescription}</p>
-                            <p><strong>Amount:</strong> ${scholarship.amount}</p>
-                            <p><strong>Type:</strong> ${scholarship.type}</p>
-                            <p class="scholarship-deadline ${isUrgent ? 'deadline-urgent' : ''}">
-                                <strong>Deadline:</strong> ${formatDate(scholarship.deadline)} (${daysLeft} days left)
-                            </p>
-                            <button class="apply-btn" data-id="${scholarship.id}">Apply Now</button>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(scholarshipCard);
-                
-                // Add click event for card flip
-                scholarshipCard.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('apply-btn')) {
-                        scholarshipCard.classList.toggle('flipped');
-                    }
-                });
-                
-                // Add apply button event
-                const applyBtn = scholarshipCard.querySelector('.apply-btn');
-                applyBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    createConfetti();
-                    alert(`Application process for "${scholarship.title}" would begin here!`);
-                });
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                state.filters.search = this.value.toLowerCase();
+                state.displayedScholarships = 6;
+                renderScholarships();
             });
-        }
 
-        // Render success stories
-        function renderSuccessStories() {
-            const container = document.getElementById('stories-container');
-            const dotsContainer = document.getElementById('carousel-dots');
-            
-            container.innerHTML = '';
-            dotsContainer.innerHTML = '';
-            
-            successStories.forEach((story, index) => {
-                const storyCard = document.createElement('div');
-                storyCard.className = 'story-card';
-                storyCard.innerHTML = `
-                    <img src="${story.photo}" alt="${story.name}" class="student-photo">
-                    <p class="student-quote">"${story.quote}"</p>
-                    <h4 class="student-name">${story.name}</h4>
-                    <p class="student-achievement">${story.achievement}</p>
-                `;
-                container.appendChild(storyCard);
-                
-                const dot = document.createElement('div');
-                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
-                dot.dataset.index = index;
-                dotsContainer.appendChild(dot);
-            });
-            
-            // Carousel functionality
-            let currentIndex = 0;
-            const dots = document.querySelectorAll('.carousel-dot');
-            
-            function showSlide(index) {
-                container.style.transform = `translateX(-${index * 100}%)`;
-                
-                dots.forEach(dot => dot.classList.remove('active'));
-                dots[index].classList.add('active');
-                
-                currentIndex = index;
-            }
-            
-            dots.forEach(dot => {
-                dot.addEventListener('click', () => {
-                    showSlide(parseInt(dot.dataset.index));
-                });
-            });
-            
-            // Auto-advance carousel
-            setInterval(() => {
-                let nextIndex = (currentIndex + 1) % successStories.length;
-                showSlide(nextIndex);
-            }, 5000);
-        }
-
-        // Render tips accordion
-        function renderTips() {
-            const container = document.getElementById('tips-accordion');
-            container.innerHTML = '';
-            
-            tips.forEach((tip, index) => {
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'accordion-item';
-                accordionItem.innerHTML = `
-                    <div class="accordion-header">
-                        <span>${tip.title}</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="accordion-content">
-                        <p>${tip.content}</p>
-                    </div>
-                `;
-                container.appendChild(accordionItem);
-                
-                // Accordion functionality
-                const header = accordionItem.querySelector('.accordion-header');
-                header.addEventListener('click', () => {
-                    const isActive = accordionItem.classList.contains('active');
-                    
-                    // Close all items
-                    document.querySelectorAll('.accordion-item').forEach(item => {
-                        item.classList.remove('active');
+            // Filter chips
+            filterChips.addEventListener('click', function(e) {
+                if (e.target.classList.contains('filter-chip')) {
+                    document.querySelectorAll('.filter-chip').forEach(chip => {
+                        chip.classList.remove('active');
                     });
+                    e.target.classList.add('active');
                     
-                    // Open clicked item if it wasn't active
-                    if (!isActive) {
-                        accordionItem.classList.add('active');
+                    const filterValue = e.target.dataset.filter;
+                    if (filterValue === 'all') {
+                        state.filters.country = '';
+                        state.filters.fundingType = '';
+                    } else if (filterValue.startsWith('country:')) {
+                        state.filters.country = filterValue.split(':')[1];
+                        state.filters.fundingType = '';
+                    } else if (filterValue.startsWith('funding:')) {
+                        state.filters.fundingType = filterValue.split(':')[1];
+                        state.filters.country = '';
+                    }
+                    
+                    state.displayedScholarships = 6;
+                    renderScholarships();
+                }
+            });
+
+            // Filter modal
+            resetFilters.addEventListener('click', function() {
+                filterModal.classList.add('active');
+            });
+
+            closeFilter.addEventListener('click', function() {
+                filterModal.classList.remove('active');
+            });
+
+            applyFilters.addEventListener('click', function() {
+                filterModal.classList.remove('active');
+                state.displayedScholarships = 6;
+                renderScholarships();
+            });
+
+            // Load more button
+            loadMore.addEventListener('click', function() {
+                state.displayedScholarships += 6;
+                renderScholarships();
+            });
+
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    state.currentPage = page;
+                    state.displayedScholarships = 6;
+                    
+                    if (page === 'home') {
+                        pageTitle.textContent = 'Recommended Scholarships';
+                        viewAll.style.display = 'block';
+                        renderScholarships();
+                    } else if (page === 'bookmarks') {
+                        pageTitle.textContent = 'My Bookmarks';
+                        viewAll.style.display = 'none';
+                        renderBookmarkedScholarships();
+                    } else if (page === 'search') {
+                        pageTitle.textContent = 'Search Scholarships';
+                        viewAll.style.display = 'none';
+                        renderScholarships();
+                    } else if (page === 'profile') {
+                        pageTitle.textContent = 'My Profile';
+                        viewAll.style.display = 'none';
+                        renderProfile();
+                    }
+                });
+            });
+
+            // View all
+            viewAll.addEventListener('click', function() {
+                state.displayedScholarships = scholarships.length;
+                renderScholarships();
+            });
+        }
+
+        // Populate filter options dynamically
+        function populateFilterOptions() {
+            // Get unique countries
+            const countries = [...new Set(scholarships.map(s => s.country))];
+            
+            // Populate country filters
+            countryFilters.innerHTML = '';
+            countries.forEach(country => {
+                const option = document.createElement('div');
+                option.className = 'filter-option';
+                option.textContent = country;
+                option.dataset.filter = 'country';
+                option.dataset.value = country;
+                countryFilters.appendChild(option);
+            });
+            
+            // Get unique funding types
+            const fundingTypes = [...new Set(scholarships.map(s => s.fundingType))];
+            
+            // Populate funding type filters
+            fundingFilters.innerHTML = '';
+            fundingTypes.forEach(type => {
+                const option = document.createElement('div');
+                option.className = 'filter-option';
+                option.textContent = type;
+                option.dataset.filter = 'funding';
+                option.dataset.value = type;
+                fundingFilters.appendChild(option);
+            });
+            
+            // Add event listeners to filter options
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (this.dataset.filter === 'sort') {
+                        // For sort options, only one can be active
+                        document.querySelectorAll(`.filter-option[data-filter="sort"]`).forEach(opt => {
+                            opt.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        state.filters.sort = this.dataset.value;
+                    } else {
+                        // For other filters, toggle active state
+                        this.classList.toggle('active');
+                        
+                        // Update state based on active filters
+                        const activeCountryFilters = document.querySelectorAll('.filter-option[data-filter="country"].active');
+                        const activeFundingFilters = document.querySelectorAll('.filter-option[data-filter="funding"].active');
+                        
+                        if (activeCountryFilters.length > 0) {
+                            state.filters.country = Array.from(activeCountryFilters).map(opt => opt.dataset.value).join(',');
+                        } else {
+                            state.filters.country = '';
+                        }
+                        
+                        if (activeFundingFilters.length > 0) {
+                            state.filters.fundingType = Array.from(activeFundingFilters).map(opt => opt.dataset.value).join(',');
+                        } else {
+                            state.filters.fundingType = '';
+                        }
                     }
                 });
             });
         }
 
-        // Filter functionality
-        function setupFilters() {
-            const filterTabs = document.querySelectorAll('.filter-tab');
-            const searchInput = document.querySelector('.search-input');
+        // Render scholarships based on current filters
+        function renderScholarships() {
+            let filteredScholarships = [...scholarships];
             
-            function filterScholarships() {
-                const activeFilter = document.querySelector('.filter-tab.active').textContent;
-                const searchTerm = searchInput.value.toLowerCase();
-                
-                let filteredScholarships = scholarships;
-                
-                // Apply type filter
-                if (activeFilter !== 'All') {
-                    filteredScholarships = filteredScholarships.filter(s => s.type === activeFilter);
-                }
-                
-                // Apply search filter
-                if (searchTerm) {
-                    filteredScholarships = filteredScholarships.filter(s => 
-                        s.title.toLowerCase().includes(searchTerm) || 
-                        s.description.toLowerCase().includes(searchTerm) ||
-                        s.fullDescription.toLowerCase().includes(searchTerm)
-                    );
-                }
-                
-                // Separate urgent and non-urgent
-                const urgent = filteredScholarships.filter(s => s.urgent);
-                const nonUrgent = filteredScholarships.filter(s => !s.urgent);
-                
-                renderScholarships(urgent, 'urgent-scholarships');
-                renderScholarships(nonUrgent, 'all-scholarships');
+            // Apply search filter
+            if (state.filters.search) {
+                filteredScholarships = filteredScholarships.filter(scholarship => 
+                    scholarship.title.toLowerCase().includes(state.filters.search) ||
+                    scholarship.description.toLowerCase().includes(state.filters.search) ||
+                    scholarship.country.toLowerCase().includes(state.filters.search)
+                );
             }
             
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    filterTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    filterScholarships();
-                });
-            });
+            // Apply country filter
+            if (state.filters.country) {
+                const countries = state.filters.country.split(',');
+                filteredScholarships = filteredScholarships.filter(scholarship => 
+                    countries.includes(scholarship.country)
+                );
+            }
             
-            searchInput.addEventListener('input', filterScholarships);
+            // Apply funding type filter
+            if (state.filters.fundingType) {
+                const fundingTypes = state.filters.fundingType.split(',');
+                filteredScholarships = filteredScholarships.filter(scholarship => 
+                    fundingTypes.includes(scholarship.fundingType)
+                );
+            }
+            
+            // Apply sorting
+            if (state.filters.sort === 'newest') {
+                filteredScholarships.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
+            } else if (state.filters.sort === 'deadline') {
+                filteredScholarships.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            } else if (state.filters.sort === 'country') {
+                filteredScholarships.sort((a, b) => a.country.localeCompare(b.country));
+            }
+            
+            // Display scholarships
+            scholarshipsGrid.innerHTML = '';
+            
+            if (filteredScholarships.length === 0) {
+                scholarshipsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="far fa-frown"></i>
+                        <h3>No scholarships found</h3>
+                        <p>Try adjusting your search or filters</p>
+                    </div>
+                `;
+                loadMoreContainer.style.display = 'none';
+            } else {
+                const scholarshipsToShow = filteredScholarships.slice(0, state.displayedScholarships);
+                
+                scholarshipsToShow.forEach(scholarship => {
+                    const isBookmarked = state.bookmarkedScholarships.includes(scholarship.id);
+                    
+                    const scholarshipCard = document.createElement('div');
+                    scholarshipCard.className = 'scholarship-card';
+                    scholarshipCard.innerHTML = `
+                        <div class="card-header">
+                            <div class="country-flag">
+                                <div class="flag" style="${scholarship.flagStyle}"></div>
+                            </div>
+                            <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" data-id="${scholarship.id}">
+                                <i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <h3 class="scholarship-title">${scholarship.title}</h3>
+                        <p class="scholarship-description">${scholarship.description}</p>
+                        <div class="scholarship-details">
+                            <div class="detail-item">
+                                <i class="fas fa-globe"></i>
+                                <span>${scholarship.country}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>${scholarship.fundingType}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="deadline">
+                                <i class="far fa-clock"></i>
+                                <span>${formatDate(scholarship.deadline)}</span>
+                            </div>
+                            <button class="apply-btn" onclick="window.open('${scholarship.applyUrl}', '_blank')">Apply Now</button>
+                        </div>
+                    `;
+                    scholarshipsGrid.appendChild(scholarshipCard);
+                });
+                
+                // Show/hide load more button
+                if (state.displayedScholarships < filteredScholarships.length) {
+                    loadMoreContainer.style.display = 'flex';
+                } else {
+                    loadMoreContainer.style.display = 'none';
+                }
+            }
+            
+            updateResultsCount(filteredScholarships.length);
+            setupBookmarkListeners();
         }
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Separate urgent and non-urgent scholarships
-            const urgentScholarships = scholarships.filter(s => s.urgent);
-            const nonUrgentScholarships = scholarships.filter(s => !s.urgent);
+        // Render bookmarked scholarships
+        function renderBookmarkedScholarships() {
+            const bookmarked = scholarships.filter(scholarship => 
+                state.bookmarkedScholarships.includes(scholarship.id)
+            );
             
-            renderScholarships(urgentScholarships, 'urgent-scholarships');
-            renderScholarships(nonUrgentScholarships, 'all-scholarships');
-            renderSuccessStories();
-            renderTips();
-            setupFilters();
-        });
+            scholarshipsGrid.innerHTML = '';
+            
+            if (bookmarked.length === 0) {
+                scholarshipsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="far fa-bookmark"></i>
+                        <h3>No bookmarks yet</h3>
+                        <p>Save scholarships you're interested in by clicking the bookmark icon</p>
+                    </div>
+                `;
+            } else {
+                bookmarked.forEach(scholarship => {
+                    const scholarshipCard = document.createElement('div');
+                    scholarshipCard.className = 'scholarship-card';
+                    scholarshipCard.innerHTML = `
+                        <div class="card-header">
+                            <div class="country-flag">
+                                <div class="flag" style="${scholarship.flagStyle}"></div>
+                            </div>
+                            <button class="bookmark-btn active" data-id="${scholarship.id}">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <h3 class="scholarship-title">${scholarship.title}</h3>
+                        <p class="scholarship-description">${scholarship.description}</p>
+                        <div class="scholarship-details">
+                            <div class="detail-item">
+                                <i class="fas fa-globe"></i>
+                                <span>${scholarship.country}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>${scholarship.fundingType}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="deadline">
+                                <i class="far fa-clock"></i>
+                                <span>${formatDate(scholarship.deadline)}</span>
+                            </div>
+                            <button class="apply-btn" onclick="window.open('${scholarship.applyUrl}', '_blank')">Apply Now</button>
+                        </div>
+                    `;
+                    scholarshipsGrid.appendChild(scholarshipCard);
+                });
+            }
+            
+            loadMoreContainer.style.display = 'none';
+            updateResultsCount(bookmarked.length);
+            setupBookmarkListeners();
+        }
+
+        // Render profile page
+        function renderProfile() {
+            scholarshipsGrid.innerHTML = `
+                <div class="scholarship-card">
+                    <div class="card-header">
+                        <div class="country-flag">
+                            <div class="flag" style="background: linear-gradient(to right, #0052B4 30%, white 30%, white 70%, #D80027 70%);"></div>
+                        </div>
+                        <button class="bookmark-btn"><i class="far fa-bookmark"></i></button>
+                    </div>
+                    <h3 class="scholarship-title">My Scholarship Profile</h3>
+                    <p class="scholarship-description">Track your scholarship applications and preferences here.</p>
+                    <div class="scholarship-details">
+                        <div class="detail-item">
+                            <i class="fas fa-bookmark"></i>
+                            <span>${state.bookmarkedScholarships.length} Saved</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>0 Applications</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="deadline">
+                            <i class="far fa-user"></i>
+                            <span>Student Profile</span>
+                        </div>
+                        <button class="apply-btn" style="background-color: var(--accent);">Edit Profile</button>
+                    </div>
+                </div>
+                <div class="scholarship-card">
+                    <h3 class="scholarship-title">Application Stats</h3>
+                    <p class="scholarship-description">Keep track of your scholarship application progress.</p>
+                    <div style="margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Saved Scholarships</span>
+                            <span>${state.bookmarkedScholarships.length}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Applications in Progress</span>
+                            <span>0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Awarded Scholarships</span>
+                            <span>0</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            loadMoreContainer.style.display = 'none';
+            updateResultsCount();
+        }
+
+        // Set up bookmark button listeners
+        function setupBookmarkListeners() {
+            document.querySelectorAll('.bookmark-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const scholarshipId = parseInt(this.dataset.id);
+                    toggleBookmark(scholarshipId, this);
+                });
+            });
+        }
+
+        // Toggle bookmark status
+        function toggleBookmark(scholarshipId, button) {
+            const index = state.bookmarkedScholarships.indexOf(scholarshipId);
+            
+            if (index === -1) {
+                // Add to bookmarks
+                state.bookmarkedScholarships.push(scholarshipId);
+                button.classList.add('active');
+                button.querySelector('i').classList.remove('far');
+                button.querySelector('i').classList.add('fas');
+            } else {
+                // Remove from bookmarks
+                state.bookmarkedScholarships.splice(index, 1);
+                button.classList.remove('active');
+                button.querySelector('i').classList.remove('fas');
+                button.querySelector('i').classList.add('far');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('bookmarkedScholarships', JSON.stringify(state.bookmarkedScholarships));
+            
+            // If we're on the bookmarks page, refresh the view
+            if (state.currentPage === 'bookmarks') {
+                renderBookmarkedScholarships();
+            }
+        }
+
+        // Update bookmark icons based on current state
+        function updateBookmarkIcons() {
+            document.querySelectorAll('.bookmark-btn').forEach(button => {
+                const scholarshipId = parseInt(button.dataset.id);
+                if (state.bookmarkedScholarships.includes(scholarshipId)) {
+                    button.classList.add('active');
+                    button.querySelector('i').classList.remove('far');
+                    button.querySelector('i').classList.add('fas');
+                }
+            });
+        }
+
+        // Update results count
+        function updateResultsCount(total = 0) {
+            if (state.currentPage === 'home' || state.currentPage === 'search') {
+                let countText = `${total} scholarships found`;
+                
+                if (state.filters.search) {
+                    countText += ` for "${state.filters.search}"`;
+                }
+                
+                if (state.filters.country) {
+                    countText += ` in ${state.filters.country}`;
+                }
+                
+                if (state.filters.fundingType) {
+                    countText += ` (${state.filters.fundingType})`;
+                }
+                
+                resultsCount.textContent = countText;
+            } else if (state.currentPage === 'bookmarks') {
+                resultsCount.textContent = `${total} bookmarked scholarships`;
+            } else {
+                resultsCount.textContent = '';
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Initialize the app
+        init();
     </script>
 </body>
 </html>
