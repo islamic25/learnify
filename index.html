@@ -44,6 +44,93 @@
             overflow-x: hidden;
         }
         
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2563eb, #8b5cf6, #06b6d4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .splash-logo i {
+            font-size: 60px;
+            color: white;
+        }
+        
+        .splash-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .loading-container {
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 1%;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .splash-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+            max-width: 80%;
+        }
+        
+        /* Hide main content initially */
+        #main-content {
+            display: none;
+        }
+        
         /* App Header */
         .app-header {
             background: var(--background);
@@ -398,160 +485,201 @@
             .hero-title {
                 font-size: 28px;
             }
+            
+            .splash-title {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Modern App Header -->
-    <header class="app-header">
-        <div class="logo-container">
-            <div class="logo">L</div>
-            <div class="app-name">Learnify</div>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <i class="fas fa-brain"></i>
         </div>
-        <div class="header-actions">
-            <i class="fas fa-search header-icon"></i>
-            <i class="fas fa-bell header-icon"></i>
+        <h1 class="splash-title">Learnify - AI Study Companion</h1>
+        <div class="loading-container">
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <div class="loading-text" id="loading-text">Loading... 1%</div>
         </div>
-    </header>
-    
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title fade-in-up">Your All-in-One Study Companion</h1>
-            <p class="hero-subtitle fade-in-up delay-1">Master your subjects with notes, quizzes, and smart tools in one place</p>
-            <div class="hero-graphic fade-in-up delay-2">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
-            <button class="get-started-btn fade-in-up delay-3" id="getStartedBtn">
-                <span>Get Started</span>
-                <i class="fas fa-arrow-down"></i>
-            </button>
-        </div>
-    </section>
-    
-   
-<!-- Main Content -->
-<main class="main-content">
-    <!-- Explore Features section -->
-    <div id="exploreFeatures">
-        <div class="section-title">
-            <span>Explore Features</span>
-            <span class="view-all">View All</span>
-        </div>
-        <div class="grid">
-            <div class="card" onclick="window.location.href='quiz.html'">
-                <div class="icon-container">
-                    <div class="card-icon">📝</div>
-                </div>
-                <div class="card-title">MCQs Quiz</div>
-            </div>
-
-            <div class="card" onclick="window.location.href='resources.html'">
-                <div class="icon-container">
-                    <div class="card-icon">📚</div>
-                </div>
-                <div class="card-title">Study Resources</div>
-            </div>
-
-            <div class="card" onclick="window.location.href='gpa.html'">
-                <div class="icon-container">
-                    <div class="card-icon">🧮</div>
-                </div>
-                <div class="card-title">GPA Calculator</div>
-            </div>
-
-            <div class="card" onclick="window.location.href='daily.html'">
-                <div class="icon-container">
-                    <div class="card-icon">📊</div>
-                </div>
-                <div class="card-title">Daily Quiz</div>
-            </div>
-
-            <div class="card" onclick="window.location.href='tool.html'">
-                <div class="icon-container">
-                    <div class="card-icon">🔧</div>
-                </div>
-                <div class="card-title">Study Tools</div>
-            </div>
-
-            <!-- Smart Math Solver Card -->
-            <div class="card" onclick="window.location.href='math-solver.html'">
-                <div class="icon-container">
-                    <div class="card-icon">➗</div>
-                </div>
-                <div class="card-title">Smart Math Solver</div>
-            </div>
-
-            <!-- Community Card -->
-            <div class="card" onclick="window.location.href='Subject.html'">
-                <div class="icon-container">
-                    <div class="card-icon">💬</div>
-                </div>
-                <div class="card-title">Community</div>
-            </div>
-
-            <!-- Apply for Domicile Card -->
-            <div class="card" onclick="window.location.href='domicile.html'">
-                <div class="icon-container">
-                    <div class="card-icon">🏠</div>
-                </div>
-                <div class="card-title">Apply for Domicile</div>
-            </div>
-
-            <!-- ✅ New Career & Course Guidance Card -->
-            <div class="card" onclick="window.location.href='career.html'">
-                <div class="icon-container">
-                    <div class="card-icon">💼</div>
-                </div>
-                <div class="card-title">Career Guidance</div>
-            </div>
-
-            <!-- ✅ New Scholarships & Admissions Card -->
-            <div class="card" onclick="window.location.href='scholarships.html'">
-                <div class="icon-container">
-                    <div class="card-icon">🎓</div>
-                </div>
-                <div class="card-title">Scholarships & Admissions</div>
-            </div>
-        </div>
+        <p class="splash-subtitle">Powering your learning journey with artificial intelligence</p>
     </div>
-</main>
-
-```
-
+    
+    <!-- Main Content (hidden initially) -->
+    <div id="main-content">
+        <!-- Modern App Header -->
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo">L</div>
+                <div class="app-name">Learnify</div>
+            </div>
+            <div class="header-actions">
+                <i class="fas fa-search header-icon"></i>
+                <i class="fas fa-bell header-icon"></i>
+            </div>
+        </header>
         
-   <!-- Modern AI Image Generator Banner -->
-<div class="modern-banner">
-    <div class="banner-content">
-        <div class="banner-text">Unleash Creativity – Generate Stunning AI Images!</div>
-        <div class="banner-buttons">
-            <!-- Generate Button -->
-            <button class="banner-btn" onclick="window.location.href='ai.html'">
-                <i class="fas fa-magic"></i>
-                <span>Generate Image</span>
-            </button>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title fade-in-up">Your All-in-One Study Companion</h1>
+                <p class="hero-subtitle fade-in-up delay-1">Master your subjects with notes, quizzes, and smart tools in one place</p>
+                <div class="hero-graphic fade-in-up delay-2">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <button class="get-started-btn fade-in-up delay-3" id="getStartedBtn">
+                    <span>Get Started</span>
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+        </section>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Explore Features section -->
+            <div id="exploreFeatures">
+                <div class="section-title">
+                    <span>Explore Features</span>
+                    <span class="view-all">View All</span>
+                </div>
+                <div class="grid">
+                    <div class="card" onclick="window.location.href='quiz.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">📝</div>
+                        </div>
+                        <div class="card-title">MCQs Quiz</div>
+                    </div>
 
-            <!-- Share Button (WhatsApp) -->
-            <button class="banner-btn outline" onclick="shareOnWhatsApp()">
-                <i class="fas fa-share-alt"></i>
-                <span>Share</span>
-            </button>
-        </div>
-    </div>
-</div>
+                    <div class="card" onclick="window.location.href='resources.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">📚</div>
+                        </div>
+                        <div class="card-title">Study Resources</div>
+                    </div>
 
-<script>
-function shareOnWhatsApp() {
-    const message = "🎨 Try this amazing AI Image Generator! Create stunning AI art here: https://yourwebsite.com/ai.html";
-    const url = "https://wa.me/?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-}
-</script>
+                    <div class="card" onclick="window.location.href='gpa.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">🧮</div>
+                        </div>
+                        <div class="card-title">GPA Calculator</div>
+                    </div>
 
-    </main>
-    
+                    <div class="card" onclick="window.location.href='daily.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">📊</div>
+                        </div>
+                        <div class="card-title">Daily Quiz</div>
+                    </div>
+
+                    <div class="card" onclick="window.location.href='tool.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">🔧</div>
+                        </div>
+                        <div class="card-title">Study Tools</div>
+                    </div>
+
+                    <!-- Smart Math Solver Card -->
+                    <div class="card" onclick="window.location.href='math-solver.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">➗</div>
+                        </div>
+                        <div class="card-title">Smart Math Solver</div>
+                    </div>
+
+                    <!-- Community Card -->
+                    <div class="card" onclick="window.location.href='Subject.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">💬</div>
+                        </div>
+                        <div class="card-title">Community</div>
+                    </div>
+
+                    <!-- Apply for Domicile Card -->
+                    <div class="card" onclick="window.location.href='domicile.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">🏠</div>
+                        </div>
+                        <div class="card-title">Apply for Domicile</div>
+                    </div>
+
+                    <!-- ✅ New Career & Course Guidance Card -->
+                    <div class="card" onclick="window.location.href='career.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">💼</div>
+                        </div>
+                        <div class="card-title">Career Guidance</div>
+                    </div>
+
+                    <!-- ✅ New Scholarships & Admissions Card -->
+                    <div class="card" onclick="window.location.href='scholarships.html'">
+                        <div class="icon-container">
+                            <div class="card-icon">🎓</div>
+                        </div>
+                        <div class="card-title">Scholarships & Admissions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modern AI Image Generator Banner -->
+            <div class="modern-banner">
+                <div class="banner-content">
+                    <div class="banner-text">Unleash Creativity – Generate Stunning AI Images!</div>
+                    <div class="banner-buttons">
+                        <!-- Generate Button -->
+                        <button class="banner-btn" onclick="window.location.href='ai.html'">
+                            <i class="fas fa-magic"></i>
+                            <span>Generate Image</span>
+                        </button>
+
+                        <!-- Share Button (WhatsApp) -->
+                        <button class="banner-btn outline" onclick="shareOnWhatsApp()">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+      
     
     <script>
+        // Splash screen loading simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splash-screen');
+            const mainContent = document.getElementById('main-content');
+            const loadingProgress = document.getElementById('loading-progress');
+            const loadingText = document.getElementById('loading-text');
+            
+            let progress = 0;
+            const loadingInterval = setInterval(function() {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                loadingProgress.style.width = progress + '%';
+                loadingText.textContent = 'Loading... ' + Math.floor(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    // Fade out splash screen after a brief delay
+                    setTimeout(function() {
+                        splashScreen.style.opacity = '0';
+                        splashScreen.style.visibility = 'hidden';
+                        
+                        // Show main content
+                        mainContent.style.display = 'block';
+                        
+                        // Trigger animations for main content
+                        document.querySelectorAll('.fade-in-up').forEach(el => {
+                            el.style.animationPlayState = 'running';
+                        });
+                    }, 500);
+                }
+            }, 150);
+        });
+        
         // Smooth scroll to Explore Features section
         document.getElementById('getStartedBtn').addEventListener('click', function() {
             document.getElementById('exploreFeatures').scrollIntoView({
@@ -578,6 +706,13 @@ function shareOnWhatsApp() {
                 observer.observe(card);
             });
         });
+        
+        // Share function for AI Image Generator banner
+        function shareOnWhatsApp() {
+            const message = "🎨 Try this amazing AI Image Generator! Create stunning AI art here:https://play.google.com/store/apps/details?id=com.umar.learnify";
+            const url = "https://wa.me/?text=" + encodeURIComponent(message);
+            window.open(url, "_blank");
+        }
     </script>
 </body>
 </html>
