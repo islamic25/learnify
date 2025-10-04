@@ -646,66 +646,50 @@
       
     
     <script>
-        // Splash screen loading simulation
-        document.addEventListener('DOMContentLoaded', function() {
-            const splashScreen = document.getElementById('splash-screen');
-            const mainContent = document.getElementById('main-content');
-            const loadingProgress = document.getElementById('loading-progress');
-            const loadingText = document.getElementById('loading-text');
-            
-            let progress = 0;
-            const loadingInterval = setInterval(function() {
-                progress += Math.random() * 10;
-                if (progress > 100) progress = 100;
+       // Splash screen loading simulation (only first time)
+document.addEventListener('DOMContentLoaded', function() {
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContent = document.getElementById('main-content');
+    const loadingProgress = document.getElementById('loading-progress');
+    const loadingText = document.getElementById('loading-text');
+
+    // agar pehle visit ho chuka hai to direct content show karo
+    if (localStorage.getItem('splashShown')) {
+        splashScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        return;
+    }
+
+    let progress = 0;
+    const loadingInterval = setInterval(function() {
+        progress += Math.random() * 10;
+        if (progress > 100) progress = 100;
+
+        loadingProgress.style.width = progress + '%';
+        loadingText.textContent = 'Loading... ' + Math.floor(progress) + '%';
+
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            // Fade out splash screen after a brief delay
+            setTimeout(function() {
+                splashScreen.style.opacity = '0';
+                splashScreen.style.visibility = 'hidden';
                 
-                loadingProgress.style.width = progress + '%';
-                loadingText.textContent = 'Loading... ' + Math.floor(progress) + '%';
+                // Show main content
+                mainContent.style.display = 'block';
                 
-                if (progress >= 100) {
-                    clearInterval(loadingInterval);
-                    // Fade out splash screen after a brief delay
-                    setTimeout(function() {
-                        splashScreen.style.opacity = '0';
-                        splashScreen.style.visibility = 'hidden';
-                        
-                        // Show main content
-                        mainContent.style.display = 'block';
-                        
-                        // Trigger animations for main content
-                        document.querySelectorAll('.fade-in-up').forEach(el => {
-                            el.style.animationPlayState = 'running';
-                        });
-                    }, 500);
-                }
-            }, 150);
-        });
-        
-        // Smooth scroll to Explore Features section
-        document.getElementById('getStartedBtn').addEventListener('click', function() {
-            document.getElementById('exploreFeatures').scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-        
-        // Add animation to cards on scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animation = 'fadeInUp 0.5s ease forwards';
-                        entry.target.style.opacity = '0';
-                        setTimeout(() => {
-                            entry.target.style.opacity = '1';
-                        }, 100);
-                    }
+                // Save flag so splash dobara na aaye
+                localStorage.setItem('splashShown', 'true');
+
+                // Trigger animations
+                document.querySelectorAll('.fade-in-up').forEach(el => {
+                    el.style.animationPlayState = 'running';
                 });
-            }, { threshold: 0.1 });
-            
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-        });
+            }, 500);
+        }
+    }, 150);
+});
+
         
         // Share function for AI Image Generator banner
         function shareOnWhatsApp() {
