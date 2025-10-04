@@ -490,6 +490,73 @@
                 font-size: 28px;
             }
         }
+        /* AI Banner Styling */
+.modern-banner {
+    background: var(--gradient);
+    border-radius: 24px;
+    padding: 28px 20px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+    margin: 40px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.banner-text {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+.banner-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.banner-btn {
+    background: white;
+    color: var(--primary);
+    border: none;
+    border-radius: 50px;
+    padding: 14px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 90%;
+    max-width: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.banner-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.banner-btn.outline {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.banner-btn.outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
     </style>
 </head>
 <body>
@@ -622,24 +689,33 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Modern AI Image Generator Banner -->
-            <div class="modern-banner">
-                <div class="banner-content">
-                    <div class="banner-text">Unleash Creativity – Generate Stunning AI Images!</div>
-                    <div class="banner-buttons">
-                        <!-- Generate Button -->
-                        <button class="banner-btn" onclick="window.location.href='ai.html'">
-                            <i class="fas fa-magic"></i>
-                            <span>Generate Image</span>
-                        </button>
+           <!-- 🔮 AI Tools Section -->
+<section class="modern-banner">
+  <div class="banner-content">
+    <div class="banner-text">Unleash Creativity with Smart AI Tools</div>
 
-                        <!-- Share Button (WhatsApp) -->
-                        <button class="banner-btn outline" onclick="shareOnWhatsApp()">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Share</span>
-                        </button>
-                    </div>
+    <div class="banner-buttons">
+      <!-- Generate Image -->
+      <button class="banner-btn" onclick="window.location.href='ai.html'">
+        <i class="fas fa-magic"></i>
+        <span>AI Image Generator</span>
+      </button>
+
+      <!-- AI Voice Generator -->
+      <button class="banner-btn" onclick="window.location.href='voice.html'">
+        <i class="fas fa-microphone"></i>
+        <span>AI Voice Generator</span>
+      </button>
+
+      <!-- Share Button -->
+      <button class="banner-btn outline" onclick="shareOnWhatsApp()">
+        <i class="fas fa-share-alt"></i>
+        <span>Share</span>
+      </button>
+    </div>
+  </div>
+</section>
+
                 </div>
             </div>
         </main>
@@ -688,6 +764,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         }
     }, 150);
+});
+// Smooth scroll to features when "Get Started" clicked
+document.getElementById("getStartedBtn").addEventListener("click", function() {
+    const exploreSection = document.getElementById("exploreFeatures");
+    exploreSection.scrollIntoView({ behavior: "smooth" });
 });
 
         
