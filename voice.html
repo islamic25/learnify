@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Generator | Learnify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Wt7H8NpL"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #8b5cf6;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: #ffffff;
+            --text-dark: #1e293b;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            color: var(--text-light);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .splash-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .sound-waves {
+            display: flex;
+            gap: 5px;
+            margin-top: 30px;
+        }
+
+        .wave {
+            width: 6px;
+            height: 30px;
+            background: var(--text-light);
+            border-radius: 3px;
+            animation: wave 1.5s ease infinite;
+        }
+
+        .wave:nth-child(2) { animation-delay: 0.1s; }
+        .wave:nth-child(3) { animation-delay: 0.2s; }
+        .wave:nth-child(4) { animation-delay: 0.3s; }
+        .wave:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+
+        /* App Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .app-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Main Voice Card */
+        .voice-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        .voice-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px;
+            color: var(--text-light);
+            font-size: 16px;
+            resize: none;
+            transition: var(--transition);
+        }
+
+        .voice-textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+        }
+
+        .char-count {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .dropdown-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dropdown-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .language-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 12px 15px;
+            color: var(--text-light);
+            font-size: 16px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            transition: var(--transition);
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .voice-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .control-value {
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--text-light);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            border: none;
+            border-radius: 15px;
+            padding: 14px;
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .speak-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.6);
+        }
+
+        .speak-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Equalizer Animation */
+        .equalizer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            gap: 5px;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .equalizer-container.active {
+            opacity: 1;
+        }
+
+        .bar {
+            width: 6px;
+            height: 30px;
+            background: linear-gradient(to top, var(--primary), var(--secondary));
+            border-radius: 3px;
+            animation: equalizer 1.5s ease infinite;
+        }
+
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.5s; }
+        .bar:nth-child(7) { animation-delay: 0.6s; }
+
+        @keyframes equalizer {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+
+        /* History Section */
+        .history-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-text {
+            font-size: 14px;
+            line-height: 1.4;
+            max-height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .history-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .history-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .history-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Help Tooltip */
+        .help-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .help-icon {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .help-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 24px;
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.7);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .app-container {
+                gap: 15px;
+            }
+            
+            .voice-card {
+                padding: 20px;
+            }
+            
+            .history-item {
+                padding: 12px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="splash-logo">🎙️</div>
+        <h1 class="splash-title">Learnify Voice</h1>
+        <div class="sound-waves">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+            <h1 class="app-title">AI Voice Generator</h1>
+            <button class="settings-btn">⚙️</button>
+        </header>
+
+        <!-- Main Voice Card -->
+        <main class="voice-card">
+            <div class="textarea-container">
+                <textarea class="voice-textarea" placeholder="Type text in English or Urdu..." id="text-input"></textarea>
+                <div class="char-count"><span id="char-count">0</span>/500</div>
+            </div>
+
+            <div class="dropdown-container">
+                <label class="dropdown-label">Language</label>
+                <select class="language-select" id="language-select">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-IN">English (Indian)</option>
+                    <option value="ur-PK">Urdu (Pakistan)</option>
+                </select>
+            </div>
+
+            <div class="voice-controls">
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Speed</span>
+                        <span class="control-value" id="speed-value">1.0x</span>
+                    </div>
+                    <div class="slider-container">
+                        <span class="slider-icon">🐌</span>
+                        <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="speed-slider">
+                        <span class="slider-icon">🚀</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Pitch</span>
+                        <span class="control-value" id="pitch-value">0</span>
+                    </div>
+                    <div class="slider-container">
+                        <span class="slider-icon">🔻</span>
+                        <input type="range" min="-2" max="2" step="0.1" value="0" class="slider" id="pitch-slider">
+                        <span class="slider-icon">🔺</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Volume</span>
+                        <span class="control-value" id="volume-value">1.0</span>
+                    </div>
+                    <div class="slider-container">
+                        <span class="slider-icon">🔈</span>
+                        <input type="range" min="0" max="1" step="0.1" value="1" class="slider" id="volume-slider">
+                        <span class="slider-icon">🔊</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn speak-btn" id="speak-btn">
+                    🎧 Speak Now
+                </button>
+                <button class="action-btn download-btn" id="download-btn">
+                    ⬇️ Download Voice
+                </button>
+            </div>
+
+            <!-- Equalizer Animation -->
+            <div class="equalizer-container" id="equalizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </main>
+
+        <!-- History Section -->
+        <section class="history-section">
+            <h2 class="section-title">
+                Recent Voices
+                <div class="help-tooltip">
+                    <button class="help-icon">❓</button>
+                    <span class="tooltip-text">This app works offline and supports both English and Urdu text-to-speech using your browser's built-in capabilities.</span>
+                </div>
+            </h2>
+            <div class="history-list" id="history-list">
+                <!-- History items will be dynamically added here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Floating Action Button -->
+    <a href="index.html" class="fab">🏠</a>
+
+  <script>
+    // --- DOM Elements ---
+    const textInput = document.getElementById('text-input');
+    const languageSelect = document.getElementById('language-select');
+    const speedSlider = document.getElementById('speed-slider');
+    const pitchSlider = document.getElementById('pitch-slider');
+    const volumeSlider = document.getElementById('volume-slider');
+    const speedValue = document.getElementById('speed-value');
+    const pitchValue = document.getElementById('pitch-value');
+    const volumeValue = document.getElementById('volume-value');
+    const speakBtn = document.getElementById('speak-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const equalizer = document.getElementById('equalizer');
+    const historyList = document.getElementById('history-list');
+    const charCount = document.getElementById('char-count');
+    const splashScreen = document.getElementById('splash-screen');
+    const toast = document.getElementById('toast');
+
+    // --- Global Variables ---
+    const synth = window.speechSynthesis;
+    let isPlaying = false;
+    let currentAudio = null;
+
+    // --- Toast Notification System ---
+    function showToast(message, type = 'info') {
+        toast.textContent = message;
+        toast.className = 'toast';
+        toast.classList.add('show');
+        
+        // Add type-based styling if needed
+        if (type === 'error') {
+            toast.style.background = 'rgba(220, 53, 69, 0.9)';
+        } else if (type === 'success') {
+            toast.style.background = 'rgba(40, 167, 69, 0.9)';
+        }
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.style.background = ''; // Reset background
+        }, 3000);
+    }
+
+    // --- Voice Support Check ---
+    function checkVoiceSupport() {
+        const voices = synth.getVoices();
+        const urduSupported = voices.some(v => v.lang === 'ur-PK');
+        
+        if (!urduSupported && languageSelect.value === 'ur-PK') {
+            showToast('Urdu voice not available. Using online API.', 'info');
+        }
+    }
+
+    // --- UI Update Functions ---
+    function updateSliderValues() {
+        speedValue.textContent = `${speedSlider.value}x`;
+        pitchValue.textContent = pitchSlider.value;
+        volumeValue.textContent = volumeSlider.value;
+    }
+
+    function updateCharacterCount() {
+        const count = textInput.value.length;
+        charCount.textContent = count;
+        charCount.style.color = count > 500 ? '#ff6b6b' : 'rgba(255,255,255,0.7)';
+        
+        // Auto-resize textarea
+        textInput.style.height = 'auto';
+        textInput.style.height = Math.min(textInput.scrollHeight, 200) + 'px';
+    }
+
+    function updateSpeakButton(playing) {
+        speakBtn.textContent = playing ? '⏹️ Stop' : '🎧 Speak Now';
+        speakBtn.style.background = playing 
+            ? 'linear-gradient(135deg, #dc3545, #c82333)' 
+            : 'linear-gradient(135deg, var(--primary), var(--secondary))';
+    }
+
+    // --- Speech Control Functions ---
+    function speakText(text) {
+        if (isPlaying) return;
+        
+        const language = languageSelect.value;
+
+        // Handle Urdu with StreamElements API
+        if (language === 'ur-PK') {
+            playUrduVoice(text);
+            return;
+        }
+
+        // Handle English with browser TTS
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = language;
+        utterance.rate = parseFloat(speedSlider.value);
+        utterance.pitch = parseFloat(pitchSlider.value);
+        utterance.volume = parseFloat(volumeSlider.value);
+
+        utterance.onstart = () => {
+            isPlaying = true;
+            updateSpeakButton(true);
+            startAnimation();
+        };
+
+        utterance.onend = () => {
+            stopSpeech();
+            showToast('Playback completed!', 'success');
+        };
+
+        utterance.onerror = (event) => {
+            console.error('Speech error:', event);
+            stopSpeech();
+            showToast('Playback failed. Please try again.', 'error');
+        };
+
+        synth.speak(utterance);
+    }
+
+    async function playUrduVoice(text) {
+        try {
+            // Stop any current playback
+            stopSpeech();
+            
+            const voice = 'filiz'; // Urdu voice
+            const apiUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${encodeURIComponent(text)}`;
+            
+            currentAudio = new Audio(apiUrl);
+            
+            currentAudio.onplay = () => {
+                isPlaying = true;
+                updateSpeakButton(true);
+                startAnimation();
+            };
+            
+            currentAudio.onended = () => {
+                stopSpeech();
+                showToast('Urdu playback completed!', 'success');
+            };
+            
+            currentAudio.onerror = () => {
+                stopSpeech();
+                showToast('Urdu playback failed. Trying Hindi fallback...', 'error');
+                // Fallback to Hindi voice
+                playHindiVoice(text);
+            };
+            
+            await currentAudio.play();
+            
+        } catch (error) {
+            console.error('Urdu playback error:', error);
+            showToast('Urdu playback failed. Trying Hindi fallback...', 'error');
+            playHindiVoice(text);
+        }
+    }
+
+    async function playHindiVoice(text) {
+        try {
+            const voice = 'Aditi'; // Hindi voice as fallback
+            const apiUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${encodeURIComponent(text)}`;
+            
+            currentAudio = new Audio(apiUrl);
+            
+            currentAudio.onplay = () => {
+                isPlaying = true;
+                updateSpeakButton(true);
+                startAnimation();
+            };
+            
+            currentAudio.onended = () => {
+                stopSpeech();
+                showToast('Hindi playback completed!', 'success');
+            };
+            
+            currentAudio.onerror = () => {
+                stopSpeech();
+                showToast('All fallback voices failed. Please try again.', 'error');
+            };
+            
+            await currentAudio.play();
+            
+        } catch (error) {
+            console.error('Hindi playback error:', error);
+            stopSpeech();
+            showToast('All voice options failed. Please check connection.', 'error');
+        }
+    }
+
+    function stopSpeech() {
+        // Stop browser TTS
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        
+        // Stop audio playback
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+        
+        isPlaying = false;
+        updateSpeakButton(false);
+        stopAnimation();
+    }
+
+    // --- Download System ---
+    async function downloadVoice(text) {
+        if (!text.trim()) {
+            showToast('Please enter some text to download.', 'error');
+            return;
+        }
+
+        try {
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = "⏳ Processing...";
+            
+            const language = languageSelect.value;
+            const voice = language === 'ur-PK' ? 'filiz' : 'Brian';
+            const apiUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${encodeURIComponent(text)}`;
+            
+            // Fetch audio data
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const blob = await response.blob();
+            const fileURL = URL.createObjectURL(blob);
+            
+            // Create download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = fileURL;
+            downloadLink.download = `voice_${Date.now()}.mp3`;
+            
+            // Different strategies for mobile vs desktop
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // Mobile devices - open in new tab for WebView compatibility
+                window.open(fileURL, '_blank');
+                showToast('Voice ready! Opening in new tab...', 'success');
+            } else {
+                // Desktop - trigger download
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                showToast('Voice download started!', 'success');
+            }
+            
+            // Clean up URL object after delay
+            setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
+            
+        } catch (error) {
+            console.error('Download error:', error);
+            showToast('Download failed. Please try again.', 'error');
+        } finally {
+            downloadBtn.disabled = false;
+            downloadBtn.textContent = "⬇️ Download Voice";
+        }
+    }
+
+    // --- Animation Control ---
+    function startAnimation() {
+        equalizer.classList.add('active');
+    }
+
+    function stopAnimation() {
+        equalizer.classList.remove('active');
+    }
+
+    // --- History Management ---
+    function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('voiceHistory')) || [];
+        historyList.innerHTML = '';
+        
+        if (history.length === 0) {
+            historyList.innerHTML = '<div class="history-item" style="text-align: center; opacity: 0.7;">No recent voices yet</div>';
+            return;
+        }
+        
+        history.forEach((item, index) => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div class="history-text">${escapeHtml(item.text)}</div>
+                <div class="history-actions">
+                    <button class="history-btn replay-btn" data-text="${escapeHtml(item.text)}" title="Replay">🔁</button>
+                    <button class="history-btn delete-btn" data-index="${index}" title="Delete">🗑️</button>
+                </div>
+            `;
+            historyList.appendChild(historyItem);
+        });
+        
+        // Add event listeners to history buttons
+        attachHistoryEventListeners();
+    }
+
+    function attachHistoryEventListeners() {
+        // Replay buttons
+        document.querySelectorAll('.replay-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const text = e.target.getAttribute('data-text');
+                textInput.value = text;
+                updateCharacterCount();
+                speakText(text);
+            });
+        });
+        
+        // Delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                deleteFromHistory(index);
+            });
+        });
+    }
+
+    function addToHistory(text) {
+        if (!text.trim()) return;
+        
+        const history = JSON.parse(localStorage.getItem('voiceHistory')) || [];
+        
+        // Avoid duplicates
+        if (history.length > 0 && history[0].text === text) return;
+        
+        // Add to beginning of array
+        history.unshift({
+            text: text,
+            timestamp: new Date().toISOString(),
+            language: languageSelect.value
+        });
+        
+        // Keep only last 10 items
+        if (history.length > 10) {
+            history.pop();
+        }
+        
+        localStorage.setItem('voiceHistory', JSON.stringify(history));
+        loadHistory();
+    }
+
+    function deleteFromHistory(index) {
+        const history = JSON.parse(localStorage.getItem('voiceHistory')) || [];
+        history.splice(index, 1);
+        localStorage.setItem('voiceHistory', JSON.stringify(history));
+        loadHistory();
+        showToast('Voice deleted from history', 'success');
+    }
+
+    // --- Utility Functions ---
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // --- Event Listeners ---
+    function initializeEventListeners() {
+        // Slider events
+        speedSlider.addEventListener('input', updateSliderValues);
+        pitchSlider.addEventListener('input', updateSliderValues);
+        volumeSlider.addEventListener('input', updateSliderValues);
+        
+        // Text input events
+        textInput.addEventListener('input', updateCharacterCount);
+        
+        // Button events
+        speakBtn.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if (!text) {
+                showToast('Please enter some text to speak.', 'error');
+                return;
+            }
+            
+            if (isPlaying) {
+                stopSpeech();
+            } else {
+                speakText(text);
+                addToHistory(text);
+            }
+        });
+        
+        downloadBtn.addEventListener('click', () => {
+            downloadVoice(textInput.value.trim());
+        });
+        
+        // Language change event
+        languageSelect.addEventListener('change', checkVoiceSupport);
+        
+        // Handle page visibility changes (stop speech when tab is hidden)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isPlaying) {
+                stopSpeech();
+            }
+        });
+    }
+
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Hide splash screen after delay
+        setTimeout(() => {
+            if (splashScreen) {
+                splashScreen.classList.add('hidden');
+            }
+        }, 2000);
+        
+        // Initialize voice synthesis
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = checkVoiceSupport;
+        }
+        
+        // Initial setup
+        updateSliderValues();
+        updateCharacterCount();
+        initializeEventListeners();
+        checkVoiceSupport();
+        loadHistory();
+        
+        // Show welcome message
+        setTimeout(() => {
+            showToast('AI Voice Generator ready!', 'success');
+        }, 2500);
+    });
+
+    // --- Error Handling ---
+    window.addEventListener('error', (event) => {
+        console.error('Global error:', event.error);
+        showToast('An unexpected error occurred', 'error');
+    });
+
+    // Handle promise rejections
+    window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        showToast('Operation failed. Please try again.', 'error');
+    });
+</script>
+
+</body>
+</html>
