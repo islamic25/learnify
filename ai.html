@@ -1235,41 +1235,52 @@
                 img.src = apiUrl;
             }
             
-            // Download Image Function
-            function downloadImage() {
-                if (!generatedImage.src) {
-                    showToast('Please generate an image first.', 'error');
-                    return;
-                }
-                
-                fetch(generatedImage.src)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const link = document.createElement("a");
-                        link.href = url;
-                        
-                        // Get prompt for filename
-                        const prompt = imagePromptInput.value.trim();
-                        const sanitizedPrompt = prompt
-                            .replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '')
-                            .replace(/\s+/g, '_')
-                            .substring(0, 30) || 'ai_image';
-                            
-                        link.download = `${sanitizedPrompt}.png`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        window.URL.revokeObjectURL(url);
-                        
-                        showToast('Image downloaded successfully!', 'success');
-                    })
-                    .catch(err => {
-                        console.error('Download error:', err);
-                        showToast('Failed to download image.', 'error');
-                    });
+           // Download Image Function (works in browser + WebView)
+function downloadImage() {
+    if (!generatedImage.src) {
+        showToast('Please generate an image first.', 'error');
+        return;
+    }
+
+    fetch(generatedImage.src)
+        .then(res => res.blob())
+        .then(blob => {
+            const prompt = imagePromptInput.value.trim();
+            const sanitizedPrompt = prompt
+                .replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '')
+                .replace(/\s+/g, '_')
+                .substring(0, 30) || 'ai_image';
+
+            const fileName = `${sanitizedPrompt}.png`;
+
+            // For browser
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            // For WebView Android
+            if (window.AndroidInterface && window.AndroidInterface.saveFile) {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const base64Data = reader.result.split(',')[1];
+                    window.AndroidInterface.saveFile(fileName, base64Data);
+                };
+                reader.readAsDataURL(blob);
             }
-            
+
+            showToast('Image downloaded successfully!', 'success');
+        })
+        .catch(err => {
+            console.error('Download error:', err);
+            showToast('Failed to download image.', 'error');
+        });
+}
+
             // Open Export Panel
             function openExportPanel() {
                 if (!generatedImage.src) {
@@ -1420,25 +1431,38 @@
                     const url = URL.createObjectURL(blob);
                     
                     // Create download link
-                    const a = document.createElement('a');
-                    a.href = url;
-                    
-                    // Get prompt for filename
-                    const prompt = imagePromptInput.value.trim();
-                    const sanitizedPrompt = prompt
-                        .replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '')
-                        .replace(/\s+/g, '_')
-                        .substring(0, 30) || 'ai_video';
-                    
-                    a.download = `${sanitizedPrompt}_${animationStyle}.${format}`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    
-                    // Show success message
-                    showToast('Video exported successfully!', 'success');
-                    closeExportPanel();
+                  // Get prompt for filename
+const prompt = imagePromptInput.value.trim();
+const sanitizedPrompt = prompt
+    .replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '')
+    .replace(/\s+/g, '_')
+    .substring(0, 30) || 'ai_video';
+
+const fileName = `${sanitizedPrompt}_${animationStyle}.${format}`;
+
+// For browser
+const a = document.createElement('a');
+a.href = url;
+a.download = fileName;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+
+// For WebView Android
+if (window.AndroidInterface && window.AndroidInterface.saveFile) {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const base64Data = reader.result.split(',')[1];
+        window.AndroidInterface.saveFile(fileName, base64Data);
+    };
+    reader.readAsDataURL(blob);
+}
+
+// Show success message
+showToast('Video exported successfully!', 'success');
+closeExportPanel();
+
                 };
                 
                 // Start recording
