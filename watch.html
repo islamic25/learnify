@@ -3,440 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch & Earn</title>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
-            authDomain: "explore-products-e7afb.firebaseapp.com",
-            projectId: "explore-products-e7afb",
-            storageBucket: "explore-products-e7afb.firebasestorage.app",
-            messagingSenderId: "753462167322",
-            appId: "1:753462167322:web:aab56a193e231277accea3",
-            measurementId: "G-T4KP9YEY4X"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        // Make Firebase available globally
-        window.firebaseApp = app;
-        window.firestore = db;
-    </script>
-    
+    <title>Watch & Earn Team System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-green: #0a5c36;
-            --dark-green: #07482a;
-            --light-green: #0f7a4a;
-            --gold: #d4af37;
-            --light-gold: #f5e6a3;
-            --white: #ffffff;
-            --light-gray: #f5f5f5;
-            --dark-gray: #333333;
-            --error: #e74c3c;
-            --success: #2ecc71;
+            --primary: #00B37E;
+            --primary-dark: #00875F;
+            --primary-light: #50E3A4;
+            --secondary: #1E1E1E;
+            --dark-bg: #0A0F0D;
+            --darker-bg: #05150D;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-muted: #6B6B6B;
+            --success: #00B37E;
+            --danger: #FF4D4F;
+            --warning: #FFA940;
+            --info: #1890FF;
+            --gradient-bg: linear-gradient(135deg, #0A0F0D 0%, #013220 100%);
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-card: linear-gradient(135deg, rgba(0, 179, 126, 0.1) 0%, rgba(80, 227, 164, 0.05) 100%);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: var(--white);
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 480px;
+            max-width: 100%;
             margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
-
-        .balance-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .balance-amount {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--gold);
-            margin: 10px 0;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 18px;
-            color: var(--gold);
-        }
-
-        .badge {
-            background: var(--gold);
-            color: var(--dark-green);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .streak-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .streak-day {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: bold;
-            position: relative;
-        }
-
-        .streak-day.active {
-            background: var(--gold);
-            color: var(--dark-green);
-        }
-
-        .streak-day.completed::after {
-            content: "✓";
-            position: absolute;
-            bottom: -5px;
-            right: -5px;
-            background: var(--success);
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn {
-            background: var(--gold);
-            color: var(--dark-green);
-            border: none;
-            border-radius: 10px;
-            padding: 14px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:disabled {
-            background: rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.5);
-            cursor: not-allowed;
-        }
-
-        .btn:hover:not(:disabled) {
-            background: var(--light-gold);
-            transform: translateY(-2px);
-        }
-
-        .progress-container {
-            margin: 15px 0;
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gold);
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .withdraw-locked {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .withdraw-locked .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            font-size: 16px;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .field-valid {
-            border-color: var(--success);
-        }
-
-        .field-invalid {
-            border-color: var(--error);
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 38px;
-            background: none;
-            border: none;
-            color: var(--white);
-            cursor: pointer;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        .withdraw-amounts {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .amount-option {
-            flex: 1;
-            min-width: 80px;
-            padding: 10px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .amount-option.selected {
-            background: var(--gold);
-            color: var(--dark-green);
-            font-weight: bold;
-        }
-
-        .withdraw-history {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
             padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            min-height: 100vh;
         }
 
-        .history-info h4 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .history-info p {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .history-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-pending {
-            background: rgba(243, 156, 18, 0.2);
-            color: #f39c12;
-        }
-
-        .status-processing {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-        }
-
-        .status-paid {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-        }
-
-        .status-rejected {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-        }
-
-        .history-actions button {
-            background: none;
-            border: none;
-            color: var(--error);
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .modal {
-            display: none;
+        /* Loading Splash Animation */
+        #splashScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
+            background: var(--gradient-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .splash-logo i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .splash-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .splash-subtext {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2, .card h3 {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 179, 126, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        .modal-content {
-            background: var(--primary-green);
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--gold);
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            color: var(--gold);
+        .btn:hover::before {
+            left: 100%;
         }
 
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            cursor: pointer;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 179, 126, 0.4);
         }
 
-        .modal-footer {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
+        .btn:active {
+            transform: translateY(0);
         }
 
-        .modal-footer .btn {
-            flex: 1;
+        .btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:disabled:hover::before {
+            left: -100%;
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
+            background: var(--gradient-card);
+            color: var(--primary);
+            border: 1px solid rgba(0, 179, 126, 0.3);
         }
 
+        .btn-secondary:hover {
+            background: rgba(0, 179, 126, 0.15);
+        }
+
+        .btn-small {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            border: 1px solid rgba(0, 179, 126, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Active Members Indicator */
+        .active-members-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px 15px;
+            background: rgba(255, 77, 79, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .active-members-indicator.active {
+            background: rgba(0, 179, 126, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .members-count {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .members-count span {
+            color: var(--primary);
+        }
+
+        .members-warning {
+            color: var(--danger);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .members-warning.hidden {
+            display: none;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 5px;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 179, 126, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Member Items */
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .member-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        .member-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .member-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .member-status.active {
+            background: var(--success);
+            box-shadow: 0 0 0 2px rgba(0, 179, 126, 0.3);
+        }
+
+        .member-status.inactive {
+            background: var(--danger);
+            box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.3);
+        }
+
+        .member-id {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .member-ads {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .member-ads-highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .status-active {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Activity Items */
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-member {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .activity-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-amount {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 179, 126, 0.2);
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Admin Code */
+        .admin-code {
+            background: var(--gradient-card);
+            padding: 18px;
+            border-radius: 14px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(0, 179, 126, 0.2);
+        }
+
+        .copy-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 179, 126, 0.3);
+        }
+
+        /* Withdraw Info */
+        .withdraw-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .cooldown-info {
+            background: rgba(255, 169, 64, 0.1);
+            color: var(--warning);
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            border-left: 4px solid var(--warning);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark-green);
-            color: var(--white);
-            padding: 12px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1001;
-            display: none;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            border: 1px solid var(--card-border);
+            max-width: 320px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
         }
 
         .toast.success {
@@ -444,288 +603,446 @@
         }
 
         .toast.error {
-            border-left: 4px solid var(--error);
+            border-left: 4px solid var(--danger);
         }
 
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--gold);
-            opacity: 0;
-            z-index: 999;
+        .toast.warning {
+            border-left: 4px solid var(--warning);
         }
 
-        .admin-link {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            color: var(--white);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            text-decoration: none;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--white);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 92, 54, 0.9);
+        /* Role Selection */
+        .role-selection {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            margin-top: 20px;
         }
-        
-        .loading-text {
-            color: var(--gold);
-            font-size: 18px;
+
+        @media (min-width: 768px) {
+            .role-selection {
+                flex-direction: row;
+            }
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 25px 20px;
+            text-align: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .role-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(0, 179, 126, 0.3);
+        }
+
+        .role-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .role-btn h3 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .role-btn p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Member Counter */
+        .member-counter {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 20px rgba(0, 179, 126, 0.5);
+        }
+
+        .counter-animation {
+            animation: pulse 0.5s ease;
+        }
+
+        .ad-cooldown {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 179, 126, 0.5);
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: var(--gradient-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 179, 126, 0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .summary-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Text Center Utility */
+        .text-center {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .summary-card {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 970px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1170px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="spinner" style="width: 40px; height: 40px;"></div>
-        <div class="loading-text">Loading your rewards...</div>
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div class="splash-logo">
+            <i class="fas fa-play-circle"></i>
+        </div>
+        <div class="splash-text">Watch & Earn</div>
+        <div class="splash-subtext">Team Reward System</div>
     </div>
 
     <div class="container">
-        <header>
-            <div class="logo">Watch & Earn</div>
-            <p>Watch ads, earn rewards, and withdraw your earnings!</p>
-        </header>
-
-        <div class="balance-card">
-            <p>Your Balance</p>
-            <div class="balance-amount" id="balance">₨0.00</div>
-            <p>Complete the 7-day streak to unlock withdrawals</p>
+        <div class="header">
+            <h1>Watch & Earn Team System</h1>
+            <p>Earn by watching ads and managing your team</p>
         </div>
 
-        <div class="section">
-            <div class="section-title">
-                <span>Daily Challenge</span>
-                <span class="badge" id="streak-badge">Day 1</span>
-            </div>
-            <p>Watch 100 ads daily to maintain your streak</p>
-            
-            <div class="streak-container" id="streak-days">
-                <!-- Streak days will be populated by JS -->
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        <!-- Role Selection Screen -->
+        <div id="roleSelectionScreen" class="screen active">
+            <div class="card">
+                <h2>Select Your Role</h2>
+                <p>Choose whether you want to be an Admin (Team Leader) or a Member (Worker)</p>
+                
+                <div class="role-selection">
+                    <div id="adminBtn" class="role-btn">
+                        <div class="role-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3>Admin</h3>
+                        <p>Create and manage your team</p>
+                    </div>
+                    
+                    <div id="memberBtn" class="role-btn">
+                        <div class="role-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Member</h3>
+                        <p>Join a team and watch ads</p>
+                    </div>
                 </div>
-                <div class="progress-text">
-                    <span id="progress-text">0/100 ads watched</span>
-                    <span id="progress-percent">0%</span>
-                </div>
             </div>
-            
-            <button class="btn" id="watch-ad-btn">
-                <span>Watch Ad & Earn</span>
-            </button>
         </div>
 
-        <div class="section" id="withdraw-section">
-            <div class="section-title">
-                <span>Withdraw Earnings</span>
-                <span class="badge" id="withdraw-badge">LOCKED</span>
-            </div>
-            
-            <div class="withdraw-locked" id="withdraw-locked">
-                <div class="icon">🔒</div>
-                <h3>Withdrawals Locked</h3>
-                <p>Complete 7 consecutive days of the daily challenge to unlock withdrawals</p>
-                <p id="streak-progress">Current streak: 0 days</p>
-            </div>
-            
-            <div id="withdraw-unlocked" style="display: none;">
-                <div class="withdraw-locked" style="background: rgba(212, 175, 55, 0.1);">
-                    <div class="icon">🎉</div>
-                    <h3>Withdrawals Unlocked!</h3>
-                    <p>You can now withdraw your earnings</p>
-                    <button class="btn" id="enter-details-btn">Enter Withdraw Details</button>
+        <!-- Member Code Screen -->
+        <div id="memberCodeScreen" class="screen">
+            <div class="card">
+                <h2>Join as Member</h2>
+                <p>Enter the admin code provided by your team leader</p>
+                
+                <div class="form-group">
+                    <label class="label" for="adminCodeInput">Admin Code</label>
+                    <input type="text" id="adminCodeInput" class="form-control" placeholder="e.g., ADM-84925">
                 </div>
                 
-                <div id="withdraw-details-form" style="display: none;">
-                    <h3 style="margin-bottom: 15px; color: var(--gold);">Withdraw Details</h3>
-                    
-                    <div class="form-group">
-                        <label for="full-name">Full Name *</label>
-                        <input type="text" id="full-name" placeholder="Enter your full name">
-                        <div class="error-message" id="full-name-error">Please enter your full name</div>
+                <button id="submitCodeBtn" class="btn">Join Team</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="screen">
+            <div class="card">
+                <div class="admin-code">
+                    <span>Your Admin Code: <strong id="adminCodeDisplay">ADM-84925</strong></span>
+                    <button id="copyCodeBtn" class="copy-btn">Copy</button>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="dashboard">
+                        <i class="fas fa-chart-bar"></i> Dashboard
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" placeholder="03XX-XXXXXXX">
-                        <div class="error-message" id="phone-error">Please enter a valid phone number</div>
+                    <div class="tab" data-tab="members">
+                        <i class="fas fa-users"></i> Members
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="method">Withdrawal Method *</label>
-                        <select id="method">
-                            <option value="">Select method</option>
-                            <option value="easypaisa">Easypaisa</option>
-                            <option value="jazzcash">JazzCash</option>
-                            <option value="bank">Bank Transfer</option>
-                        </select>
-                        <div class="error-message" id="method-error">Please select a withdrawal method</div>
+                    <div class="tab" data-tab="claim">
+                        <i class="fas fa-hand-holding-usd"></i> Claim
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="account">Account / Mobile Number *</label>
-                        <div style="position: relative;">
-                            <input type="text" id="account" placeholder="Enter account/mobile number">
-                            <button type="button" class="toggle-password" id="toggle-account">👁️</button>
+                    <div class="tab" data-tab="withdraw">
+                        <i class="fas fa-wallet"></i> Withdraw
+                    </div>
+                    <div class="tab" data-tab="activity">
+                        <i class="fas fa-history"></i> Activity
+                    </div>
+                </div>
+                
+                <!-- Dashboard Tab -->
+                <div id="dashboardTab" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Members</div>
+                            <div class="stat-value" id="totalMembers">0</div>
                         </div>
-                        <div class="error-message" id="account-error">Please enter a valid account/mobile number</div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Team Ads</div>
+                            <div class="stat-value" id="totalTeamAds">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Claimed Ads</div>
+                            <div class="stat-value" id="totalClaimedAds">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Earnings</div>
+                            <div class="stat-value" id="totalEarnings">₨0</div>
+                        </div>
                     </div>
                     
-                    <div id="bank-fields" style="display: none;">
-                        <div class="form-group">
-                            <label for="bank-name">Bank Name *</label>
-                            <input type="text" id="bank-name" placeholder="Enter bank name">
-                            <div class="error-message" id="bank-name-error">Please enter bank name</div>
+                    <!-- Active Members Indicator -->
+                    <div class="active-members-indicator">
+                        <div class="members-count">Active Members: <span id="activeMembersCount">0</span> / 4</div>
+                        <div id="membersWarning" class="members-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Need at least 4 active members to unlock withdrawal
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Watch Ads</h3>
+                        <p>As an admin, you can also watch ads to earn</p>
+                        <button id="watchAdBtn" class="btn btn-secondary">
+                            <i class="fas fa-play-circle"></i> Watch Ad
+                        </button>
+                        <div id="cooldownInfo" class="cooldown-info hidden">
+                            Next ad available in: <span id="cooldownTimer">30</span> seconds
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivityList">
+                            <p class="text-center">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Members Tab -->
+                <div id="membersTab" class="tab-content">
+                    <div class="card">
+                        <h3>Team Members</h3>
+                        <p id="membersSummary">Active Members: 0 / Total Members: 0</p>
+                        <div id="membersList">
+                            <p class="text-center">No members yet. Share your admin code to add members.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Claim Tab -->
+                <div id="claimTab" class="tab-content">
+                    <div class="card">
+                        <h3>Claim Ads from Members</h3>
+                        <p>Claim 50 ads from members who have reached the threshold</p>
+                        <div id="claimSection">
+                            <p class="text-center">No members with 50+ ads available for claiming.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Withdraw Tab -->
+                <div id="withdrawTab" class="tab-content">
+                    <!-- Summary Card -->
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="summary-value" id="summaryEarnings">₨0</div>
+                            <div class="summary-label">Total Earnings</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="summary-value" id="summaryActiveMembers">0</div>
+                            <div class="summary-label">Active Members</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="summary-value" id="summaryClaimedAds">0</div>
+                            <div class="summary-label">Claimed Ads</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Withdraw Earnings</h3>
+                        
+                        <div class="withdraw-info">
+                            <div class="info-item">
+                                <span class="info-label">Total Earnings:</span>
+                                <span class="info-value" id="withdrawalEarnings">₨0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Claimed Ads:</span>
+                                <span class="info-value" id="withdrawalClaimedAds">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Active Members:</span>
+                                <span class="info-value" id="withdrawalActiveMembers">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Next Withdraw Available:</span>
+                                <span class="info-value" id="nextWithdrawDate">In 7 days</span>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="branch">Branch (Optional)</label>
-                            <input type="text" id="branch" placeholder="Enter branch name">
+                        <button id="withdrawBtn" class="btn" disabled>
+                            <i class="fab fa-whatsapp"></i> Request Withdrawal via WhatsApp
+                        </button>
+                        
+                        <div class="ad-cooldown">
+                            <p>Withdrawals are available once every 7 days and require at least 4 active members.</p>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="cnic">CNIC (Optional)</label>
-                        <input type="text" id="cnic" placeholder="XXXXX-XXXXXXX-X">
-                    </div>
-                    
-                    <button class="btn" id="save-details-btn">
-                        <span>Save Details</span>
-                    </button>
                 </div>
                 
-                <div id="withdraw-request" style="display: none;">
-                    <h3 style="margin-bottom: 15px; color: var(--gold);">Request Withdrawal</h3>
-                    
-                    <div class="form-group">
-                        <label>Select Amount (Min: ₨100)</label>
-                        <div class="withdraw-amounts">
-                            <div class="amount-option" data-amount="100">₨100</div>
-                            <div class="amount-option" data-amount="500">₨500</div>
-                            <div class="amount-option" data-amount="1000">₨1000</div>
-                            <div class="amount-option" data-amount="2000">₨2000</div>
+                <!-- Activity Tab -->
+                <div id="activityTab" class="tab-content">
+                    <div class="card">
+                        <h3>Recent Activity</h3>
+                        <div id="activityLog">
+                            <p class="text-center">No activity yet.</p>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="custom-amount">Or Enter Custom Amount</label>
-                        <input type="number" id="custom-amount" placeholder="Enter amount (min ₨100)" min="100">
-                        <div class="error-message" id="amount-error">Amount must be at least ₨100 and not exceed your balance</div>
-                    </div>
-                    
-                    <div class="form-group" id="saved-details-summary" style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px;">
-                        <!-- Saved details will be displayed here -->
-                    </div>
-                    
-                    <button class="btn" id="request-withdraw-btn">
-                        <span>Request Withdrawal</span>
-                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">
-                <span>Withdrawal History</span>
+        <!-- Member Dashboard -->
+        <div id="memberDashboard" class="screen">
+            <div class="card">
+                <h2>Member Dashboard</h2>
+                <p>Watch ads to contribute to your team</p>
+                
+                <div class="member-counter" id="memberAdsCounter">0</div>
+                <p class="text-center">Total Ads Watched</p>
+                
+                <button id="watchAdBtnMember" class="btn btn-secondary">
+                    <i class="fas fa-play-circle"></i> Watch Ad
+                </button>
+                
+                <div id="cooldownInfoMember" class="cooldown-info hidden">
+                    Next ad available in: <span id="cooldownTimerMember">30</span> seconds
+                </div>
+                
+                <div class="ad-cooldown">
+                    <p>You can watch one ad every 30 seconds. Keep watching to stay active!</p>
+                </div>
             </div>
             
-            <div class="withdraw-history" id="withdraw-history">
-                <!-- History items will be populated by JS -->
-                <div style="text-align: center; padding: 20px; opacity: 0.7;">
-                    No withdrawal history yet
+            <div class="card">
+                <h3>Your Status</h3>
+                <p>Status: <span id="memberStatus" class="status-active">Active</span></p>
+                <p>You need to watch at least 10 ads in the last 24 hours to stay active.</p>
+                
+                <div class="progress-bar">
+                    <div id="dailyProgress" class="progress-fill" style="width: 0%"></div>
                 </div>
+                <p class="text-center"><span id="dailyAdsCount">0</span>/10 ads today</p>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal" id="confirm-withdraw-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Confirm Withdrawal</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div id="confirm-details">
-                <!-- Confirmation details will be populated by JS -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancel-withdraw">Cancel</button>
-                <button class="btn" id="confirm-withdraw">Confirm Withdrawal</button>
-            </div>
-        </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Operation successful</span>
     </div>
 
-    <div class="modal" id="success-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Success!</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div style="text-align: center; padding: 20px;">
-                <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
-                <p id="success-message">Your withdrawal request has been submitted successfully!</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="close-success">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
-
-    <!-- Confetti -->
-    <div id="confetti-container"></div>
-
-    <!-- Admin Link (hidden by default) -->
-    <a href="#" class="admin-link" id="admin-link" style="display: none;">Admin</a>
-
-    <script type="module">
-        // Import Firebase functions
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBzDvBjcm56XutOD0l_vOnWO0EqGrrj3dw",
@@ -737,996 +1054,833 @@
             measurementId: "G-T4KP9YEY4X"
         };
 
-        // Get device ID or generate one
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('deviceId');
-            if (!deviceId) {
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('deviceId', deviceId);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Application state
+        const state = {
+            deviceId: null,
+            role: null,
+            adminCode: null,
+            userData: null,
+            lastAdTime: null,
+            adCooldown: 30000, // 30 seconds in milliseconds
+            earningsPerAd: 1.5, // Earnings per ad in currency
+            members: []
+        };
+
+        // DOM elements
+        const elements = {
+            // Screens
+            splashScreen: document.getElementById('splashScreen'),
+            roleSelectionScreen: document.getElementById('roleSelectionScreen'),
+            memberCodeScreen: document.getElementById('memberCodeScreen'),
+            adminDashboard: document.getElementById('adminDashboard'),
+            memberDashboard: document.getElementById('memberDashboard'),
+            
+            // Role selection
+            adminBtn: document.getElementById('adminBtn'),
+            memberBtn: document.getElementById('memberBtn'),
+            
+            // Member code
+            adminCodeInput: document.getElementById('adminCodeInput'),
+            submitCodeBtn: document.getElementById('submitCodeBtn'),
+            
+            // Admin dashboard
+            adminCodeDisplay: document.getElementById('adminCodeDisplay'),
+            copyCodeBtn: document.getElementById('copyCodeBtn'),
+            totalMembers: document.getElementById('totalMembers'),
+            totalTeamAds: document.getElementById('totalTeamAds'),
+            totalClaimedAds: document.getElementById('totalClaimedAds'),
+            totalEarnings: document.getElementById('totalEarnings'),
+            activeMembersCount: document.getElementById('activeMembersCount'),
+            membersWarning: document.getElementById('membersWarning'),
+            watchAdBtn: document.getElementById('watchAdBtn'),
+            cooldownInfo: document.getElementById('cooldownInfo'),
+            cooldownTimer: document.getElementById('cooldownTimer'),
+            recentActivityList: document.getElementById('recentActivityList'),
+            membersList: document.getElementById('membersList'),
+            membersSummary: document.getElementById('membersSummary'),
+            claimSection: document.getElementById('claimSection'),
+            summaryEarnings: document.getElementById('summaryEarnings'),
+            summaryActiveMembers: document.getElementById('summaryActiveMembers'),
+            summaryClaimedAds: document.getElementById('summaryClaimedAds'),
+            withdrawalEarnings: document.getElementById('withdrawalEarnings'),
+            withdrawalClaimedAds: document.getElementById('withdrawalClaimedAds'),
+            withdrawalActiveMembers: document.getElementById('withdrawalActiveMembers'),
+            nextWithdrawDate: document.getElementById('nextWithdrawDate'),
+            withdrawBtn: document.getElementById('withdrawBtn'),
+            activityLog: document.getElementById('activityLog'),
+            
+            // Member dashboard
+            memberAdsCounter: document.getElementById('memberAdsCounter'),
+            watchAdBtnMember: document.getElementById('watchAdBtnMember'),
+            cooldownInfoMember: document.getElementById('cooldownInfoMember'),
+            cooldownTimerMember: document.getElementById('cooldownTimerMember'),
+            memberStatus: document.getElementById('memberStatus'),
+            dailyProgress: document.getElementById('dailyProgress'),
+            dailyAdsCount: document.getElementById('dailyAdsCount'),
+            
+            // Toast
+            toast: document.getElementById('toast'),
+            toastMessage: document.getElementById('toast-message')
+        };
+
+        // Initialize the application
+        function initApp() {
+            // Hide splash screen after 2 seconds
+            setTimeout(() => {
+                elements.splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    elements.splashScreen.style.display = 'none';
+                }, 500);
+            }, 2000);
+            
+            // Generate or retrieve device ID
+            state.deviceId = generateDeviceId();
+            
+            // Check if user already has a role
+            const savedRole = localStorage.getItem('watchEarnRole');
+            const savedAdminCode = localStorage.getItem('watchEarnAdminCode');
+            
+            if (savedRole && savedAdminCode) {
+                state.role = savedRole;
+                state.adminCode = savedAdminCode;
+                
+                // Load user data from Firestore
+                loadUserData().then(() => {
+                    updateUI();
+                    setupRealtimeListeners();
+                });
             }
+            
+            // Set up tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabName}Tab`).classList.add('active');
+                });
+            });
+        }
+
+        // Generate a unique device ID
+        function generateDeviceId() {
+            let deviceId = localStorage.getItem('watchEarnDeviceId');
+            
+            if (!deviceId) {
+                deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                localStorage.setItem('watchEarnDeviceId', deviceId);
+            }
+            
             return deviceId;
         }
 
-        // App State
-        const state = {
-            deviceId: getDeviceId(),
-            balance: 0,
-            streak: 0,
-            totalWatchedToday: 0,
-            lastWatchDate: null,
-            totalEarned: 0,
-            withdrawDetails: null,
-            withdrawHistory: [],
-            isWithdrawUnlocked: false
-        };
+        // Generate a unique admin code
+        function generateAdminCode() {
+            return 'ADM-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
 
-        // DOM Elements
-        const elements = {
-            loadingOverlay: document.getElementById('loading-overlay'),
-            balance: document.getElementById('balance'),
-            streakBadge: document.getElementById('streak-badge'),
-            streakDays: document.getElementById('streak-days'),
-            progressFill: document.getElementById('progress-fill'),
-            progressText: document.getElementById('progress-text'),
-            progressPercent: document.getElementById('progress-percent'),
-            watchAdBtn: document.getElementById('watch-ad-btn'),
-            withdrawSection: document.getElementById('withdraw-section'),
-            withdrawBadge: document.getElementById('withdraw-badge'),
-            withdrawLocked: document.getElementById('withdraw-locked'),
-            withdrawUnlocked: document.getElementById('withdraw-unlocked'),
-            enterDetailsBtn: document.getElementById('enter-details-btn'),
-            withdrawDetailsForm: document.getElementById('withdraw-details-form'),
-            withdrawRequest: document.getElementById('withdraw-request'),
-            saveDetailsBtn: document.getElementById('save-details-btn'),
-            requestWithdrawBtn: document.getElementById('request-withdraw-btn'),
-            withdrawHistory: document.getElementById('withdraw-history'),
-            confirmWithdrawModal: document.getElementById('confirm-withdraw-modal'),
-            successModal: document.getElementById('success-modal'),
-            toast: document.getElementById('toast'),
-            confettiContainer: document.getElementById('confetti-container'),
-            adminLink: document.getElementById('admin-link')
-        };
-
-        // Form Elements
-        const formElements = {
-            fullName: document.getElementById('full-name'),
-            phone: document.getElementById('phone'),
-            method: document.getElementById('method'),
-            account: document.getElementById('account'),
-            bankName: document.getElementById('bank-name'),
-            branch: document.getElementById('branch'),
-            cnic: document.getElementById('cnic'),
-            customAmount: document.getElementById('custom-amount'),
-            bankFields: document.getElementById('bank-fields'),
-            toggleAccount: document.getElementById('toggle-account'),
-            savedDetailsSummary: document.getElementById('saved-details-summary')
-        };
-
-        // Error Elements
-        const errorElements = {
-            fullName: document.getElementById('full-name-error'),
-            phone: document.getElementById('phone-error'),
-            method: document.getElementById('method-error'),
-            account: document.getElementById('account-error'),
-            bankName: document.getElementById('bank-name-error'),
-            amount: document.getElementById('amount-error')
-        };
-
-        // Constants
-        const DAILY_ADS_TARGET = 100;
-        const MIN_WITHDRAW_AMOUNT = 100;
-        const EARNING_PER_AD = 10; // ₨10 per ad
-
-        // Initialize Firebase and app
-        async function init() {
-            try {
-                // Load user data from Firebase
-                await loadUserData();
-                
-                // Set up real-time listener for balance updates
-                setupRealtimeListener();
-                
-                // Render UI
-                renderUI();
-                setupEventListeners();
-                
-                // Hide loading overlay
-                setTimeout(() => {
-                    elements.loadingOverlay.style.display = 'none';
-                }, 1000);
-                
-                // Check if admin mode should be enabled
-                if (localStorage.getItem('isAdmin') === 'true') {
-                    elements.adminLink.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error initializing app:', error);
-                showToast('Error loading data. Please check your connection.', 'error');
-                
-                // Hide loading overlay even if there's an error
-                setTimeout(() => {
-                    elements.loadingOverlay.style.display = 'none';
-                }, 1000);
+        // Update UI based on current state
+        function updateUI() {
+            // Hide all screens first
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show appropriate screen based on role
+            if (state.role === 'admin') {
+                elements.adminDashboard.classList.add('active');
+                elements.adminCodeDisplay.textContent = state.adminCode;
+                updateAdminStats();
+                loadMembersList();
+                loadClaimSection();
+                loadActivityLog();
+                checkWithdrawEligibility();
+            } else if (state.role === 'member') {
+                elements.memberDashboard.classList.add('active');
+                updateMemberDashboard();
+            } else {
+                elements.roleSelectionScreen.classList.add('active');
             }
         }
 
-        // Load user data from Firebase
+        // Show a specific screen
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+            screen.classList.add('active');
+        }
+
+        // Load user data from Firestore
         async function loadUserData() {
-            const db = window.firestore;
-            const userDocRef = doc(db, 'users', state.deviceId);
-            
             try {
-                const userDoc = await getDoc(userDocRef);
+                const doc = await db.collection('users').doc(state.deviceId).get();
                 
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    
-                    // Update state with Firebase data
-                    state.balance = userData.balance || 0;
-                    state.streak = userData.streak || 0;
-                    state.totalWatchedToday = userData.totalWatchedToday || 0;
-                    state.lastWatchDate = userData.lastWatchDate || null;
-                    state.totalEarned = userData.totalEarned || 0;
-                    
-                    // Check if we need to reset daily progress
-                    const today = new Date().toDateString();
-                    if (state.lastWatchDate !== today) {
-                        // If last watch was not today, check if streak should be reset
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        
-                        if (state.lastWatchDate !== yesterday.toDateString()) {
-                            // If last watch was not yesterday, reset streak
-                            state.streak = 0;
-                        }
-                        
-                        // Reset daily progress
-                        state.totalWatchedToday = 0;
-                        state.lastWatchDate = today;
-                        
-                        // Save updated state to Firebase
-                        await updateBalanceInFirestore(0); // Just update the date and reset daily progress
-                    }
+                if (doc.exists) {
+                    state.userData = doc.data();
                 } else {
-                    // Create new user document
-                    await setDoc(userDocRef, {
-                        balance: 0,
-                        streak: 0,
-                        totalWatchedToday: 0,
-                        lastWatchDate: new Date().toDateString(),
-                        totalEarned: 0,
-                        deviceId: state.deviceId,
-                        createdAt: new Date().toISOString()
-                    });
-                }
-                
-                // Check if withdraw is unlocked
-                state.isWithdrawUnlocked = state.streak >= 7;
-                
-                // Load withdraw details from localStorage
-                const savedDetails = localStorage.getItem('withdrawDetails');
-                if (savedDetails) {
-                    state.withdrawDetails = JSON.parse(savedDetails);
-                }
-                
-                // Load withdraw history from localStorage
-                const savedHistory = localStorage.getItem('withdrawHistory');
-                if (savedHistory) {
-                    state.withdrawHistory = JSON.parse(savedHistory);
+                    // User doesn't exist in Firestore yet
+                    state.userData = null;
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
-                throw error;
+                showToast('Error loading user data', 'error');
             }
         }
 
-        // Set up real-time listener for balance updates
-        function setupRealtimeListener() {
-            const db = window.firestore;
-            const userDocRef = doc(db, 'users', state.deviceId);
-            
-            onSnapshot(userDocRef, (doc) => {
-                if (doc.exists()) {
-                    const userData = doc.data();
-                    
-                    // Update state with latest data
-                    state.balance = userData.balance || 0;
-                    state.streak = userData.streak || 0;
-                    state.totalWatchedToday = userData.totalWatchedToday || 0;
-                    state.totalEarned = userData.totalEarned || 0;
-                    
-                    // Check if withdraw is unlocked
-                    state.isWithdrawUnlocked = state.streak >= 7;
-                    
-                    // Update UI
-                    renderUI();
-                }
-            });
-        }
-
-        // Update balance in Firestore
-        async function updateBalanceInFirestore(amountToAdd = 0) {
-            const db = window.firestore;
-            const userDocRef = doc(db, 'users', state.deviceId);
-            
-            try {
-                // Update state
-                state.balance += amountToAdd;
-                state.totalEarned += amountToAdd;
-                state.totalWatchedToday += amountToAdd > 0 ? 1 : 0;
-                state.lastWatchDate = new Date().toDateString();
-                
-                // Check if we completed today's challenge
-                if (amountToAdd > 0 && state.totalWatchedToday === DAILY_ADS_TARGET) {
-                    state.streak++;
-                    state.isWithdrawUnlocked = state.streak >= 7;
-                }
-                
-                // Update Firestore
-                await updateDoc(userDocRef, {
-                    balance: state.balance,
-                    streak: state.streak,
-                    totalWatchedToday: state.totalWatchedToday,
-                    lastWatchDate: state.lastWatchDate,
-                    totalEarned: state.totalEarned,
-                    lastUpdated: new Date().toISOString()
+        // Set up real-time Firestore listeners
+        function setupRealtimeListeners() {
+            if (state.role === 'admin') {
+                // Listen for admin data changes
+                db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
+                    if (doc.exists) {
+                        state.userData = doc.data();
+                        updateAdminStats();
+                        
+                        // Update recent activity
+                        if (state.userData.activity && state.userData.activity.length > 0) {
+                            updateRecentActivity();
+                        }
+                    }
                 });
                 
-                return true;
-            } catch (error) {
-                console.error('Error updating balance:', error);
-                showToast('Error updating balance. Please try again.', 'error');
-                return false;
+                // Listen for members data changes
+                db.collection('users')
+                    .where('adminCode', '==', state.adminCode)
+                    .where('role', '==', 'member')
+                    .onSnapshot((snapshot) => {
+                        updateAdminStats();
+                        
+                        // Update members list if on members tab
+                        if (document.querySelector('.tab[data-tab="members"]').classList.contains('active')) {
+                            loadMembersList();
+                        }
+                        
+                        // Update claim section if on claim tab
+                        if (document.querySelector('.tab[data-tab="claim"]').classList.contains('active')) {
+                            loadClaimSection();
+                        }
+                    });
+            } else if (state.role === 'member') {
+                // Listen for member data changes
+                db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
+                    if (doc.exists) {
+                        state.userData = doc.data();
+                        updateMemberDashboard();
+                    }
+                });
             }
         }
 
-        // Render the UI based on current state
-        function renderUI() {
-            // Update balance
-            elements.balance.textContent = `₨${state.balance.toFixed(2)}`;
+        // Update admin statistics
+        async function updateAdminStats() {
+            // Get all members for this admin
+            const membersSnapshot = await db.collection('users')
+                .where('adminCode', '==', state.adminCode)
+                .where('role', '==', 'member')
+                .get();
             
-            // Update streak badge
-            elements.streakBadge.textContent = `Day ${state.streak + 1}`;
+            // Calculate team stats
+            let totalTeamAds = 0;
+            let activeMembers = 0;
             
-            // Render streak days
-            renderStreakDays();
-            
-            // Update progress
-            const progressPercent = (state.totalWatchedToday / DAILY_ADS_TARGET) * 100;
-            elements.progressFill.style.width = `${progressPercent}%`;
-            elements.progressText.textContent = `${state.totalWatchedToday}/${DAILY_ADS_TARGET} ads watched`;
-            elements.progressPercent.textContent = `${Math.round(progressPercent)}%`;
-            
-            // Update withdraw section
-            if (state.isWithdrawUnlocked) {
-                elements.withdrawBadge.textContent = 'UNLOCKED';
-                elements.withdrawBadge.style.background = 'var(--success)';
-                elements.withdrawLocked.style.display = 'none';
-                elements.withdrawUnlocked.style.display = 'block';
+            membersSnapshot.forEach(doc => {
+                const memberData = doc.data();
+                totalTeamAds += memberData.totalAdsWatched || 0;
                 
-                // Show appropriate section based on whether details are saved
-                if (state.withdrawDetails) {
-                    elements.withdrawDetailsForm.style.display = 'none';
-                    elements.withdrawRequest.style.display = 'block';
-                    renderSavedDetailsSummary();
-                } else {
-                    elements.withdrawDetailsForm.style.display = 'block';
-                    elements.withdrawRequest.style.display = 'none';
+                // Check if member is active (watched at least 50 ads today)
+                // This is a simplified check - in a real app, you'd track daily ads
+                if ((memberData.totalAdsWatched || 0) >= 50) {
+                    activeMembers++;
                 }
-            } else {
-                elements.withdrawBadge.textContent = 'LOCKED';
-                elements.withdrawBadge.style.background = 'var(--error)';
-                elements.withdrawLocked.style.display = 'block';
-                elements.withdrawUnlocked.style.display = 'none';
-                
-                // Update streak progress text
-                document.getElementById('streak-progress').textContent = 
-                    `Current streak: ${state.streak} days (need ${7 - state.streak} more)`;
-            }
-            
-            // Render withdraw history
-            renderWithdrawHistory();
-            
-            // Pre-fill form if details exist
-            if (state.withdrawDetails) {
-                formElements.fullName.value = state.withdrawDetails.fullName || '';
-                formElements.phone.value = state.withdrawDetails.phone || '';
-                formElements.method.value = state.withdrawDetails.method || '';
-                formElements.account.value = state.withdrawDetails.account || '';
-                formElements.bankName.value = state.withdrawDetails.bankName || '';
-                formElements.branch.value = state.withdrawDetails.branch || '';
-                formElements.cnic.value = state.withdrawDetails.cnic || '';
-                
-                // Show bank fields if method is bank
-                if (state.withdrawDetails.method === 'bank') {
-                    formElements.bankFields.style.display = 'block';
-                }
-            }
-        }
-
-        // Render streak days visualization
-        function renderStreakDays() {
-            elements.streakDays.innerHTML = '';
-            
-            for (let i = 0; i < 7; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'streak-day';
-                
-                if (i < state.streak) {
-                    dayElement.classList.add('completed');
-                } else if (i === state.streak) {
-                    dayElement.classList.add('active');
-                }
-                
-                dayElement.textContent = i + 1;
-                elements.streakDays.appendChild(dayElement);
-            }
-        }
-
-        // Render saved details summary
-        function renderSavedDetailsSummary() {
-            if (!state.withdrawDetails) return;
-            
-            const { fullName, method, account } = state.withdrawDetails;
-            const maskedAccount = account ? `****${account.slice(-4)}` : '';
-            
-            formElements.savedDetailsSummary.innerHTML = `
-                <h4>Withdrawal Details</h4>
-                <p><strong>Name:</strong> ${fullName}</p>
-                <p><strong>Method:</strong> ${method.charAt(0).toUpperCase() + method.slice(1)}</p>
-                <p><strong>Account:</strong> ${maskedAccount}</p>
-                <button class="btn btn-secondary" id="edit-details-btn" style="margin-top: 10px;">Edit Details</button>
-            `;
-            
-            // Add event listener for edit button
-            document.getElementById('edit-details-btn').addEventListener('click', () => {
-                elements.withdrawRequest.style.display = 'none';
-                elements.withdrawDetailsForm.style.display = 'block';
             });
+            
+            // Update UI
+            elements.totalMembers.textContent = membersSnapshot.size;
+            elements.totalClaimedAds.textContent = state.userData.totalClaimedAds || 0;
+            elements.totalTeamAds.textContent = totalTeamAds;
+            elements.totalEarnings.textContent = `₨${(state.userData.totalEarnings || 0).toFixed(2)}`;
+            elements.withdrawalEarnings.textContent = `₨${(state.userData.totalEarnings || 0).toFixed(2)}`;
+            
+            // Update active members count
+            elements.activeMembersCount.textContent = activeMembers;
+            elements.summaryActiveMembers.textContent = activeMembers;
+            elements.withdrawalActiveMembers.textContent = activeMembers;
+            
+            // Update summary card
+            elements.summaryEarnings.textContent = `₨${(state.userData.totalEarnings || 0).toFixed(2)}`;
+            elements.summaryClaimedAds.textContent = state.userData.totalClaimedAds || 0;
+            
+            // Update active members indicator
+            const activeIndicator = document.querySelector('.active-members-indicator');
+            if (activeMembers >= 4) {
+                activeIndicator.classList.add('active');
+                elements.membersWarning.classList.add('hidden');
+            } else {
+                activeIndicator.classList.remove('active');
+                elements.membersWarning.classList.remove('hidden');
+            }
         }
 
-        // Render withdraw history
-        function renderWithdrawHistory() {
-            if (state.withdrawHistory.length === 0) {
-                elements.withdrawHistory.innerHTML = `
-                    <div style="text-align: center; padding: 20px; opacity: 0.7;">
-                        No withdrawal history yet
+        // Load members list for admin
+        async function loadMembersList() {
+            const membersSnapshot = await db.collection('users')
+                .where('adminCode', '==', state.adminCode)
+                .where('role', '==', 'member')
+                .get();
+            
+            elements.membersList.innerHTML = '';
+            
+            if (membersSnapshot.empty) {
+                elements.membersList.innerHTML = '<p class="text-center">No members yet. Share your admin code to add members.</p>';
+                return;
+            }
+            
+            let activeCount = 0;
+            membersSnapshot.forEach(doc => {
+                const member = doc.data();
+                const isActive = (member.totalAdsWatched || 0) >= 50;
+                if (isActive) activeCount++;
+                
+                const memberItem = document.createElement('div');
+                memberItem.className = 'member-item';
+                
+                memberItem.innerHTML = `
+                    <div class="member-info">
+                        <div class="member-status ${isActive ? 'active' : 'inactive'}"></div>
+                        <div>
+                            <div class="member-id">${member.deviceId}</div>
+                            <div class="member-ads">Ads Watched: <span class="member-ads-highlight">${member.totalAdsWatched || 0}</span></div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        ${member.totalAdsWatched >= 50 ? 
+                            `<button class="btn btn-small" data-member-id="${doc.id}">Claim</button>` : 
+                            `<button class="btn btn-small" disabled>Claim</button>`
+                        }
                     </div>
                 `;
-                return;
-            }
+                
+                elements.membersList.appendChild(memberItem);
+            });
             
-            elements.withdrawHistory.innerHTML = '';
+            // Update members summary
+            elements.membersSummary.textContent = `Active Members: ${activeCount} / Total Members: ${membersSnapshot.size}`;
             
-            state.withdrawHistory
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .forEach(item => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item fade-in';
+            // Add event listeners to claim buttons
+            document.querySelectorAll('.member-actions .btn').forEach(btn => {
+                if (!btn.disabled) {
+                    btn.addEventListener('click', function() {
+                        const memberId = this.getAttribute('data-member-id');
+                        claimAdsFromMember(memberId);
+                    });
+                }
+            });
+        }
+
+        // Load claim section for admin
+        async function loadClaimSection() {
+            const membersSnapshot = await db.collection('users')
+                .where('adminCode', '==', state.adminCode)
+                .where('role', '==', 'member')
+                .get();
+            
+            elements.claimSection.innerHTML = '';
+            
+            let hasClaimableMembers = false;
+            
+            membersSnapshot.forEach(doc => {
+                const member = doc.data();
+                if (member.totalAdsWatched >= 50) {
+                    hasClaimableMembers = true;
                     
-                    const date = new Date(item.timestamp).toLocaleDateString();
-                    const maskedAccount = `****${item.account.slice(-4)}`;
-                    const statusClass = `status-${item.status.toLowerCase()}`;
+                    const claimItem = document.createElement('div');
+                    claimItem.className = 'member-item';
                     
-                    historyItem.innerHTML = `
-                        <div class="history-info">
-                            <h4>₨${item.amount.toFixed(2)}</h4>
-                            <p>${item.method} • ${maskedAccount} • ${date}</p>
+                    claimItem.innerHTML = `
+                        <div class="member-info">
+                            <div class="member-status active"></div>
+                            <div>
+                                <div class="member-id">${member.deviceId}</div>
+                                <div class="member-ads">Ads Available: <span class="member-ads-highlight">${member.totalAdsWatched}</span></div>
+                            </div>
                         </div>
-                        <div class="history-status ${statusClass}">${item.status}</div>
-                        ${item.status === 'Pending' ? 
-                            `<div class="history-actions">
-                                <button class="cancel-withdraw" data-id="${item.id}">Cancel</button>
-                            </div>` : ''
-                        }
+                        <div class="member-actions">
+                            <button class="btn btn-small" data-member-id="${doc.id}">Claim 50 Ads</button>
+                        </div>
                     `;
                     
-                    elements.withdrawHistory.appendChild(historyItem);
-                });
-            
-            // Add event listeners for cancel buttons
-            document.querySelectorAll('.cancel-withdraw').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    cancelWithdrawRequest(id);
-                });
-            });
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Watch ad button
-            elements.watchAdBtn.addEventListener('click', watchAd);
-            
-            // Withdraw method change
-            formElements.method.addEventListener('change', handleMethodChange);
-            
-            // Save details button
-            elements.saveDetailsBtn.addEventListener('click', saveWithdrawDetails);
-            
-            // Amount options
-            document.querySelectorAll('.amount-option').forEach(option => {
-                option.addEventListener('click', (e) => {
-                    // Remove selected class from all options
-                    document.querySelectorAll('.amount-option').forEach(el => {
-                        el.classList.remove('selected');
-                    });
-                    
-                    // Add selected class to clicked option
-                    e.target.classList.add('selected');
-                    
-                    // Set custom amount value
-                    formElements.customAmount.value = e.target.getAttribute('data-amount');
-                    
-                    // Validate amount
-                    validateAmount();
-                });
-            });
-            
-            // Custom amount input
-            formElements.customAmount.addEventListener('input', validateAmount);
-            
-            // Request withdraw button
-            elements.requestWithdrawBtn.addEventListener('click', requestWithdrawal);
-            
-            // Toggle account visibility
-            formElements.toggleAccount.addEventListener('click', () => {
-                const type = formElements.account.getAttribute('type');
-                formElements.account.setAttribute('type', type === 'password' ? 'text' : 'password');
-            });
-            
-            // Form validation on input
-            formElements.fullName.addEventListener('input', () => validateField('fullName'));
-            formElements.phone.addEventListener('input', () => validateField('phone'));
-            formElements.method.addEventListener('change', () => validateField('method'));
-            formElements.account.addEventListener('input', () => validateField('account'));
-            formElements.bankName.addEventListener('input', () => validateField('bankName'));
-            
-            // Modal close buttons
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
-                });
-            });
-            
-            // Cancel withdraw button
-            document.getElementById('cancel-withdraw').addEventListener('click', () => {
-                elements.confirmWithdrawModal.style.display = 'none';
-            });
-            
-            // Confirm withdraw button
-            document.getElementById('confirm-withdraw').addEventListener('click', confirmWithdrawal);
-            
-            // Close success modal
-            document.getElementById('close-success').addEventListener('click', () => {
-                elements.successModal.style.display = 'none';
-            });
-            
-            // Admin link
-            elements.adminLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                showAdminPanel();
-            });
-        }
-
-        // Handle withdraw method change
-        function handleMethodChange() {
-            if (formElements.method.value === 'bank') {
-                formElements.bankFields.style.display = 'block';
-            } else {
-                formElements.bankFields.style.display = 'none';
-            }
-        }
-
-        // Watch ad function
-        function watchAd() {
-            // Show loading state
-            elements.watchAdBtn.innerHTML = '<span class="spinner"></span> Loading Ad...';
-            elements.watchAdBtn.disabled = true;
-            
-            // Call Android interface to show rewarded ad
-            if (typeof Android !== 'undefined' && Android.showRewardedAd) {
-                Android.showRewardedAd();
-            } else {
-                // For testing in browser (simulate ad completion)
-                console.log('Android interface not available, simulating ad...');
-                setTimeout(() => {
-                    onAdWatchedSuccessfully();
-                }, 2000);
-            }
-        }
-
-        // Called when ad is successfully watched (from Android WebView)
-        async function onAdWatchedSuccessfully() {
-            try {
-                // Update balance in Firestore
-                const success = await updateBalanceInFirestore(EARNING_PER_AD);
-                
-                if (success) {
-                    // Reset button state
-                    elements.watchAdBtn.innerHTML = '<span>Watch Ad & Earn</span>';
-                    elements.watchAdBtn.disabled = false;
-                    
-                    // Show confetti if streak milestone reached
-                    if (state.streak === 7) {
-                        createConfetti();
-                        showToast('Congratulations! Withdrawals unlocked!', 'success');
-                    } else if (state.streak % 7 === 0 && state.streak > 0) {
-                        createConfetti();
-                        showToast(`Amazing! ${state.streak} day streak!`, 'success');
-                    }
-                    
-                    // Show success message
-                    showToast(`+₨${EARNING_PER_AD.toFixed(2)} earned!`, 'success');
-                } else {
-                    // Reset button state if there was an error
-                    elements.watchAdBtn.innerHTML = '<span>Watch Ad & Earn</span>';
-                    elements.watchAdBtn.disabled = false;
+                    elements.claimSection.appendChild(claimItem);
                 }
-            } catch (error) {
-                console.error('Error updating balance after ad:', error);
-                elements.watchAdBtn.innerHTML = '<span>Watch Ad & Earn</span>';
-                elements.watchAdBtn.disabled = false;
-                showToast('Error updating balance. Please try again.', 'error');
+            });
+            
+            if (!hasClaimableMembers) {
+                elements.claimSection.innerHTML = '<p class="text-center">No members with 50+ ads available for claiming.</p>';
+            } else {
+                // Add event listeners to claim buttons
+                document.querySelectorAll('.member-actions .btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const memberId = this.getAttribute('data-member-id');
+                        claimAdsFromMember(memberId);
+                    });
+                });
             }
         }
 
-        // Validate form field
-        function validateField(fieldName) {
-            let isValid = true;
-            let errorMessage = '';
+        // Claim ads from a member
+        async function claimAdsFromMember(memberId) {
+            try {
+                // Get member data
+                const memberDoc = await db.collection('users').doc(memberId).get();
+                const member = memberDoc.data();
+                
+                if (!member || member.totalAdsWatched < 50) {
+                    showToast('Member does not have enough ads to claim', 'error');
+                    return;
+                }
+                
+                // Calculate earnings
+                const adsClaimed = 50;
+                const earnings = adsClaimed * state.earningsPerAd;
+                
+                // Update member's ads count
+                await db.collection('users').doc(memberId).update({
+                    totalAdsWatched: firebase.firestore.FieldValue.increment(-adsClaimed)
+                });
+                
+                // Update admin's stats
+                await db.collection('users').doc(state.deviceId).update({
+                    totalClaimedAds: firebase.firestore.FieldValue.increment(adsClaimed),
+                    totalEarnings: firebase.firestore.FieldValue.increment(earnings)
+                });
+                
+                // Add activity log
+                const activity = {
+                    memberId: memberId,
+                    claimedAds: adsClaimed,
+                    earnings: earnings,
+                    timestamp: new Date().toISOString()
+                };
+                
+                await db.collection('users').doc(state.deviceId).update({
+                    activity: firebase.firestore.FieldValue.arrayUnion(activity)
+                });
+                
+                showToast(`Successfully claimed ${adsClaimed} ads from member!`, 'success');
+                
+                // Refresh the UI
+                loadMembersList();
+                loadClaimSection();
+            } catch (error) {
+                console.error('Error claiming ads:', error);
+                showToast('Error claiming ads. Please try again.', 'error');
+            }
+        }
+
+        // Load activity log for admin
+        async function loadActivityLog() {
+            if (!state.userData.activity || state.userData.activity.length === 0) {
+                elements.activityLog.innerHTML = '<p class="text-center">No activity yet.</p>';
+                return;
+            }
             
-            switch (fieldName) {
-                case 'fullName':
-                    if (!formElements.fullName.value.trim()) {
-                        isValid = false;
-                        errorMessage = 'Please enter your full name';
-                    }
-                    break;
+            // Sort activities by timestamp (newest first)
+            const activities = [...state.userData.activity].sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+            
+            elements.activityLog.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                activityItem.innerHTML = `
+                    <div class="activity-info">
+                        <div class="activity-member">Claimed from ${activity.memberId}</div>
+                        <div class="activity-details">${formatDate(activity.timestamp)}</div>
+                    </div>
+                    <div class="activity-amount">+${activity.claimedAds} ads</div>
+                `;
+                
+                elements.activityLog.appendChild(activityItem);
+            });
+        }
+
+        // Update recent activity for admin dashboard
+        function updateRecentActivity() {
+            if (!state.userData.activity || state.userData.activity.length === 0) {
+                elements.recentActivityList.innerHTML = '<p class="text-center">No recent activity.</p>';
+                return;
+            }
+            
+            // Get the 5 most recent activities
+            const recentActivities = [...state.userData.activity]
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 5);
+            
+            elements.recentActivityList.innerHTML = '';
+            
+            recentActivities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                activityItem.innerHTML = `
+                    <div class="activity-info">
+                        <div class="activity-member">Claimed from ${activity.memberId.substring(0, 8)}...</div>
+                        <div class="activity-details">${formatDate(activity.timestamp)}</div>
+                    </div>
+                    <div class="activity-amount">+${activity.claimedAds} ads</div>
+                `;
+                
+                elements.recentActivityList.appendChild(activityItem);
+            });
+        }
+
+        // Check ad cooldown for member
+        function checkAdCooldown() {
+            if (state.lastAdTime) {
+                const timeSinceLastAd = Date.now() - state.lastAdTime;
+                if (timeSinceLastAd < state.adCooldown) {
+                    // Still in cooldown
+                    elements.watchAdBtn.disabled = true;
+                    elements.cooldownInfo.classList.remove('hidden');
                     
-                case 'phone':
-                    const phoneRegex = /^03[0-9]{2}-?[0-9]{7}$/;
-                    if (!formElements.phone.value.trim()) {
-                        isValid = false;
-                        errorMessage = 'Please enter your phone number';
-                    } else if (!phoneRegex.test(formElements.phone.value.replace(/-/g, ''))) {
-                        isValid = false;
-                        errorMessage = 'Please enter a valid phone number (03XX-XXXXXXX)';
-                    }
-                    break;
+                    const remainingSeconds = Math.ceil((state.adCooldown - timeSinceLastAd) / 1000);
+                    elements.cooldownTimer.textContent = remainingSeconds;
                     
-                case 'method':
-                    if (!formElements.method.value) {
-                        isValid = false;
-                        errorMessage = 'Please select a withdrawal method';
-                    }
-                    break;
-                    
-                case 'account':
-                    if (!formElements.account.value.trim()) {
-                        isValid = false;
-                        errorMessage = 'Please enter your account/mobile number';
-                    } else if (formElements.method.value === 'easypaisa' || formElements.method.value === 'jazzcash') {
-                        const accountRegex = /^03[0-9]{2}-?[0-9]{7}$/;
-                        if (!accountRegex.test(formElements.account.value.replace(/-/g, ''))) {
-                            isValid = false;
-                            errorMessage = 'Please enter a valid mobile number (03XX-XXXXXXX)';
+                    // Update countdown every second
+                    const countdownInterval = setInterval(() => {
+                        const newRemaining = parseInt(elements.cooldownTimer.textContent) - 1;
+                        elements.cooldownTimer.textContent = newRemaining;
+                        
+                        if (newRemaining <= 0) {
+                            clearInterval(countdownInterval);
+                            elements.watchAdBtn.disabled = false;
+                            elements.cooldownInfo.classList.add('hidden');
                         }
-                    }
-                    break;
-                    
-                case 'bankName':
-                    if (formElements.method.value === 'bank' && !formElements.bankName.value.trim()) {
-                        isValid = false;
-                        errorMessage = 'Please enter bank name';
-                    }
-                    break;
-            }
-            
-            // Update UI
-            if (isValid) {
-                formElements[fieldName].classList.remove('field-invalid');
-                formElements[fieldName].classList.add('field-valid');
-                errorElements[fieldName].style.display = 'none';
-            } else {
-                formElements[fieldName].classList.remove('field-valid');
-                formElements[fieldName].classList.add('field-invalid');
-                errorElements[fieldName].textContent = errorMessage;
-                errorElements[fieldName].style.display = 'block';
-            }
-            
-            return isValid;
-        }
-
-        // Validate all form fields
-        function validateForm() {
-            const fields = ['fullName', 'phone', 'method', 'account'];
-            if (formElements.method.value === 'bank') {
-                fields.push('bankName');
-            }
-            
-            let isValid = true;
-            fields.forEach(field => {
-                if (!validateField(field)) {
-                    isValid = false;
+                    }, 1000);
+                } else {
+                    // Cooldown finished
+                    elements.watchAdBtn.disabled = false;
+                    elements.cooldownInfo.classList.add('hidden');
                 }
-            });
-            
-            return isValid;
-        }
-
-        // Validate withdrawal amount
-        function validateAmount() {
-            const amount = parseFloat(formElements.customAmount.value) || 0;
-            let isValid = true;
-            let errorMessage = '';
-            
-            if (amount < MIN_WITHDRAW_AMOUNT) {
-                isValid = false;
-                errorMessage = `Amount must be at least ₨${MIN_WITHDRAW_AMOUNT}`;
-            } else if (amount > state.balance) {
-                isValid = false;
-                errorMessage = 'Insufficient balance';
-            }
-            
-            // Update UI
-            if (isValid) {
-                formElements.customAmount.classList.remove('field-invalid');
-                formElements.customAmount.classList.add('field-valid');
-                errorElements.amount.style.display = 'none';
             } else {
-                formElements.customAmount.classList.remove('field-valid');
-                formElements.customAmount.classList.add('field-invalid');
-                errorElements.amount.textContent = errorMessage;
-                errorElements.amount.style.display = 'block';
+                // No previous ad watched
+                elements.watchAdBtn.disabled = false;
+                elements.cooldownInfo.classList.add('hidden');
             }
-            
-            return isValid;
         }
 
-        // Save withdraw details
-        function saveWithdrawDetails() {
-            // Show loading state
-            elements.saveDetailsBtn.innerHTML = '<span class="spinner"></span> Saving...';
-            elements.saveDetailsBtn.disabled = true;
-            
-            // Validate form
-            if (!validateForm()) {
-                elements.saveDetailsBtn.innerHTML = '<span>Save Details</span>';
-                elements.saveDetailsBtn.disabled = false;
-                showToast('Please fix errors in the form', 'error');
+        // Watch ad for member
+        async function watchAd() {
+            // Check cooldown
+            if (state.lastAdTime && (Date.now() - state.lastAdTime) < state.adCooldown) {
+                const remaining = Math.ceil((state.adCooldown - (Date.now() - state.lastAdTime)) / 1000);
+                showToast(`Please wait ${remaining} seconds before watching another ad`, 'warning');
                 return;
             }
             
-            // Create details object
-            const details = {
-                fullName: formElements.fullName.value.trim(),
-                phone: formElements.phone.value.trim(),
-                method: formElements.method.value,
-                account: formElements.account.value.trim(),
-                bankName: formElements.bankName.value.trim(),
-                branch: formElements.branch.value.trim(),
-                cnic: formElements.cnic.value.trim()
-            };
+            // Update last ad time
+            state.lastAdTime = Date.now();
             
-            // Save to state and localStorage
-            state.withdrawDetails = details;
-            localStorage.setItem('withdrawDetails', JSON.stringify(details));
-            
-            // Call Android interface if available
-            if (typeof Android !== 'undefined' && Android.saveWithdrawDetails) {
-                Android.saveWithdrawDetails(JSON.stringify(details));
-            }
-            
-            // Update UI
-            renderUI();
-            
-            // Reset button state
-            elements.saveDetailsBtn.innerHTML = '<span>Save Details</span>';
-            elements.saveDetailsBtn.disabled = false;
-            
-            // Show success message
-            showToast('Details saved successfully!', 'success');
-        }
-
-        // Request withdrawal
-        function requestWithdrawal() {
-            // Validate amount
-            if (!validateAmount()) {
-                showToast('Please enter a valid amount', 'error');
-                return;
-            }
-            
-            const amount = parseFloat(formElements.customAmount.value);
-            
-            // Show confirmation modal
-            const confirmDetails = document.getElementById('confirm-details');
-            const maskedAccount = `****${state.withdrawDetails.account.slice(-4)}`;
-            
-            confirmDetails.innerHTML = `
-                <p><strong>Amount:</strong> ₨${amount.toFixed(2)}</p>
-                <p><strong>Method:</strong> ${state.withdrawDetails.method.charAt(0).toUpperCase() + state.withdrawDetails.method.slice(1)}</p>
-                <p><strong>Account:</strong> ${maskedAccount}</p>
-                <p><strong>Fee:</strong> ₨0.00</p>
-                <p><strong>Total Receive:</strong> ₨${amount.toFixed(2)}</p>
-            `;
-            
-            elements.confirmWithdrawModal.style.display = 'flex';
-        }
-
-        // Confirm withdrawal
-        async function confirmWithdrawal() {
-            const amount = parseFloat(formElements.customAmount.value);
-            
-            // Create withdraw request
-            const request = {
-                id: Date.now().toString(),
-                timestamp: new Date().toISOString(),
-                amount: amount,
-                method: state.withdrawDetails.method,
-                account: state.withdrawDetails.account,
-                status: 'Pending'
-            };
-            
-            // Add to history
-            state.withdrawHistory.push(request);
-            localStorage.setItem('withdrawHistory', JSON.stringify(state.withdrawHistory));
-            
-            // Update balance in Firestore
+            // Update member's ad count in Firestore
             try {
-                const db = window.firestore;
-                const userDocRef = doc(db, 'users', state.deviceId);
-                
-                await updateDoc(userDocRef, {
-                    balance: state.balance - amount
+                await db.collection('users').doc(state.deviceId).update({
+                    totalAdsWatched: firebase.firestore.FieldValue.increment(1)
                 });
                 
-                // Update local state
-                state.balance -= amount;
+                showToast('Ad watched successfully! +1 ad to your count', 'success');
                 
-                // Call Android interface if available
-                if (typeof Android !== 'undefined' && Android.submitWithdraw) {
-                    Android.submitWithdraw(JSON.stringify(request));
-                }
-                
-                // Close modal and show success
-                elements.confirmWithdrawModal.style.display = 'none';
-                
-                document.getElementById('success-message').textContent = 
-                    `Your withdrawal request for ₨${amount.toFixed(2)} has been submitted successfully!`;
-                elements.successModal.style.display = 'flex';
-                
-                // Update UI
-                renderUI();
+                // Start cooldown
+                checkAdCooldown();
             } catch (error) {
-                console.error('Error processing withdrawal:', error);
-                showToast('Error processing withdrawal. Please try again.', 'error');
+                console.error('Error updating ad count:', error);
+                showToast('Error updating ad count. Please try again.', 'error');
             }
         }
 
-        // Cancel withdraw request
-        function cancelWithdrawRequest(id) {
-            const request = state.withdrawHistory.find(item => item.id === id);
-            if (!request || request.status !== 'Pending') return;
+        // Withdraw earnings via WhatsApp
+        function withdrawViaWhatsApp() {
+            const totalEarnings = state.userData.totalEarnings || 0;
+            const claimedAds = state.userData.totalClaimedAds || 0;
             
-            // Update status to Cancelled
-            request.status = 'Cancelled';
+            if (totalEarnings <= 0) {
+                showToast('No earnings available for withdrawal', 'warning');
+                return;
+            }
             
-            // Refund balance
-            state.balance += request.amount;
+            const message = `New Withdrawal Request%0AAdmin Code: ${state.adminCode}%0AClaimed Ads: ${claimedAds}%0ATotal Earnings: ₨${totalEarnings.toFixed(2)}`;
+            const whatsappUrl = `https://wa.me/923001234567?text=${message}`;
             
-            // Save state
-            localStorage.setItem('withdrawHistory', JSON.stringify(state.withdrawHistory));
-            
-            // Update UI
-            renderUI();
-            
-            // Show message
-            showToast('Withdrawal request cancelled', 'success');
+            window.open(whatsappUrl, '_blank');
         }
 
-        // Show toast message
+        // Show toast notification
         function showToast(message, type = 'success') {
-            elements.toast.textContent = message;
-            elements.toast.className = `toast ${type}`;
-            elements.toast.style.display = 'flex';
+            elements.toastMessage.textContent = message;
+            elements.toast.className = 'toast';
             
+            // Set icon based on type
+            let icon = 'fas fa-check-circle';
+            if (type === 'error') icon = 'fas fa-exclamation-circle';
+            if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+            
+            elements.toast.innerHTML = `<i class="${icon}"></i><span id="toast-message">${message}</span>`;
+            elements.toast.classList.add('show', type);
+            
+            // Hide after 3 seconds
             setTimeout(() => {
-                elements.toast.style.display = 'none';
+                elements.toast.classList.remove('show');
             }, 3000);
         }
 
-        // Create confetti animation
-        function createConfetti() {
-            elements.confettiContainer.innerHTML = '';
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                
-                // Random position, color, and animation
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.top = `${Math.random() * 100}%`;
-                confetti.style.background = i % 3 === 0 ? 'var(--gold)' : i % 3 === 1 ? 'var(--light-green)' : 'var(--white)';
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                
-                // Random size
-                const size = Math.random() * 10 + 5;
-                confetti.style.width = `${size}px`;
-                confetti.style.height = `${size}px`;
-                
-                elements.confettiContainer.appendChild(confetti);
-                
-                // Animate
-                setTimeout(() => {
-                    confetti.style.opacity = '1';
-                    confetti.style.transition = 'all 1s ease';
-                    confetti.style.transform = `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`;
-                }, 10);
-                
-                // Remove after animation
-                setTimeout(() => {
-                    confetti.remove();
-                }, 1000);
+            if (diffDays === 0) {
+                return 'Today at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else if (diffDays === 1) {
+                return 'Yesterday at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return date.toLocaleDateString();
             }
         }
 
-        // Show admin panel (for testing)
-        function showAdminPanel() {
-            const adminHTML = `
-                <div class="modal" id="admin-modal" style="display: flex;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Admin Panel</h3>
-                            <button class="close-modal">&times;</button>
-                        </div>
-                        <div>
-                            <h4>Withdrawal Requests</h4>
-                            <div id="admin-requests" style="max-height: 300px; overflow-y: auto; margin: 15px 0;">
-                                <!-- Admin requests will be populated here -->
-                            </div>
-                            
-                            <h4>Actions</h4>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button class="btn" id="add-balance-btn">Add ₨100</button>
-                                <button class="btn btn-secondary" id="reset-app-btn">Reset App</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        // Check withdraw eligibility and update button state
+        function checkWithdrawEligibility() {
+            const totalEarnings = state.userData?.totalEarnings || 0;
+            const activeMembers = parseInt(elements.activeMembersCount.textContent) || 0;
+
+            // Example rule: at least 4 active members and some earnings
+            const isEligible = totalEarnings >= 50 && activeMembers >= 4;
+
+            // Update button
+            elements.withdrawBtn.disabled = !isEligible;
+
+            // Update next withdraw date (for demo purposes)
+            elements.nextWithdrawDate.textContent = isEligible ? "Available now" : "In 7 days";
+        }
+
+        // Update member dashboard
+        function updateMemberDashboard() {
+            if (!state.userData) return;
             
-            // Add admin modal to page
-            document.body.insertAdjacentHTML('beforeend', adminHTML);
+            const totalAds = state.userData.totalAdsWatched || 0;
+            elements.memberAdsCounter.textContent = totalAds;
             
-            // Render admin requests
-            renderAdminRequests();
+            // Simple daily progress simulation (in a real app, you'd track daily ads)
+            const dailyAds = Math.min(totalAds % 20, 10); // Simulate daily ads (max 10)
+            const progressPercent = (dailyAds / 10) * 100;
             
-            // Setup admin event listeners
-            document.getElementById('add-balance-btn').addEventListener('click', async () => {
+            elements.dailyAdsCount.textContent = dailyAds;
+            elements.dailyProgress.style.width = `${progressPercent}%`;
+            
+            // Update status
+            if (dailyAds >= 10) {
+                elements.memberStatus.textContent = "Active";
+                elements.memberStatus.className = "status-active";
+            } else {
+                elements.memberStatus.textContent = "Inactive";
+                elements.memberStatus.className = "status-inactive";
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the app
+            initApp();
+            
+            // Role selection
+            elements.adminBtn.addEventListener('click', async function() {
+                // Generate admin code
+                state.adminCode = generateAdminCode();
+                state.role = 'admin';
+                
+                // Save to localStorage
+                localStorage.setItem('watchEarnRole', state.role);
+                localStorage.setItem('watchEarnAdminCode', state.adminCode);
+                
+                // Create admin user in Firestore
+                const adminData = {
+                    deviceId: state.deviceId,
+                    role: 'admin',
+                    adminCode: state.adminCode,
+                    totalClaimedAds: 0,
+                    totalEarnings: 0,
+                    members: [],
+                    activity: [],
+                    createdAt: new Date().toISOString()
+                };
+                
                 try {
-                    await updateBalanceInFirestore(100);
-                    showToast('₨100 added to balance', 'success');
+                    await db.collection('users').doc(state.deviceId).set(adminData);
+                    state.userData = adminData;
+                    updateUI();
+                    setupRealtimeListeners();
                 } catch (error) {
-                    showToast('Error adding balance', 'error');
+                    console.error('Error creating admin user:', error);
+                    showToast('Error creating admin account. Please try again.', 'error');
                 }
             });
             
-            document.getElementById('reset-app-btn').addEventListener('click', () => {
-                if (confirm('Are you sure you want to reset the app? All data will be lost.')) {
-                    localStorage.clear();
-                    location.reload();
+            elements.memberBtn.addEventListener('click', function() {
+                showScreen(elements.memberCodeScreen);
+            });
+            
+            // Member code submission
+            elements.submitCodeBtn.addEventListener('click', async function() {
+                const code = elements.adminCodeInput.value.trim().toUpperCase();
+                
+                if (!code) {
+                    showToast('Please enter an admin code', 'error');
+                    return;
+                }
+                
+                // Verify admin code exists
+                const adminSnapshot = await db.collection('users')
+                    .where('adminCode', '==', code)
+                    .where('role', '==', 'admin')
+                    .get();
+                
+                if (adminSnapshot.empty) {
+                    showToast('Invalid admin code. Please check and try again.', 'error');
+                    return;
+                }
+                
+                // Code is valid, create member user
+                state.adminCode = code;
+                state.role = 'member';
+                
+                // Save to localStorage
+                localStorage.setItem('watchEarnRole', state.role);
+                localStorage.setItem('watchEarnAdminCode', state.adminCode);
+                
+                const memberData = {
+                    deviceId: state.deviceId,
+                    role: 'member',
+                    adminCode: state.adminCode,
+                    totalAdsWatched: 0,
+                    createdAt: new Date().toISOString()
+                };
+                
+                try {
+                    await db.collection('users').doc(state.deviceId).set(memberData);
+                    state.userData = memberData;
+                    updateUI();
+                    setupRealtimeListeners();
+                } catch (error) {
+                    console.error('Error creating member user:', error);
+                    showToast('Error creating member account. Please try again.', 'error');
                 }
             });
             
-            document.querySelector('#admin-modal .close-modal').addEventListener('click', () => {
-                document.getElementById('admin-modal').remove();
+            // Copy admin code
+            elements.copyCodeBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(state.adminCode)
+                    .then(() => {
+                        showToast('Admin code copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        showToast('Failed to copy code', 'error');
+                    });
             });
-        }
-
-        // Render admin requests
-        function renderAdminRequests() {
-            const adminRequests = document.getElementById('admin-requests');
             
-            if (state.withdrawHistory.length === 0) {
-                adminRequests.innerHTML = '<p style="text-align: center; opacity: 0.7;">No withdrawal requests</p>';
-                return;
-            }
+            // Watch ad button
+            elements.watchAdBtn.addEventListener('click', watchAd);
+            elements.watchAdBtnMember.addEventListener('click', watchAd);
             
-            adminRequests.innerHTML = '';
+            // Withdraw button
+            elements.withdrawBtn.addEventListener('click', withdrawViaWhatsApp);
             
-            state.withdrawHistory
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .forEach(item => {
-                    const requestElement = document.createElement('div');
-                    requestElement.className = 'history-item';
-                    requestElement.style.marginBottom = '10px';
-                    
-                    const date = new Date(item.timestamp).toLocaleString();
-                    const statusOptions = ['Pending', 'Processing', 'Paid', 'Rejected'];
-                    let statusSelect = '';
-                    
-                    if (item.status === 'Pending' || item.status === 'Processing') {
-                        statusSelect = `
-                            <select class="status-select" data-id="${item.id}">
-                                ${statusOptions.map(opt => 
-                                    `<option value="${opt}" ${opt === item.status ? 'selected' : ''}>${opt}</option>`
-                                ).join('')}
-                            </select>
-                        `;
-                    } else {
-                        statusSelect = `<span class="history-status status-${item.status.toLowerCase()}">${item.status}</span>`;
-                    }
-                    
-                    requestElement.innerHTML = `
-                        <div class="history-info">
-                            <h4>₨${item.amount.toFixed(2)}</h4>
-                            <p>${item.method} • ${item.account} • ${date}</p>
-                        </div>
-                        ${statusSelect}
-                    `;
-                    
-                    adminRequests.appendChild(requestElement);
-                });
-            
-            // Add event listeners for status changes
-            document.querySelectorAll('.status-select').forEach(select => {
-                select.addEventListener('change', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const newStatus = e.target.value;
-                    
-                    // Update status in history
-                    const request = state.withdrawHistory.find(item => item.id === id);
-                    if (request) {
-                        request.status = newStatus;
-                        localStorage.setItem('withdrawHistory', JSON.stringify(state.withdrawHistory));
-                        
-                        // If status is Paid or Rejected, we might need to update balance
-                        if (newStatus === 'Rejected' && request.status !== 'Rejected') {
-                            // Refund balance if request was previously approved
-                            state.balance += request.amount;
-                            localStorage.setItem('watchEarnState', JSON.stringify(state));
-                        }
-                        
-                        // Update UI
-                        renderUI();
-                        renderAdminRequests();
-                        
-                        showToast(`Request status updated to ${newStatus}`, 'success');
-                    }
-                });
+            // Allow pressing Enter in admin code input
+            elements.adminCodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    elements.submitCodeBtn.click();
+                }
             });
-        }
-
-        // Make onAdWatchedSuccessfully available globally for Android WebView
-        window.onAdWatchedSuccessfully = onAdWatchedSuccessfully;
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
+        });
     </script>
-    <script>
-document.getElementById("watch-ad-btn").addEventListener("click", () => {
-    if (window.AndroidInterface) {
-        // 👉 Ask Android to show Rewarded Ad
-        AndroidInterface.showRewardAd();
-    } else {
-        alert("⚠️ App not connected to Android interface");
-    }
+<script>
+/* --------------------  ADMIN WATCH AD BUTTON  -------------------- */
+document.getElementById("watchAdBtn").addEventListener("click", function () {
+  // For Admin
+  if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
+    AndroidInterface.showRewardAd("admin");
+  } else {
+    alert("Ad system not connected. Open this page inside the Android app.");
+  }
 });
 
-// ✅ Called automatically by Android when reward earned
-function onRewardEarned() {
-    // 💰 Reward logic — update your UI, balance, etc.
-    const badge = document.getElementById("withdraw-badge");
-    badge.innerText = "UNLOCKED";
-    badge.style.backgroundColor = "#28a745";
+/* --------------------  MEMBER WATCH AD BUTTON  -------------------- */
+document.getElementById("watchAdBtnMember").addEventListener("click", function () {
+  // For Member
+  if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
+    AndroidInterface.showRewardAd("member");
+  } else {
+    alert("Ad system not connected. Open this page inside the Android app.");
+  }
+});
 
-    // Optional visual feedback
-    alert("🎉 You’ve earned your reward!");
+/* --------------------  CALLBACK FROM ANDROID AFTER SUCCESSFUL AD  -------------------- */
+async function onAdWatched(role) {
+  console.log("✅ Ad watched by: " + role);
+
+  // ✅ Show success toast
+  const toast = document.getElementById("toast");
+  const message = document.getElementById("toast-message");
+  message.textContent = "Ad watched successfully by " + role + "!";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2500);
+
+  // ✅ Ensure Firestore and state exist
+  if (typeof db === "undefined" || !state || !state.deviceId) {
+    console.error("Firestore not initialized or missing state");
+    return;
+  }
+
+  try {
+    // ✅ Update Firestore counter safely
+    await db.collection("users").doc(state.deviceId).update({
+      totalAdsWatched: firebase.firestore.FieldValue.increment(1),
+      lastAdWatchedAt: new Date().toISOString()
+    });
+
+    console.log("Firestore updated successfully for:", state.deviceId);
+
+    // ✅ Optional: update local state + UI immediately
+    if (state.userData) {
+      state.userData.totalAdsWatched =
+        (state.userData.totalAdsWatched || 0) + 1;
+    }
+    if (typeof updateUI === "function") updateUI();
+
+  } catch (error) {
+    console.error("❌ Firestore update failed:", error);
+    showToast("Error updating ad count. Please try again.", "error");
+  }
 }
 </script>
+
+
 
 </body>
 </html>
