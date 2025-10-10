@@ -1820,64 +1820,93 @@
         });
     </script>
 <script>
-/* --------------------  ADMIN WATCH AD BUTTON  -------------------- */
-document.getElementById("watchAdBtn").addEventListener("click", function () {
-  // For Admin
-  if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
-    AndroidInterface.showRewardAd("admin");
-  } else {
-    alert("Ad system not connected. Open this page inside the Android app.");
-  }
-});
+// -------------------- WATCH AD BUTTON HANDLER --------------------
+function setupWatchAdButtons() {
+  const buttons = [
+    { element: elements.watchAdBtn, role: 'admin' },
+    { element: elements.watchAdBtnMember, role: 'member' }
+  ];
 
-/* --------------------  MEMBER WATCH AD BUTTON  -------------------- */
-document.getElementById("watchAdBtnMember").addEventListener("click", function () {
-  // For Member
-  if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
-    AndroidInterface.showRewardAd("member");
-  } else {
-    alert("Ad system not connected. Open this page inside the Android app.");
-  }
-});
+  buttons.forEach(btn => {
+    btn.element.addEventListener('click', async function () {
+      // Check cooldown
+      const now = Date.now();
+      if (state.lastAdTime && (now - state.lastAdTime) < state.adCooldown) {
+        const remaining = Math.ceil((state.adCooldown - (now - state.lastAdTime)) / 1000);
+        showToast(`Please wait ${remaining} seconds before watching another ad`, 'warning');
+        return;
+      }
 
-/* --------------------  CALLBACK FROM ANDROID AFTER SUCCESSFUL AD  -------------------- */
+      // Call Android ad if available
+      if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
+        AndroidInterface.showRewardAd(btn.role);
+      } else {
+        // Simulate ad in browser
+        showToast(`Simulated ad watched by ${btn.role}`, 'success');
+        await onAdWatched(btn.role);
+      }
+    });
+  });
+}
+
+// -------------------- CALLBACK AFTER AD WATCHED --------------------
 async function onAdWatched(role) {
-  console.log("✅ Ad watched by: " + role);
+  console.log("Ad watched by:", role);
 
-  // ✅ Show success toast
-  const toast = document.getElementById("toast");
-  const message = document.getElementById("toast-message");
-  message.textContent = "Ad watched successfully by " + role + "!";
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2500);
+  // Update lastAdTime
+  state.lastAdTime = Date.now();
 
-  // ✅ Ensure Firestore and state exist
-  if (typeof db === "undefined" || !state || !state.deviceId) {
-    console.error("Firestore not initialized or missing state");
-    return;
-  }
-
+  // Update Firestore safely
   try {
-    // ✅ Update Firestore counter safely
     await db.collection("users").doc(state.deviceId).update({
       totalAdsWatched: firebase.firestore.FieldValue.increment(1),
       lastAdWatchedAt: new Date().toISOString()
     });
 
-    console.log("Firestore updated successfully for:", state.deviceId);
-
-    // ✅ Optional: update local state + UI immediately
+    // Update local state
     if (state.userData) {
-      state.userData.totalAdsWatched =
-        (state.userData.totalAdsWatched || 0) + 1;
+      state.userData.totalAdsWatched = (state.userData.totalAdsWatched || 0) + 1;
     }
-    if (typeof updateUI === "function") updateUI();
+
+    // Update UI
+    if (typeof updateUI === 'function') updateUI();
+
+    // Toast message
+    showToast(`Ad watched successfully by ${role}!`, 'success');
+
+    // Start cooldown timer
+    startAdCooldown();
 
   } catch (error) {
-    console.error("❌ Firestore update failed:", error);
+    console.error("Error updating Firestore:", error);
     showToast("Error updating ad count. Please try again.", "error");
   }
 }
+
+// -------------------- COOLDOWN FUNCTION --------------------
+function startAdCooldown() {
+  const remaining = state.adCooldown / 1000;
+  const interval = setInterval(() => {
+    const elapsed = (Date.now() - state.lastAdTime) / 1000;
+    const left = Math.ceil(remaining - elapsed);
+
+    elements.watchAdBtn.disabled = left > 0;
+    elements.watchAdBtnMember.disabled = left > 0;
+
+    elements.cooldownInfo.classList.toggle('hidden', left <= 0);
+    elements.cooldownInfoMember.classList.toggle('hidden', left <= 0);
+
+    elements.cooldownTimer.textContent = left;
+    elements.cooldownTimerMember.textContent = left;
+
+    if (left <= 0) clearInterval(interval);
+  }, 1000);
+}
+
+// -------------------- INIT --------------------
+document.addEventListener('DOMContentLoaded', function() {
+  setupWatchAdButtons();
+});
 </script>
 
 
