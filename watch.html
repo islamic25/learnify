@@ -6,6 +6,7 @@
     <title>Watch & Earn Team System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --primary: #00B37E;
@@ -746,6 +747,21 @@
             text-align: center;
         }
 
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (min-width: 768px) {
             .container {
@@ -1067,7 +1083,11 @@
             lastAdTime: null,
             adCooldown: 30000, // 30 seconds in milliseconds
             earningsPerAd: 1.5, // Earnings per ad in currency
-            members: []
+            members: [],
+            activeMembersListener: null,
+            userDataListener: null,
+            adCallTimeout: null,
+            cooldownInterval: null
         };
 
         // DOM elements
@@ -1152,6 +1172,7 @@
                 loadUserData().then(() => {
                     updateUI();
                     setupRealtimeListeners();
+                    checkAdCooldown(); // Check cooldown on app start
                 });
             }
             
@@ -1169,8 +1190,16 @@
                         content.classList.remove('active');
                     });
                     document.getElementById(`${tabName}Tab`).classList.add('active');
+                    
+                    // Refresh tab content if needed
+                    if (tabName === 'members') loadMembersList();
+                    if (tabName === 'claim') loadClaimSection();
+                    if (tabName === 'activity') loadActivityLog();
                 });
             });
+
+            // Setup watch ad buttons
+            setupWatchAdButtons();
         }
 
         // Generate a unique device ID
@@ -1229,6 +1258,10 @@
                 
                 if (doc.exists) {
                     state.userData = doc.data();
+                    // Restore last ad time from user data
+                    if (state.userData.lastAdWatchedAt) {
+                        state.lastAdTime = new Date(state.userData.lastAdWatchedAt).getTime();
+                    }
                 } else {
                     // User doesn't exist in Firestore yet
                     state.userData = null;
@@ -1241,9 +1274,17 @@
 
         // Set up real-time Firestore listeners
         function setupRealtimeListeners() {
+            // Clean up existing listeners
+            if (state.userDataListener) {
+                state.userDataListener();
+            }
+            if (state.activeMembersListener) {
+                state.activeMembersListener();
+            }
+
             if (state.role === 'admin') {
                 // Listen for admin data changes
-                db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
+                state.userDataListener = db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
                     if (doc.exists) {
                         state.userData = doc.data();
                         updateAdminStats();
@@ -1256,25 +1297,25 @@
                 });
                 
                 // Listen for members data changes
-                db.collection('users')
+                state.activeMembersListener = db.collection('users')
                     .where('adminCode', '==', state.adminCode)
                     .where('role', '==', 'member')
                     .onSnapshot((snapshot) => {
                         updateAdminStats();
                         
                         // Update members list if on members tab
-                        if (document.querySelector('.tab[data-tab="members"]').classList.contains('active')) {
+                        if (document.querySelector('.tab[data-tab="members"]')?.classList.contains('active')) {
                             loadMembersList();
                         }
                         
                         // Update claim section if on claim tab
-                        if (document.querySelector('.tab[data-tab="claim"]').classList.contains('active')) {
+                        if (document.querySelector('.tab[data-tab="claim"]')?.classList.contains('active')) {
                             loadClaimSection();
                         }
                     });
             } else if (state.role === 'member') {
                 // Listen for member data changes
-                db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
+                state.userDataListener = db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
                     if (doc.exists) {
                         state.userData = doc.data();
                         updateMemberDashboard();
@@ -1285,6 +1326,8 @@
 
         // Update admin statistics
         async function updateAdminStats() {
+            if (!state.userData) return;
+            
             // Get all members for this admin
             const membersSnapshot = await db.collection('users')
                 .where('adminCode', '==', state.adminCode)
@@ -1299,12 +1342,18 @@
                 const memberData = doc.data();
                 totalTeamAds += memberData.totalAdsWatched || 0;
                 
-                // Check if member is active (watched at least 50 ads today)
-                // This is a simplified check - in a real app, you'd track daily ads
-                if ((memberData.totalAdsWatched || 0) >= 50) {
+                // Check if member is active (watched at least 10 ads in last 24 hours)
+                const lastAdTime = memberData.lastAdWatchedAt ? new Date(memberData.lastAdWatchedAt).getTime() : 0;
+                const timeSinceLastAd = Date.now() - lastAdTime;
+                const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
+                
+                if (isActive) {
                     activeMembers++;
                 }
             });
+            
+            // Add admin's own ads to total team ads
+            totalTeamAds += state.userData.adminAdsWatched || 0;
             
             // Update UI
             elements.totalMembers.textContent = membersSnapshot.size;
@@ -1350,7 +1399,10 @@
             let activeCount = 0;
             membersSnapshot.forEach(doc => {
                 const member = doc.data();
-                const isActive = (member.totalAdsWatched || 0) >= 50;
+                const lastAdTime = member.lastAdWatchedAt ? new Date(member.lastAdWatchedAt).getTime() : 0;
+                const timeSinceLastAd = Date.now() - lastAdTime;
+                const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
+                
                 if (isActive) activeCount++;
                 
                 const memberItem = document.createElement('div');
@@ -1366,7 +1418,7 @@
                     </div>
                     <div class="member-actions">
                         ${member.totalAdsWatched >= 50 ? 
-                            `<button class="btn btn-small" data-member-id="${doc.id}">Claim</button>` : 
+                            `<button class="btn btn-small claim-btn" data-member-id="${doc.id}">Claim</button>` : 
                             `<button class="btn btn-small" disabled>Claim</button>`
                         }
                     </div>
@@ -1379,13 +1431,11 @@
             elements.membersSummary.textContent = `Active Members: ${activeCount} / Total Members: ${membersSnapshot.size}`;
             
             // Add event listeners to claim buttons
-            document.querySelectorAll('.member-actions .btn').forEach(btn => {
-                if (!btn.disabled) {
-                    btn.addEventListener('click', function() {
-                        const memberId = this.getAttribute('data-member-id');
-                        claimAdsFromMember(memberId);
-                    });
-                }
+            document.querySelectorAll('.member-actions .claim-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const memberId = this.getAttribute('data-member-id');
+                    claimAdsFromMember(memberId);
+                });
             });
         }
 
@@ -1417,7 +1467,7 @@
                             </div>
                         </div>
                         <div class="member-actions">
-                            <button class="btn btn-small" data-member-id="${doc.id}">Claim 50 Ads</button>
+                            <button class="btn btn-small claim-btn" data-member-id="${doc.id}">Claim 50 Ads</button>
                         </div>
                     `;
                     
@@ -1429,7 +1479,7 @@
                 elements.claimSection.innerHTML = '<p class="text-center">No members with 50+ ads available for claiming.</p>';
             } else {
                 // Add event listeners to claim buttons
-                document.querySelectorAll('.member-actions .btn').forEach(btn => {
+                document.querySelectorAll('.member-actions .claim-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const memberId = this.getAttribute('data-member-id');
                         claimAdsFromMember(memberId);
@@ -1490,7 +1540,7 @@
 
         // Load activity log for admin
         async function loadActivityLog() {
-            if (!state.userData.activity || state.userData.activity.length === 0) {
+            if (!state.userData || !state.userData.activity || state.userData.activity.length === 0) {
                 elements.activityLog.innerHTML = '<p class="text-center">No activity yet.</p>';
                 return;
             }
@@ -1520,7 +1570,7 @@
 
         // Update recent activity for admin dashboard
         function updateRecentActivity() {
-            if (!state.userData.activity || state.userData.activity.length === 0) {
+            if (!state.userData || !state.userData.activity || state.userData.activity.length === 0) {
                 elements.recentActivityList.innerHTML = '<p class="text-center">No recent activity.</p>';
                 return;
             }
@@ -1548,73 +1598,191 @@
             });
         }
 
-        // Check ad cooldown for member
+        // Check ad cooldown for all users
         function checkAdCooldown() {
+            if (state.cooldownInterval) {
+                clearInterval(state.cooldownInterval);
+            }
+            
             if (state.lastAdTime) {
                 const timeSinceLastAd = Date.now() - state.lastAdTime;
                 if (timeSinceLastAd < state.adCooldown) {
                     // Still in cooldown
-                    elements.watchAdBtn.disabled = true;
-                    elements.cooldownInfo.classList.remove('hidden');
+                    const buttons = [elements.watchAdBtn, elements.watchAdBtnMember];
+                    const infos = [elements.cooldownInfo, elements.cooldownInfoMember];
+                    const timers = [elements.cooldownTimer, elements.cooldownTimerMember];
                     
-                    const remainingSeconds = Math.ceil((state.adCooldown - timeSinceLastAd) / 1000);
-                    elements.cooldownTimer.textContent = remainingSeconds;
+                    buttons.forEach(btn => btn && (btn.disabled = true));
+                    infos.forEach(info => info && info.classList.remove('hidden'));
                     
                     // Update countdown every second
-                    const countdownInterval = setInterval(() => {
-                        const newRemaining = parseInt(elements.cooldownTimer.textContent) - 1;
-                        elements.cooldownTimer.textContent = newRemaining;
+                    state.cooldownInterval = setInterval(() => {
+                        const timeSinceLastAd = Date.now() - state.lastAdTime;
+                        const remainingSeconds = Math.ceil((state.adCooldown - timeSinceLastAd) / 1000);
                         
-                        if (newRemaining <= 0) {
-                            clearInterval(countdownInterval);
-                            elements.watchAdBtn.disabled = false;
-                            elements.cooldownInfo.classList.add('hidden');
+                        timers.forEach(timer => timer && (timer.textContent = remainingSeconds));
+                        
+                        if (remainingSeconds <= 0) {
+                            clearInterval(state.cooldownInterval);
+                            state.cooldownInterval = null;
+                            
+                            buttons.forEach(btn => btn && (btn.disabled = false));
+                            infos.forEach(info => info && info.classList.add('hidden'));
                         }
                     }, 1000);
                 } else {
                     // Cooldown finished
-                    elements.watchAdBtn.disabled = false;
-                    elements.cooldownInfo.classList.add('hidden');
+                    const buttons = [elements.watchAdBtn, elements.watchAdBtnMember];
+                    const infos = [elements.cooldownInfo, elements.cooldownInfoMember];
+                    
+                    buttons.forEach(btn => btn && (btn.disabled = false));
+                    infos.forEach(info => info && info.classList.add('hidden'));
                 }
             } else {
                 // No previous ad watched
-                elements.watchAdBtn.disabled = false;
-                elements.cooldownInfo.classList.add('hidden');
+                const buttons = [elements.watchAdBtn, elements.watchAdBtnMember];
+                const infos = [elements.cooldownInfo, elements.cooldownInfoMember];
+                
+                buttons.forEach(btn => btn && (btn.disabled = false));
+                infos.forEach(info => info && info.classList.add('hidden'));
             }
         }
 
-        // Watch ad for member
-        async function watchAd() {
-            // Check cooldown
-            if (state.lastAdTime && (Date.now() - state.lastAdTime) < state.adCooldown) {
-                const remaining = Math.ceil((state.adCooldown - (Date.now() - state.lastAdTime)) / 1000);
-                showToast(`Please wait ${remaining} seconds before watching another ad`, 'warning');
-                return;
-            }
-            
-            // Update last ad time
-            state.lastAdTime = Date.now();
-            
-            // Update member's ad count in Firestore
-            try {
-                await db.collection('users').doc(state.deviceId).update({
-                    totalAdsWatched: firebase.firestore.FieldValue.increment(1)
+        // Setup watch ad buttons (admin + member)
+        function setupWatchAdButtons() {
+            const buttons = [
+                { element: elements.watchAdBtn, role: 'admin' },
+                { element: elements.watchAdBtnMember, role: 'member' }
+            ];
+
+            buttons.forEach(btnObj => {
+                const btn = btnObj.element;
+                const role = btnObj.role;
+                if (!btn) return;
+
+                btn.addEventListener('click', async () => {
+                    // Check cooldown
+                    const now = Date.now();
+                    if (state.lastAdTime && (now - state.lastAdTime) < state.adCooldown) {
+                        const remaining = Math.ceil((state.adCooldown - (now - state.lastAdTime)) / 1000);
+                        showToast(`Please wait ${remaining}s before next ad`, 'warning');
+                        return;
+                    }
+
+                    // Disable button
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner"></span> Loading Ad...';
+
+                    // Disable the other button too
+                    const otherBtn = role === 'admin' ? elements.watchAdBtnMember : elements.watchAdBtn;
+                    if (otherBtn) otherBtn.disabled = true;
+
+                    // Fallback timer (15s auto-restore)
+                    state.adCallTimeout = setTimeout(() => {
+                        showToast('Ad not available. Try again later.', 'error');
+                        restoreAdButtons();
+                    }, 15000);
+
+                    // Call Android ad
+                    if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
+                        try {
+                            AndroidInterface.showRewardAd(role);
+                        } catch (e) {
+                            console.error("AndroidInterface error:", e);
+                            clearTimeout(state.adCallTimeout);
+                            showToast('Ad failed to start', 'error');
+                            restoreAdButtons();
+                        }
+                    } else {
+                        // Web test mode - simulate ad success after 2 seconds
+                        setTimeout(async () => {
+                            clearTimeout(state.adCallTimeout);
+                            await onRewardedAdSuccess(role);
+                        }, 2000);
+                    }
                 });
-                
-                showToast('Ad watched successfully! +1 ad to your count', 'success');
-                
-                // Start cooldown
-                checkAdCooldown();
-            } catch (error) {
-                console.error('Error updating ad count:', error);
-                showToast('Error updating ad count. Please try again.', 'error');
+            });
+        }
+
+        // Restore buttons and clear timeout
+        function restoreAdButtons() {
+            const btns = [elements.watchAdBtn, elements.watchAdBtnMember];
+            btns.forEach(b => {
+                if (!b) return;
+                b.disabled = false;
+                b.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad';
+            });
+
+            if (state.adCallTimeout) {
+                clearTimeout(state.adCallTimeout);
+                state.adCallTimeout = null;
             }
+        }
+
+        // Callback for successful ad completion
+        async function onRewardedAdSuccess(role) {
+            console.log("✅ Ad watched successfully by:", role);
+
+            // Stop any running ad timeout
+            if (state.adCallTimeout) {
+                clearTimeout(state.adCallTimeout);
+                state.adCallTimeout = null;
+            }
+
+            // Update time
+            state.lastAdTime = Date.now();
+
+            try {
+                // Firestore update
+                if (role === 'member') {
+                    await db.collection("users").doc(state.deviceId).update({
+                        totalAdsWatched: firebase.firestore.FieldValue.increment(1),
+                        lastAdWatchedAt: new Date().toISOString()
+                    });
+                } else if (role === 'admin') {
+                    await db.collection("users").doc(state.deviceId).update({
+                        adminAdsWatched: firebase.firestore.FieldValue.increment(1),
+                        lastAdWatchedAt: new Date().toISOString()
+                    });
+                }
+
+                // Update local state
+                if (state.userData) {
+                    if (role === 'member') {
+                        state.userData.totalAdsWatched = (state.userData.totalAdsWatched || 0) + 1;
+                    } else if (role === 'admin') {
+                        state.userData.adminAdsWatched = (state.userData.adminAdsWatched || 0) + 1;
+                    }
+                    state.userData.lastAdWatchedAt = new Date().toISOString();
+                }
+
+                // Update UI
+                updateUI();
+                showToast(`🎉 Ad watched successfully by ${role}!`, 'success');
+
+            } catch (error) {
+                console.error("❌ Error updating Firestore:", error);
+                showToast("Error updating ad count. Please try again.", "error");
+            } finally {
+                // Restore buttons and start cooldown
+                restoreAdButtons();
+                checkAdCooldown();
+            }
+        }
+
+        // Callback for failed ad
+        function onRewardedAdFail(role) {
+            console.log("❌ Ad failed for:", role);
+            showToast("Ad failed. Please try again.", "error");
+            
+            // Re-enable buttons
+            restoreAdButtons();
         }
 
         // Withdraw earnings via WhatsApp
         function withdrawViaWhatsApp() {
-            const totalEarnings = state.userData.totalEarnings || 0;
-            const claimedAds = state.userData.totalClaimedAds || 0;
+            const totalEarnings = state.userData?.totalEarnings || 0;
+            const claimedAds = state.userData?.totalClaimedAds || 0;
             
             if (totalEarnings <= 0) {
                 showToast('No earnings available for withdrawal', 'warning');
@@ -1629,16 +1797,14 @@
 
         // Show toast notification
         function showToast(message, type = 'success') {
-            elements.toastMessage.textContent = message;
-            elements.toast.className = 'toast';
-            
             // Set icon based on type
             let icon = 'fas fa-check-circle';
             if (type === 'error') icon = 'fas fa-exclamation-circle';
             if (type === 'warning') icon = 'fas fa-exclamation-triangle';
             
             elements.toast.innerHTML = `<i class="${icon}"></i><span id="toast-message">${message}</span>`;
-            elements.toast.classList.add('show', type);
+            elements.toast.className = `toast ${type}`;
+            elements.toast.classList.add('show');
             
             // Hide after 3 seconds
             setTimeout(() => {
@@ -1693,8 +1859,12 @@
             elements.dailyAdsCount.textContent = dailyAds;
             elements.dailyProgress.style.width = `${progressPercent}%`;
             
-            // Update status
-            if (dailyAds >= 10) {
+            // Update status based on last ad time
+            const lastAdTime = state.userData.lastAdWatchedAt ? new Date(state.userData.lastAdWatchedAt).getTime() : 0;
+            const timeSinceLastAd = Date.now() - lastAdTime;
+            const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
+            
+            if (isActive) {
                 elements.memberStatus.textContent = "Active";
                 elements.memberStatus.className = "status-active";
             } else {
@@ -1725,6 +1895,7 @@
                     adminCode: state.adminCode,
                     totalClaimedAds: 0,
                     totalEarnings: 0,
+                    adminAdsWatched: 0,
                     members: [],
                     activity: [],
                     createdAt: new Date().toISOString()
@@ -1804,10 +1975,6 @@
                     });
             });
             
-            // Watch ad button
-            elements.watchAdBtn.addEventListener('click', watchAd);
-            elements.watchAdBtnMember.addEventListener('click', watchAd);
-            
             // Withdraw button
             elements.withdrawBtn.addEventListener('click', withdrawViaWhatsApp);
             
@@ -1818,98 +1985,10 @@
                 }
             });
         });
+
+        // Expose functions to Android WebView
+        window.onRewardedAdSuccess = onRewardedAdSuccess;
+        window.onRewardedAdFail = onRewardedAdFail;
     </script>
-<script>
-// -------------------- WATCH AD BUTTON HANDLER --------------------
-function setupWatchAdButtons() {
-  const buttons = [
-    { element: elements.watchAdBtn, role: 'admin' },
-    { element: elements.watchAdBtnMember, role: 'member' }
-  ];
-
-  buttons.forEach(btn => {
-    btn.element.addEventListener('click', async function () {
-      // Check cooldown
-      const now = Date.now();
-      if (state.lastAdTime && (now - state.lastAdTime) < state.adCooldown) {
-        const remaining = Math.ceil((state.adCooldown - (now - state.lastAdTime)) / 1000);
-        showToast(`Please wait ${remaining} seconds before watching another ad`, 'warning');
-        return;
-      }
-
-      // Call Android ad if available
-      if (typeof AndroidInterface !== "undefined" && AndroidInterface.showRewardAd) {
-        AndroidInterface.showRewardAd(btn.role);
-      } else {
-        // Simulate ad in browser
-        showToast(`Simulated ad watched by ${btn.role}`, 'success');
-        await onAdWatched(btn.role);
-      }
-    });
-  });
-}
-
-// -------------------- CALLBACK AFTER AD WATCHED --------------------
-async function onAdWatched(role) {
-  console.log("Ad watched by:", role);
-
-  // Update lastAdTime
-  state.lastAdTime = Date.now();
-
-  // Update Firestore safely
-  try {
-    await db.collection("users").doc(state.deviceId).update({
-      totalAdsWatched: firebase.firestore.FieldValue.increment(1),
-      lastAdWatchedAt: new Date().toISOString()
-    });
-
-    // Update local state
-    if (state.userData) {
-      state.userData.totalAdsWatched = (state.userData.totalAdsWatched || 0) + 1;
-    }
-
-    // Update UI
-    if (typeof updateUI === 'function') updateUI();
-
-    // Toast message
-    showToast(`Ad watched successfully by ${role}!`, 'success');
-
-    // Start cooldown timer
-    startAdCooldown();
-
-  } catch (error) {
-    console.error("Error updating Firestore:", error);
-    showToast("Error updating ad count. Please try again.", "error");
-  }
-}
-
-// -------------------- COOLDOWN FUNCTION --------------------
-function startAdCooldown() {
-  const remaining = state.adCooldown / 1000;
-  const interval = setInterval(() => {
-    const elapsed = (Date.now() - state.lastAdTime) / 1000;
-    const left = Math.ceil(remaining - elapsed);
-
-    elements.watchAdBtn.disabled = left > 0;
-    elements.watchAdBtnMember.disabled = left > 0;
-
-    elements.cooldownInfo.classList.toggle('hidden', left <= 0);
-    elements.cooldownInfoMember.classList.toggle('hidden', left <= 0);
-
-    elements.cooldownTimer.textContent = left;
-    elements.cooldownTimerMember.textContent = left;
-
-    if (left <= 0) clearInterval(interval);
-  }, 1000);
-}
-
-// -------------------- INIT --------------------
-document.addEventListener('DOMContentLoaded', function() {
-  setupWatchAdButtons();
-});
-</script>
-
-
-
 </body>
 </html>
