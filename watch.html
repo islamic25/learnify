@@ -1086,6 +1086,7 @@
             members: [],
             activeMembersListener: null,
             userDataListener: null,
+            membersListener: null,
             adCallTimeout: null,
             cooldownInterval: null
         };
@@ -1278,30 +1279,35 @@
             if (state.userDataListener) {
                 state.userDataListener();
             }
-            if (state.activeMembersListener) {
-                state.activeMembersListener();
+            if (state.membersListener) {
+                state.membersListener();
             }
 
             if (state.role === 'admin') {
                 // Listen for admin data changes
-                state.userDataListener = db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
-                    if (doc.exists) {
-                        state.userData = doc.data();
-                        updateAdminStats();
-                        
-                        // Update recent activity
-                        if (state.userData.activity && state.userData.activity.length > 0) {
-                            updateRecentActivity();
+                state.userDataListener = db.collection('users').doc(state.deviceId)
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            state.userData = doc.data();
+                            updateAdminStats();
+                            checkWithdrawEligibility();
+                            
+                            // Update recent activity
+                            if (state.userData.activity && state.userData.activity.length > 0) {
+                                updateRecentActivity();
+                            }
                         }
-                    }
-                });
+                    }, (error) => {
+                        console.error('Error in user data listener:', error);
+                    });
                 
                 // Listen for members data changes
-                state.activeMembersListener = db.collection('users')
+                state.membersListener = db.collection('users')
                     .where('adminCode', '==', state.adminCode)
                     .where('role', '==', 'member')
                     .onSnapshot((snapshot) => {
                         updateAdminStats();
+                        checkWithdrawEligibility();
                         
                         // Update members list if on members tab
                         if (document.querySelector('.tab[data-tab="members"]')?.classList.contains('active')) {
@@ -1312,15 +1318,20 @@
                         if (document.querySelector('.tab[data-tab="claim"]')?.classList.contains('active')) {
                             loadClaimSection();
                         }
+                    }, (error) => {
+                        console.error('Error in members listener:', error);
                     });
             } else if (state.role === 'member') {
                 // Listen for member data changes
-                state.userDataListener = db.collection('users').doc(state.deviceId).onSnapshot((doc) => {
-                    if (doc.exists) {
-                        state.userData = doc.data();
-                        updateMemberDashboard();
-                    }
-                });
+                state.userDataListener = db.collection('users').doc(state.deviceId)
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            state.userData = doc.data();
+                            updateMemberDashboard();
+                        }
+                    }, (error) => {
+                        console.error('Error in member data listener:', error);
+                    });
             }
         }
 
@@ -1342,12 +1353,8 @@
                 const memberData = doc.data();
                 totalTeamAds += memberData.totalAdsWatched || 0;
                 
-                // Check if member is active (watched at least 10 ads in last 24 hours)
-                const lastAdTime = memberData.lastAdWatchedAt ? new Date(memberData.lastAdWatchedAt).getTime() : 0;
-                const timeSinceLastAd = Date.now() - lastAdTime;
-                const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
-                
-                if (isActive) {
+                // Check if member is active using the isActive field
+                if (memberData.isActive) {
                     activeMembers++;
                 }
             });
@@ -1399,9 +1406,7 @@
             let activeCount = 0;
             membersSnapshot.forEach(doc => {
                 const member = doc.data();
-                const lastAdTime = member.lastAdWatchedAt ? new Date(member.lastAdWatchedAt).getTime() : 0;
-                const timeSinceLastAd = Date.now() - lastAdTime;
-                const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
+                const isActive = member.isActive || false;
                 
                 if (isActive) activeCount++;
                 
@@ -1414,6 +1419,7 @@
                         <div>
                             <div class="member-id">${member.deviceId}</div>
                             <div class="member-ads">Ads Watched: <span class="member-ads-highlight">${member.totalAdsWatched || 0}</span></div>
+                            <div class="member-ads">Daily Ads: <span class="member-ads-highlight">${member.dailyAdsWatched || 0}</span>/10</div>
                         </div>
                     </div>
                     <div class="member-actions">
@@ -1460,7 +1466,7 @@
                     
                     claimItem.innerHTML = `
                         <div class="member-info">
-                            <div class="member-status active"></div>
+                            <div class="member-status ${member.isActive ? 'active' : 'inactive'}"></div>
                             <div>
                                 <div class="member-id">${member.deviceId}</div>
                                 <div class="member-ads">Ads Available: <span class="member-ads-highlight">${member.totalAdsWatched}</span></div>
@@ -1733,27 +1739,57 @@
             state.lastAdTime = Date.now();
 
             try {
-                // Firestore update
+                // Get current date for daily tracking
+                const today = new Date().toDateString();
+                const now = new Date().toISOString();
+                
+                // Get current user data
+                const userDoc = await db.collection("users").doc(state.deviceId).get();
+                const userData = userDoc.data();
+                
+                // Check if we need to reset daily count (new day)
+                const lastDailyDate = userData.dailyAdsDate || today;
+                const dailyAdsWatched = lastDailyDate === today ? (userData.dailyAdsWatched || 0) : 0;
+                
+                // Calculate new daily count and total
+                const newDailyCount = dailyAdsWatched + 1;
+                const newTotalCount = role === 'member' ? 
+                    (userData.totalAdsWatched || 0) + 1 : 
+                    (userData.adminAdsWatched || 0) + 1;
+                
+                // Determine if user should be active (10+ ads today)
+                const isActive = newDailyCount >= 10;
+                
+                // Prepare update data
+                const updateData = {
+                    lastAdWatchedAt: now,
+                    dailyAdsWatched: newDailyCount,
+                    dailyAdsDate: today,
+                    isActive: isActive
+                };
+                
+                // Add role-specific field
                 if (role === 'member') {
-                    await db.collection("users").doc(state.deviceId).update({
-                        totalAdsWatched: firebase.firestore.FieldValue.increment(1),
-                        lastAdWatchedAt: new Date().toISOString()
-                    });
+                    updateData.totalAdsWatched = newTotalCount;
                 } else if (role === 'admin') {
-                    await db.collection("users").doc(state.deviceId).update({
-                        adminAdsWatched: firebase.firestore.FieldValue.increment(1),
-                        lastAdWatchedAt: new Date().toISOString()
-                    });
+                    updateData.adminAdsWatched = newTotalCount;
                 }
-
+                
+                // Update Firestore
+                await db.collection("users").doc(state.deviceId).update(updateData);
+                
                 // Update local state
                 if (state.userData) {
+                    state.userData.lastAdWatchedAt = now;
+                    state.userData.dailyAdsWatched = newDailyCount;
+                    state.userData.dailyAdsDate = today;
+                    state.userData.isActive = isActive;
+                    
                     if (role === 'member') {
-                        state.userData.totalAdsWatched = (state.userData.totalAdsWatched || 0) + 1;
+                        state.userData.totalAdsWatched = newTotalCount;
                     } else if (role === 'admin') {
-                        state.userData.adminAdsWatched = (state.userData.adminAdsWatched || 0) + 1;
+                        state.userData.adminAdsWatched = newTotalCount;
                     }
-                    state.userData.lastAdWatchedAt = new Date().toISOString();
                 }
 
                 // Update UI
@@ -1835,7 +1871,7 @@
             const totalEarnings = state.userData?.totalEarnings || 0;
             const activeMembers = parseInt(elements.activeMembersCount.textContent) || 0;
 
-            // Example rule: at least 4 active members and some earnings
+            // Check eligibility: at least 4 active members and earnings >= 50
             const isEligible = totalEarnings >= 50 && activeMembers >= 4;
 
             // Update button
@@ -1852,17 +1888,17 @@
             const totalAds = state.userData.totalAdsWatched || 0;
             elements.memberAdsCounter.textContent = totalAds;
             
-            // Simple daily progress simulation (in a real app, you'd track daily ads)
-            const dailyAds = Math.min(totalAds % 20, 10); // Simulate daily ads (max 10)
+            // Get daily ads count
+            const today = new Date().toDateString();
+            const lastDailyDate = state.userData.dailyAdsDate || today;
+            const dailyAds = lastDailyDate === today ? (state.userData.dailyAdsWatched || 0) : 0;
             const progressPercent = (dailyAds / 10) * 100;
             
             elements.dailyAdsCount.textContent = dailyAds;
             elements.dailyProgress.style.width = `${progressPercent}%`;
             
-            // Update status based on last ad time
-            const lastAdTime = state.userData.lastAdWatchedAt ? new Date(state.userData.lastAdWatchedAt).getTime() : 0;
-            const timeSinceLastAd = Date.now() - lastAdTime;
-            const isActive = timeSinceLastAd < (24 * 60 * 60 * 1000); // 24 hours
+            // Update status based on isActive field
+            const isActive = state.userData.isActive || false;
             
             if (isActive) {
                 elements.memberStatus.textContent = "Active";
@@ -1871,6 +1907,15 @@
                 elements.memberStatus.textContent = "Inactive";
                 elements.memberStatus.className = "status-inactive";
             }
+        }
+
+        // Daily reset logic
+        function checkDailyReset() {
+            const today = new Date().toDateString();
+            
+            // Check if we need to reset daily counts for all users
+            // This would ideally be done with a Firebase Cloud Function
+            // For now, we'll handle it client-side when users interact with the app
         }
 
         // Event Listeners
@@ -1889,6 +1934,7 @@
                 localStorage.setItem('watchEarnAdminCode', state.adminCode);
                 
                 // Create admin user in Firestore
+                const today = new Date().toDateString();
                 const adminData = {
                     deviceId: state.deviceId,
                     role: 'admin',
@@ -1896,6 +1942,9 @@
                     totalClaimedAds: 0,
                     totalEarnings: 0,
                     adminAdsWatched: 0,
+                    dailyAdsWatched: 0,
+                    dailyAdsDate: today,
+                    isActive: false,
                     members: [],
                     activity: [],
                     createdAt: new Date().toISOString()
@@ -1944,11 +1993,15 @@
                 localStorage.setItem('watchEarnRole', state.role);
                 localStorage.setItem('watchEarnAdminCode', state.adminCode);
                 
+                const today = new Date().toDateString();
                 const memberData = {
                     deviceId: state.deviceId,
                     role: 'member',
                     adminCode: state.adminCode,
                     totalAdsWatched: 0,
+                    dailyAdsWatched: 0,
+                    dailyAdsDate: today,
+                    isActive: false,
                     createdAt: new Date().toISOString()
                 };
                 
