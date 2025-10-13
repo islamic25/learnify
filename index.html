@@ -3,626 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learnify - AI Study Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Learnify AI Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --deep-blue: #0a1128;
-            --dark-blue: #1a237e;
-            --medium-blue: #283593;
-            --neon-cyan: #00e5ff;
-            --neon-cyan-light: #6effff;
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --glass-shadow: rgba(0, 0, 0, 0.1);
-            --text-light: #ffffff;
-            --text-gray: #b0b0b0;
-            --gradient-bg: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
-            --gradient-cyan: linear-gradient(90deg, var(--neon-cyan), var(--neon-cyan-light));
-            --gradient-card: linear-gradient(135deg, rgba(10, 17, 40, 0.7), rgba(26, 35, 126, 0.7));
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        
+
+        :root {
+            --primary: #6c63ff;
+            --secondary: #4a44d6;
+            --accent: #ff6b6b;
+            --dark: #121826;
+            --darker: #0d111c;
+            --light: #f8f9fa;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --neon-glow: 0 0 15px rgba(108, 99, 255, 0.7);
+            --text-glow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
         body {
-            background: var(--gradient-bg);
-            color: var(--text-light);
-            line-height: 1.6;
-            max-width: 500px;
-            margin: 0 auto;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #2a2352 100%);
+            color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
-        
-        /* Animated Gradient Background */
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px 16px 80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Background Effects */
         .gradient-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            background: var(--gradient-bg);
+            background: linear-gradient(135deg, #0d111c 0%, #121826 30%, #2a2352 70%, #4a2352 100%);
+            z-index: -3;
         }
-        
-        .gradient-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(0, 229, 255, 0.1) 0%, rgba(26, 35, 126, 0.2) 100%);
-            animation: gradientShift 8s ease-in-out infinite;
-        }
-        
-        @keyframes gradientShift {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-        
-        /* Floating particles for AI effect */
+
         .floating-particles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: -1;
+            z-index: -2;
+            overflow: hidden;
         }
-        
+
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--neon-cyan);
             border-radius: 50%;
-            opacity: 0.3;
-            filter: blur(1px);
+            background: rgba(108, 99, 255, 0.4);
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.7);
+            animation: float 20s infinite linear;
         }
-        
-        /* Splash Screen Styles */
+
+        .ai-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(transparent, rgba(108, 99, 255, 0.2));
+            z-index: -1;
+            border-radius: 50% 50% 0 0;
+            animation: wave 10s infinite ease-in-out;
+        }
+
+        /* Splash Screen */
         #splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--gradient-bg);
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #2a2352 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 100;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-        
+
         .splash-logo {
             width: 120px;
             height: 120px;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 30px;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 229, 255, 0.3);
-            animation: fadeUp 1s ease-out, glowPulse 2s infinite;
-            border: 1px solid rgba(0, 229, 255, 0.2);
+            box-shadow: var(--neon-glow);
+            animation: pulse 2.5s infinite ease-in-out;
         }
-        
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes glowPulse {
-            0% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 229, 255, 0.3); }
-            50% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 30px rgba(0, 229, 255, 0.5); }
-            100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 229, 255, 0.3); }
-        }
-        
+
         .splash-logo i {
-            font-size: 60px;
-            background: var(--gradient-cyan);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .splash-title {
+            font-size: 50px;
             color: white;
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 40px;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeUp 1s ease-out 0.2s both;
-            background: linear-gradient(90deg, #ffffff, var(--neon-cyan-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
-        
+
+        .splash-title {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #b8b5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            text-shadow: var(--text-glow);
+            letter-spacing: 1px;
+        }
+
         .loading-container {
             width: 80%;
-            max-width: 300px;
-            margin-bottom: 20px;
+            max-width: 280px;
+            margin: 20px 0;
         }
-        
+
         .loading-bar {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 10px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .loading-progress {
             height: 100%;
-            width: 1%;
-            background: var(--gradient-cyan);
+            width: 0%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
             border-radius: 10px;
             transition: width 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.7);
+            box-shadow: 0 0 10px var(--primary);
         }
-        
+
         .loading-text {
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
             text-align: center;
-        }
-        
-        .splash-subtitle {
-            color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
-            margin-top: 30px;
-            text-align: center;
-            max-width: 80%;
-            animation: fadeUp 1s ease-out 0.4s both;
+            color: rgba(255, 255, 255, 0.7);
         }
-        
-        /* Hide main content initially */
+
+        .splash-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+        }
+
+        /* Main Content */
         #main-content {
-            display: none;
-            padding-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        
+
+        /* Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 20px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #b8b5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--text-glow);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
         /* Hero Section */
         .hero-section {
-            padding: 40px 20px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin: 10px 0 25px;
         }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        
+
         .hero-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            background: var(--glass);
+            backdrop-filter: blur(15px);
             border-radius: 24px;
-            padding: 30px 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
-            margin-bottom: 30px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
         }
-        
+
         .hero-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient-cyan);
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(108, 99, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 6s infinite linear;
         }
-        
+
         .hero-title {
             font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            line-height: 1.2;
-            background: linear-gradient(90deg, #ffffff, var(--neon-cyan));
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #fff, #b8b5ff);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-            animation: shimmer 3s infinite;
+            background-clip: text;
+            color: transparent;
         }
-        
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        
+
         .hero-subtitle {
             font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 24px;
-            color: var(--text-gray);
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
-        
+
         .hero-illustration {
-            width: 180px;
-            height: 140px;
-            background: var(--gradient-card);
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 20px;
-            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--neon-glow);
+        }
+
+        .hero-illustration i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .watch-earn-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 229, 255, 0.3);
-            animation: float 6s ease-in-out infinite;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        /* Watch & Earn Button */
-        .watch-earn-btn {
-            background: linear-gradient(90deg, #ffd700, #ff8c00, #ff1493);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 18px 32px;
-            font-weight: 700;
-            font-size: 18px;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 0 20px #ffd700, 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: inline-flex;
-            align-items: center;
             gap: 10px;
-            margin: 20px 0 30px;
-            animation: pulse 2s infinite;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .watch-earn-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            box-shadow: var(--neon-glow);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        .watch-earn-btn:hover::before {
-            left: 100%;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px #ffd700, 0 4px 12px rgba(0, 0, 0, 0.1); }
-            50% { box-shadow: 0 0 30px #ffd700, 0 6px 16px rgba(0, 0, 0, 0.15); }
-            100% { box-shadow: 0 0 20px #ffd700, 0 4px 12px rgba(0, 0, 0, 0.1); }
-        }
-        
+
         .watch-earn-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.8);
         }
-        
-        /* Main Content */
-        .main-content {
-            padding: 0 20px;
-        }
-        
+
+        /* Section Titles */
         .section-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-light);
-            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 25px 0 15px;
+            padding-left: 5px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            position: relative;
         }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--gradient-cyan);
-            border-radius: 2px;
+
+        .section-title span {
+            background: linear-gradient(to right, #fff, #b8b5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        
-        .view-all {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--neon-cyan);
-            cursor: pointer;
-        }
-        
+
+        /* Study Tools Grid */
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 15px;
         }
-        
+
         .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 24px 16px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 140px;
-            border: 1px solid var(--glass-border);
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
-        
-        .card::before {
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(108, 99, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Web Development Section */
+        .web-dev-section {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(255, 107, 107, 0.1));
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            padding: 25px 20px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(108, 99, 255, 0.2);
+        }
+
+        .web-dev-section::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient-cyan);
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
         }
-        
-        .card:hover, .card:active {
-            transform: translateY(-8px) rotateX(5deg);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 229, 255, 0.3);
-        }
-        
-        .icon-container {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            background: var(--gradient-card);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 229, 255, 0.3);
-            transition: var(--transition);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-        }
-        
-        .card:hover .icon-container {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 229, 255, 0.5);
-        }
-        
-        .card-icon {
-            font-size: 28px;
-            background: var(--gradient-cyan);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-        
-        /* AI Tools Banner */
-        .ai-tools-banner {
-            background: var(--gradient-card);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 28px 20px;
-            color: white;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 229, 255, 0.3);
-            margin: 40px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0, 229, 255, 0.2);
-        }
-        
-        .ai-tools-content {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .ai-tools-text {
-            font-size: 20px;
+
+        .web-dev-title {
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 25px;
-            line-height: 1.4;
-            background: linear-gradient(90deg, #ffffff, var(--neon-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .ai-tools-buttons {
+            margin-bottom: 8px;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
             align-items: center;
+            gap: 10px;
         }
-        
-        .ai-tool-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 14px 24px;
-            font-weight: 600;
+
+        .web-dev-subtitle {
             font-size: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 90%;
-            max-width: 280px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .web-dev-badges {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(5px);
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .ai-tool-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .ai-tool-btn:hover::before {
-            left: 100%;
-        }
-        
-        .ai-tool-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3), 0 0 10px rgba(0, 229, 255, 0.3);
-        }
-        
-        .ai-tool-btn.outline {
-            background: transparent;
+
+        .start-learning-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 16px;
+            padding: 14px 20px;
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            box-shadow: var(--neon-glow);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        .ai-tool-btn.outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+
+        .start-learning-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.8);
         }
-        
-        .coming-soon {
-            font-size: 12px;
-            margin-top: 15px;
+
+        .holographic-screen {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(108, 99, 255, 0.2));
+            border-radius: 10px;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
             opacity: 0.8;
         }
-        
+
+        .screen-line {
+            height: 3px;
+            background: rgba(0, 247, 255, 0.5);
+            margin-bottom: 5px;
+            border-radius: 2px;
+        }
+
+        .screen-line.short {
+            width: 70%;
+        }
+
+        /* AI Tools Banner */
+        .ai-tools-banner {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(255, 107, 107, 0.15));
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            padding: 25px 20px;
+            margin: 25px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-tools-text {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #b8b5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .ai-tools-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .ai-tool-btn {
+            flex: 1;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 14px 10px;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ai-tool-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-tool-btn i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .ai-tool-btn.outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+        }
+
+        .coming-soon {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
         /* Footer */
         .footer {
             text-align: center;
-            padding: 30px 20px 20px;
-            color: var(--text-gray);
+            padding: 25px 0 15px;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
-            position: relative;
         }
-        
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 20%;
-            width: 60%;
-            height: 1px;
-            background: var(--text-gray);
-            opacity: 0.2;
-        }
-        
-        .powered-by {
-            font-weight: 600;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
-        }
-        
+
         /* Animations */
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(1.2);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(108, 99, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(108, 99, 255, 0.9);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        .fade-in-up {
-            animation: fadeInUp 0.5s ease forwards;
+
+        .delay-1 {
+            animation-delay: 0.1s;
         }
-        
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 400px) {
             .grid {
-                gap: 12px;
+                grid-template-columns: 1fr;
             }
             
-            .card {
-                padding: 20px 12px;
+            .hero-illustration {
+                display: none;
             }
             
-            .hero-title {
-                font-size: 24px;
-            }
-            
-            .splash-title {
-                font-size: 28px;
-            }
-            
-            .watch-earn-btn {
-                padding: 16px 28px;
-                font-size: 16px;
+            .holographic-screen {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Gradient Background -->
     <div class="gradient-bg"></div>
-    
-    <!-- Floating particles for AI effect -->
     <div class="floating-particles" id="particles"></div>
-    
+    <div class="ai-wave"></div>
+
     <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="splash-logo">
@@ -635,14 +643,28 @@
             </div>
             <div class="loading-text" id="loading-text">Loading... 1%</div>
         </div>
-        <p class="splash-subtitle">Your Smart Study Hub</p>
+        <p class="splash-subtitle">Your Smart AI Study Hub</p>
     </div>
-    
-    <!-- Main Content (hidden initially) -->
-    <div id="main-content">
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-content">
+
+    <!-- Main Container -->
+    <div class="container">
+        <div id="main-content">
+
+            <!-- Header -->
+            <header class="app-header fade-in-up">
+                <h1 class="app-title">Learnify</h1>
+                <div class="header-actions">
+                    <div class="header-icon" onclick="window.location.href='notifications.html'">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="header-icon" onclick="window.location.href='profile.html'">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Hero Section -->
+            <section class="hero-section">
                 <div class="hero-card fade-in-up">
                     <h1 class="hero-title">Welcome to Learnify</h1>
                     <p class="hero-subtitle">Access AI tools, quizzes, and study guides — all in one app</p>
@@ -650,139 +672,127 @@
                         <i class="fas fa-robot"></i>
                     </div>
                 </div>
-                
-                <!-- Watch & Earn Button -->
                 <button class="watch-earn-btn fade-in-up delay-1" onclick="window.location.href='watch.html'">
                     <i class="fas fa-play-circle"></i>
                     <span>🎬 Watch & Earn</span>
                 </button>
+            </section>
+
+            <!-- Study Tools Section -->
+            <div class="section-title fade-in-up">
+                <span>Study Tools</span>
             </div>
-        </section>
-        
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Feature Grid -->
-            <div id="exploreFeatures">
-                <div class="section-title fade-in-up">
-                    <span>Study Tools</span>
+            <div class="grid">
+                <div class="card fade-in-up delay-1" onclick="window.location.href='quiz.html'">
+                    <div class="icon-container"><div class="card-icon">📝</div></div>
+                    <div class="card-title">MCQs Quiz</div>
                 </div>
-                <div class="grid">
-                    <div class="card fade-in-up delay-1" onclick="window.location.href='quiz.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">📝</div>
-                        </div>
-                        <div class="card-title">MCQs Quiz</div>
-                    </div>
 
-                    <div class="card fade-in-up delay-2" onclick="window.location.href='resources.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">📚</div>
-                        </div>
-                        <div class="card-title">Study Resources</div>
-                    </div>
+                <div class="card fade-in-up delay-2" onclick="window.location.href='resources.html'">
+                    <div class="icon-container"><div class="card-icon">📚</div></div>
+                    <div class="card-title">Study Resources</div>
+                </div>
 
-                    <div class="card fade-in-up delay-1" onclick="window.location.href='gpa.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">🧮</div>
-                        </div>
-                        <div class="card-title">GPA Calculator</div>
-                    </div>
+                <div class="card fade-in-up delay-1" onclick="window.location.href='gpa.html'">
+                    <div class="icon-container"><div class="card-icon">🧮</div></div>
+                    <div class="card-title">GPA Calculator</div>
+                </div>
 
-                    <div class="card fade-in-up delay-2" onclick="window.location.href='daily.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">📊</div>
-                        </div>
-                        <div class="card-title">Daily Quiz</div>
-                    </div>
+                <div class="card fade-in-up delay-2" onclick="window.location.href='daily.html'">
+                    <div class="icon-container"><div class="card-icon">📊</div></div>
+                    <div class="card-title">Daily Quiz</div>
+                </div>
 
-                    <div class="card fade-in-up delay-1" onclick="window.location.href='tool.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">🔧</div>
-                        </div>
-                        <div class="card-title">Study Tools</div>
-                    </div>
+                <div class="card fade-in-up delay-1" onclick="window.location.href='tool.html'">
+                    <div class="icon-container"><div class="card-icon">🔧</div></div>
+                    <div class="card-title">Study Tools</div>
+                </div>
 
-                    <div class="card fade-in-up delay-2" onclick="window.location.href='math-solver.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">➗</div>
-                        </div>
-                        <div class="card-title">Smart Math Solver</div>
-                    </div>
+                <div class="card fade-in-up delay-2" onclick="window.location.href='math-solver.html'">
+                    <div class="icon-container"><div class="card-icon">➗</div></div>
+                    <div class="card-title">Smart Math Solver</div>
+                </div>
 
-                    <div class="card fade-in-up delay-1" onclick="window.location.href='Subject.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">💬</div>
-                        </div>
-                        <div class="card-title">Community</div>
-                    </div>
+                <div class="card fade-in-up delay-1" onclick="window.location.href='subject.html'">
+                    <div class="icon-container"><div class="card-icon">💬</div></div>
+                    <div class="card-title">Community</div>
+                </div>
 
-                    <div class="card fade-in-up delay-2" onclick="window.location.href='domicile.html'">
-                        <div class="icon-container">
-                            <div class="card-icon">🏠</div>
-                        </div>
-                        <div class="card-title">Apply for Domicile</div>
-                    </div>
+                <div class="card fade-in-up delay-2" onclick="window.location.href='domicile.html'">
+                    <div class="icon-container"><div class="card-icon">🏠</div></div>
+                    <div class="card-title">Apply for Domicile</div>
                 </div>
             </div>
-            
-            <!-- AI Tools Banner -->
-            <section class="ai-tools-banner fade-in-up">
-                <div class="ai-tools-content">
-                    <div class="ai-tools-text">Unleash Creativity with Smart AI Tools</div>
-                    
-                    <div class="ai-tools-buttons">
-                        <!-- AI Image Generator -->
-                        <button class="ai-tool-btn" onclick="window.location.href='./Ai.html'">
-                            <i class="fas fa-magic"></i>
-                            <span>AI Image Generator</span>
-                        </button>
-                        
-                        <!-- AI Voice Generator -->
-                        <button class="ai-tool-btn" onclick="window.location.href='voice.html'">
-                            <i class="fas fa-microphone"></i>
-                            <span>AI Voice Generator</span>
-                        </button>
-                        
-                        <!-- Share Button -->
-                        <button class="ai-tool-btn outline" onclick="shareOnWhatsApp()">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Share</span>
-                        </button>
-                    </div>
-                    
-                    <div class="coming-soon">More AI Tools Coming Soon</div>
+
+            <!-- Web Development Section -->
+            <section class="web-dev-section fade-in-up">
+                <h2 class="web-dev-title">💻 Master Web Development</h2>
+                <p class="web-dev-subtitle">Learn HTML, CSS, JavaScript, React, and more — step-by-step with interactive lessons.</p>
+
+                <div class="web-dev-badges">
+                    <div class="badge">Beginner to Advanced</div>
+                    <div class="badge">Hands-on Practice</div>
+                    <div class="badge">AI-Assisted Learning</div>
+                </div>
+
+                <button class="start-learning-btn" onclick="window.location.href='Learning.html'">
+                    Start Learning
+                </button>
+
+                <div class="holographic-screen">
+                    <div class="screen-line"></div>
+                    <div class="screen-line short"></div>
+                    <div class="screen-line"></div>
+                    <div class="screen-line short"></div>
+                    <div class="screen-line"></div>
                 </div>
             </section>
-            
-            <!-- Additional Features -->
+
+            <!-- AI Tools Section -->
+            <section class="ai-tools-banner fade-in-up">
+                <div class="ai-tools-text">Unleash Creativity with Smart AI Tools</div>
+                <div class="ai-tools-buttons">
+                    <button class="ai-tool-btn" onclick="window.location.href='ai.html'">
+                        <i class="fas fa-magic"></i>
+                        <span>AI Image Generator</span>
+                    </button>
+                    <button class="ai-tool-btn" onclick="window.location.href='voice.html'">
+                        <i class="fas fa-microphone"></i>
+                        <span>AI Voice Generator</span>
+                    </button>
+                    <button class="ai-tool-btn outline" onclick="shareOnWhatsApp()">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+                <div class="coming-soon">More AI Tools Coming Soon</div>
+            </section>
+
+            <!-- Career Guidance Section -->
             <div class="section-title fade-in-up">
                 <span>Career Guidance</span>
             </div>
             <div class="grid">
                 <div class="card fade-in-up delay-1" onclick="window.location.href='career.html'">
-                    <div class="icon-container">
-                        <div class="card-icon">💼</div>
-                    </div>
+                    <div class="icon-container"><div class="card-icon">💼</div></div>
                     <div class="card-title">Career Guidance</div>
                 </div>
 
                 <div class="card fade-in-up delay-2" onclick="window.location.href='scholarships.html'">
-                    <div class="icon-container">
-                        <div class="card-icon">🎓</div>
-                    </div>
+                    <div class="icon-container"><div class="card-icon">🎓</div></div>
                     <div class="card-title">Scholarships & Admissions</div>
                 </div>
             </div>
-        </main>
-        
-        <!-- Footer -->
-        <div class="footer fade-in-up">
-            <span class="powered-by">✨ Powered by Learnify AI</span>
+
+            <!-- Footer -->
+            <div class="footer fade-in-up">
+                <span class="powered-by">✨ Powered by Learnify AI</span>
+            </div>
         </div>
     </div>
-    
+
     <script>
-        // Create floating particles for AI effect
+        // Create floating particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 30;
@@ -791,82 +801,104 @@
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
-                // Random position
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                particle.style.left = `${left}%`;
-                particle.style.top = `${top}%`;
-                
-                // Random size
-                const size = Math.random() * 4 + 2;
+                // Random size between 3px and 8px
+                const size = Math.random() * 5 + 3;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
-                // Random color from theme
-                const colors = ['#00e5ff', '#6effff', '#ffffff'];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.background = color;
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
                 
-                // Random animation
-                const duration = Math.random() * 20 + 10;
-                particle.style.animation = `float ${duration}s ease-in-out infinite`;
+                // Random animation duration and delay
+                const duration = Math.random() * 30 + 20;
+                const delay = Math.random() * 10;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
                 
                 particlesContainer.appendChild(particle);
             }
         }
         
-        // Splash screen loading simulation (only first time)
-        document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
-            
+        // Simulate loading progress
+        function simulateLoading() {
+            let progress = 0;
+            const progressBar = document.getElementById('loading-progress');
+            const progressText = document.getElementById('loading-text');
             const splashScreen = document.getElementById('splash-screen');
             const mainContent = document.getElementById('main-content');
-            const loadingProgress = document.getElementById('loading-progress');
-            const loadingText = document.getElementById('loading-text');
-
-            // If already visited, show content directly
-            if (localStorage.getItem('splashShown')) {
-                splashScreen.style.display = 'none';
-                mainContent.style.display = 'block';
-                return;
-            }
-
-            let progress = 0;
-            const loadingInterval = setInterval(function() {
+            
+            const interval = setInterval(() => {
                 progress += Math.random() * 10;
-                if (progress > 100) progress = 100;
-
-                loadingProgress.style.width = progress + '%';
-                loadingText.textContent = 'Loading... ' + Math.floor(progress) + '%';
-
                 if (progress >= 100) {
-                    clearInterval(loadingInterval);
-                    // Fade out splash screen after a brief delay
-                    setTimeout(function() {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // After loading complete, show main content
+                    setTimeout(() => {
                         splashScreen.style.opacity = '0';
                         splashScreen.style.visibility = 'hidden';
                         
-                        // Show main content
-                        mainContent.style.display = 'block';
-                        
-                        // Save flag so splash doesn't show again
-                        localStorage.setItem('splashShown', 'true');
-
-                        // Trigger animations
-                        document.querySelectorAll('.fade-in-up').forEach(el => {
-                            el.style.animationPlayState = 'running';
-                        });
+                        mainContent.style.opacity = '1';
+                        mainContent.style.transform = 'translateY(0)';
                     }, 500);
                 }
-            }, 150);
-        });
+                
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `Loading... ${Math.round(progress)}%`;
+            }, 200);
+        }
         
-        // Share function for AI Image Generator banner
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            simulateLoading();
+            
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+    <script>
+        // Optional: WhatsApp Share Function
         function shareOnWhatsApp() {
-            const message = "🎨 Try this amazing AI Image Generator! Create stunning AI art with Learnify: https://play.google.com/store/apps/details?id=com.umar.learnify";
-            const url = "https://wa.me/?text=" + encodeURIComponent(message);
-            window.open(url, "_blank");
+            const url = window.location.href;
+            const text = "Check out Learnify AI Studio — your smart study hub!";
+            window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
         }
     </script>
+    <script>
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContent = document.getElementById('main-content');
+
+    // Check if splash screen already shown before
+    const splashShown = localStorage.getItem('splashShown');
+
+    if (!splashShown) {
+        // Show splash only once
+        simulateLoading();
+        localStorage.setItem('splashShown', 'true');
+    } else {
+        // Skip splash instantly
+        splashScreen.style.display = 'none';
+        mainContent.style.opacity = '1';
+        mainContent.style.transform = 'translateY(0)';
+    }
+});
+
+</script>
+
 </body>
 </html>
