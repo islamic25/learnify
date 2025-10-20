@@ -26,6 +26,7 @@
             --gray-dark: #5f6368;
             --black: #202124;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s ease;
         }
 
@@ -53,7 +54,7 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: var(--white);
             padding: 1.5rem 1rem 1rem;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 24px 24px;
             box-shadow: var(--shadow);
             position: sticky;
             top: 0;
@@ -102,6 +103,7 @@
             font-size: 1rem;
             color: var(--black);
             transition: var(--transition);
+            box-shadow: var(--shadow-soft);
         }
 
         .search-input:focus {
@@ -170,6 +172,7 @@
             cursor: pointer;
             transition: var(--transition);
             border: 1px solid transparent;
+            box-shadow: var(--shadow-soft);
         }
 
         .filter-chip.active {
@@ -181,7 +184,6 @@
         /* Main Content */
         .main-content {
             padding: 1rem;
-            padding-bottom: 80px;
         }
 
         .section-title {
@@ -221,11 +223,12 @@
             background-color: var(--white);
             border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-soft);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
             animation: fadeIn 0.5s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         @keyframes fadeIn {
@@ -235,7 +238,7 @@
 
         .scholarship-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow);
         }
 
         .card-header {
@@ -338,52 +341,12 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            box-shadow: var(--shadow-soft);
         }
 
         .apply-btn:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: var(--white);
-            display: flex;
-            justify-content: space-around;
-            padding: 0.8rem 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-            border-top: 1px solid var(--gray);
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
-            color: var(--gray-dark);
-            cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            font-size: 1.2rem;
-        }
-
-        .nav-label {
-            font-size: 0.7rem;
-            font-weight: 500;
         }
 
         /* Filter Modal */
@@ -468,6 +431,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            box-shadow: var(--shadow-soft);
         }
 
         .filter-option.active {
@@ -488,6 +452,7 @@
             cursor: pointer;
             transition: var(--transition);
             margin-top: 1rem;
+            box-shadow: var(--shadow-soft);
         }
 
         .apply-filters:hover {
@@ -499,6 +464,7 @@
             display: flex;
             justify-content: center;
             margin-top: 2rem;
+            margin-bottom: 2rem;
         }
 
         .load-more {
@@ -511,6 +477,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            box-shadow: var(--shadow-soft);
         }
 
         .load-more:hover {
@@ -530,6 +497,48 @@
             color: var(--gray);
         }
 
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
         /* Responsive Adjustments */
         @media (min-width: 500px) {
             body {
@@ -541,6 +550,14 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div style="text-align: center;">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading scholarships...</div>
+            </div>
+        </div>
+
         <!-- Header Section -->
         <header class="header">
             <div class="header-content">
@@ -625,26 +642,6 @@
                 <button class="apply-filters" id="applyFilters">Apply Filters</button>
             </div>
         </div>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <div class="nav-item active" data-page="home">
-                <i class="fas fa-home nav-icon"></i>
-                <span class="nav-label">Home</span>
-            </div>
-            <div class="nav-item" data-page="search">
-                <i class="fas fa-search nav-icon"></i>
-                <span class="nav-label">Search</span>
-            </div>
-            <div class="nav-item" data-page="bookmarks">
-                <i class="far fa-bookmark nav-icon"></i>
-                <span class="nav-label">Saved</span>
-            </div>
-            <div class="nav-item" data-page="profile">
-                <i class="fas fa-user nav-icon"></i>
-                <span class="nav-label">Profile</span>
-            </div>
-        </nav>
     </div>
 
     <script>
@@ -920,7 +917,7 @@
         const viewAll = document.getElementById('viewAll');
         const countryFilters = document.getElementById('countryFilters');
         const fundingFilters = document.getElementById('fundingFilters');
-        const navItems = document.querySelectorAll('.nav-item');
+        const loadingOverlay = document.getElementById('loadingOverlay');
 
         // Initialize the app
         function init() {
@@ -975,53 +972,34 @@
             });
 
             applyFilters.addEventListener('click', function() {
-                filterModal.classList.remove('active');
-                state.displayedScholarships = 6;
-                renderScholarships();
+                showLoading();
+                setTimeout(() => {
+                    filterModal.classList.remove('active');
+                    state.displayedScholarships = 6;
+                    renderScholarships();
+                    hideLoading();
+                }, 800);
             });
 
             // Load more button
             loadMore.addEventListener('click', function() {
-                state.displayedScholarships += 6;
-                renderScholarships();
+                showLoading();
+                setTimeout(() => {
+                    state.displayedScholarships += 6;
+                    renderScholarships();
+                    hideLoading();
+                }, 800);
             });
+        }
 
-            // Navigation
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const page = this.dataset.page;
-                    
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    state.currentPage = page;
-                    state.displayedScholarships = 6;
-                    
-                    if (page === 'home') {
-                        pageTitle.textContent = 'Recommended Scholarships';
-                        viewAll.style.display = 'block';
-                        renderScholarships();
-                    } else if (page === 'bookmarks') {
-                        pageTitle.textContent = 'My Bookmarks';
-                        viewAll.style.display = 'none';
-                        renderBookmarkedScholarships();
-                    } else if (page === 'search') {
-                        pageTitle.textContent = 'Search Scholarships';
-                        viewAll.style.display = 'none';
-                        renderScholarships();
-                    } else if (page === 'profile') {
-                        pageTitle.textContent = 'My Profile';
-                        viewAll.style.display = 'none';
-                        renderProfile();
-                    }
-                });
-            });
+        // Show loading animation
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
 
-            // View all
-            viewAll.addEventListener('click', function() {
-                state.displayedScholarships = scholarships.length;
-                renderScholarships();
-            });
+        // Hide loading animation
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
         }
 
         // Populate filter options dynamically
@@ -1190,117 +1168,6 @@
             setupBookmarkListeners();
         }
 
-        // Render bookmarked scholarships
-        function renderBookmarkedScholarships() {
-            const bookmarked = scholarships.filter(scholarship => 
-                state.bookmarkedScholarships.includes(scholarship.id)
-            );
-            
-            scholarshipsGrid.innerHTML = '';
-            
-            if (bookmarked.length === 0) {
-                scholarshipsGrid.innerHTML = `
-                    <div class="no-results">
-                        <i class="far fa-bookmark"></i>
-                        <h3>No bookmarks yet</h3>
-                        <p>Save scholarships you're interested in by clicking the bookmark icon</p>
-                    </div>
-                `;
-            } else {
-                bookmarked.forEach(scholarship => {
-                    const scholarshipCard = document.createElement('div');
-                    scholarshipCard.className = 'scholarship-card';
-                    scholarshipCard.innerHTML = `
-                        <div class="card-header">
-                            <div class="country-flag">
-                                <div class="flag" style="${scholarship.flagStyle}"></div>
-                            </div>
-                            <button class="bookmark-btn active" data-id="${scholarship.id}">
-                                <i class="fas fa-bookmark"></i>
-                            </button>
-                        </div>
-                        <h3 class="scholarship-title">${scholarship.title}</h3>
-                        <p class="scholarship-description">${scholarship.description}</p>
-                        <div class="scholarship-details">
-                            <div class="detail-item">
-                                <i class="fas fa-globe"></i>
-                                <span>${scholarship.country}</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <span>${scholarship.fundingType}</span>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="deadline">
-                                <i class="far fa-clock"></i>
-                                <span>${formatDate(scholarship.deadline)}</span>
-                            </div>
-                            <button class="apply-btn" onclick="window.open('${scholarship.applyUrl}', '_blank')">Apply Now</button>
-                        </div>
-                    `;
-                    scholarshipsGrid.appendChild(scholarshipCard);
-                });
-            }
-            
-            loadMoreContainer.style.display = 'none';
-            updateResultsCount(bookmarked.length);
-            setupBookmarkListeners();
-        }
-
-        // Render profile page
-        function renderProfile() {
-            scholarshipsGrid.innerHTML = `
-                <div class="scholarship-card">
-                    <div class="card-header">
-                        <div class="country-flag">
-                            <div class="flag" style="background: linear-gradient(to right, #0052B4 30%, white 30%, white 70%, #D80027 70%);"></div>
-                        </div>
-                        <button class="bookmark-btn"><i class="far fa-bookmark"></i></button>
-                    </div>
-                    <h3 class="scholarship-title">My Scholarship Profile</h3>
-                    <p class="scholarship-description">Track your scholarship applications and preferences here.</p>
-                    <div class="scholarship-details">
-                        <div class="detail-item">
-                            <i class="fas fa-bookmark"></i>
-                            <span>${state.bookmarkedScholarships.length} Saved</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-paper-plane"></i>
-                            <span>0 Applications</span>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="deadline">
-                            <i class="far fa-user"></i>
-                            <span>Student Profile</span>
-                        </div>
-                        <button class="apply-btn" style="background-color: var(--accent);">Edit Profile</button>
-                    </div>
-                </div>
-                <div class="scholarship-card">
-                    <h3 class="scholarship-title">Application Stats</h3>
-                    <p class="scholarship-description">Keep track of your scholarship application progress.</p>
-                    <div style="margin-top: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Saved Scholarships</span>
-                            <span>${state.bookmarkedScholarships.length}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Applications in Progress</span>
-                            <span>0</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Awarded Scholarships</span>
-                            <span>0</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            loadMoreContainer.style.display = 'none';
-            updateResultsCount();
-        }
-
         // Set up bookmark button listeners
         function setupBookmarkListeners() {
             document.querySelectorAll('.bookmark-btn').forEach(button => {
@@ -1331,11 +1198,6 @@
             
             // Save to localStorage
             localStorage.setItem('bookmarkedScholarships', JSON.stringify(state.bookmarkedScholarships));
-            
-            // If we're on the bookmarks page, refresh the view
-            if (state.currentPage === 'bookmarks') {
-                renderBookmarkedScholarships();
-            }
         }
 
         // Update bookmark icons based on current state
