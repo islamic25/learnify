@@ -610,11 +610,12 @@
             animation-delay: 0.3s;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 400px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+       @media (max-width: 400px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
             
             .hero-illustration {
                 display: none;
@@ -624,6 +625,76 @@
                 display: none;
             }
         }
+        .learning-section {
+    text-align: center;
+    padding: 70px 20px;
+    background: linear-gradient(135deg, #f5f8ff, #eaf0ff);
+    border-radius: 20px;
+    margin: 50px auto;
+    max-width: 850px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.learning-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.learning-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #1c2a70;
+    margin-bottom: 15px;
+}
+
+.learning-subtitle {
+    color: #4a4a4a;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto 25px;
+}
+
+.learning-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.badge {
+    background: #e0e7ff;
+    color: #3b4cca;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.start-learning-btn {
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.start-learning-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #5b7cfb, #293d7b);
+    box-shadow: 0 6px 20px rgba(91, 124, 251, 0.3);
+}
+
     </style>
 </head>
 <body>
@@ -724,20 +795,26 @@
                 </div>
             </div>
 
-            <!-- Web Development Section -->
-            <section class="web-dev-section fade-in-up">
-                <h2 class="web-dev-title">💻 Master Web Development</h2>
-                <p class="web-dev-subtitle">Learn HTML, CSS, JavaScript, React, and more — step-by-step with interactive lessons.</p>
+            <!-- Learning Access Section -->
+<section class="learning-section fade-in-up">
+    <h2 class="learning-title">🎓 Start Your Learning Journey</h2>
+    <p class="learning-subtitle">
+        Explore a wide range of professional courses — from Freelancing and Digital Marketing 
+        to Web Development, Graphic Design, and more. Learn anytime, anywhere with AI-guided lessons.
+    </p>
 
-                <div class="web-dev-badges">
-                    <div class="badge">Beginner to Advanced</div>
-                    <div class="badge">Hands-on Practice</div>
-                    <div class="badge">AI-Assisted Learning</div>
-                </div>
+    <div class="learning-badges">
+        <div class="badge">Multiple Skill Categories</div>
+        <div class="badge">Beginner to Expert</div>
+        <div class="badge">Interactive & AI-Powered</div>
+    </div>
 
-                <button class="start-learning-btn" onclick="window.location.href='Learning.html'">
-                    Start Learning
-                </button>
+    <button class="start-learning-btn" onclick="window.location.href='https://digiskills.pk/Default.aspx#Courses'">
+    <i class="fas fa-play-circle"></i> Start Learning
+</button>
+
+</section>
+
 
                 <div class="holographic-screen">
                     <div class="screen-line"></div>
